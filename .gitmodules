@@ -1,0 +1,3 @@
+[submodule "users/oq/nvim"]
+	path = users/oq/nvim
+	url = https://github.com/0qln/nvim

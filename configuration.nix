@@ -2,14 +2,16 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, home-manager, ... }:
 
 let
 in
 {
-  imports =
-    [
-    ];
+  imports = [
+      ./users/oq
+      ./modules/home-manager
+      ./modules/sops
+  ];
 
   # Bootloader.
   boot.loader.efi.canTouchEfiVariables = true;
@@ -85,9 +87,6 @@ in
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.oq = {
-    isNormalUser = true;
-  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -97,6 +96,7 @@ in
   environment.systemPackages = with pkgs; [
     vim
     wget
+    age
   ];
 
     # Some programs need SUID wrappers, can be configured further or are
