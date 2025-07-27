@@ -68,6 +68,9 @@ in {
             # file manager
             lf
             dragon-drop
+
+
+            htop
         ];
 
 
