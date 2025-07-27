@@ -15,8 +15,13 @@ let
         (lib.hasPrefix rootStr pathStr)
         "${pathStr} does not start with ${rootStr}";
       runtimeRoot + lib.removePrefix rootStr pathStr;
+
 in {
-    home-manager.users.oq = { pkgs, config, ... }: {
+    home-manager.users.oq = { pkgs, config, sops-nix, lib, ... }: {
+        imports = [
+          inputs.zen-browser.homeModules.twilight
+          ./hypr/hyprland.nix
+        ];
         home.packages = with pkgs; [
             kdePackages.kate
 
@@ -57,6 +62,9 @@ in {
             jdt-language-server
         ];
 
+
+        # Configure neovim.
+
         programs.neovim = {
             enable = true;
             viAlias = true;
@@ -78,13 +86,66 @@ in {
             recursive = true;
         };
 
+
+        # Configure browsers
+
         programs.firefox.enable = true;
+        programs.zen-browser = {
+          enable = true;
+          # any other options under `programs.firefox` are also supported here.
+          # see `man home-configuration.nix`.
+        };
+
+
+        # Configure git
 
         programs.git = {
             enable = true;
             userName  = "0qln";
             userEmail = "linusnag@gmail.com";
         };
+        # workaround for making the config writable:
+        home.activation = {
+          replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
+            run cp -RL "${config.xdg.configHome}/git" "${config.xdg.configHome}/git.contents"
+            run rm -rf "${config.xdg.configHome}/git"
+            run mv "${config.xdg.configHome}/git.contents" "${config.xdg.configHome}/git"
+            # run chown -R 711 "${config.xdg.configHome}/git/*"
+          '';
+          # removeExisting = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+          #   rm -rf "${config.xdg.configHome}/.config/git/config"
+          # '';
+          #
+          # copy = let
+          #   new = pkgs.writeText "tmp" (builtins.readFile ./);
+          # in lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+          #   rm -rf "/Users/me/.yabairc"
+          #   cp "${newYabai}" "/Users/me/.yabairc"
+          #   chmod +x "/Users/me/.yabairc"
+          # '';
+        };
+
+
+        # todo: read keys into the files
+        # https://github.com/Mic92/sops-nix?tab=readme-ov-file#Flakes
+        # waiting for: https://github.com/nix-community/home-manager/issues/3090
+        # sops.secrets = {
+        #   "oq-sshKeys-server" = { format = "binary"; sopsFile = ./server/id_ed25519; };
+        #   "oq-sshKeys-server-pub" = { format = "binary"; sopsFile = ./server/id_ed25519.pub; };
+        # };
+        # home.file.".ssh/server" = {
+        #
+        # };
+
+
+        # Hyprland.
+
+        # home.file.".config/hypr" = {
+        #   source = ./hypr;
+        #   recursive = true;
+        # };
+
+        # imports = [ ./hypr/hyprland.nix ];
 
         # This value determines the NixOS release from which the default
         # settings for stateful data, like file locations and database versions
