@@ -7,13 +7,31 @@ in {
       # ============== VARIABLES ==============
       "$mainMod" = "SUPER";
       "$terminal" = "kitty";
-      "$fileManager" = "dolphin";
+      "$fileManager" = "lf";
       "$menu" = "wofi --show drun";
 
+      "$monL" = "DP-4";
+      "$monR" = "DP-3";
+      "$monC" = "HDMI-A-1";
+
       monitor = [
-        "HDMI-A-1, 1920x1080@60Hz, 0x550, 1, transform, 0"
-        "DP-3, 1920x1080@60Hz, 1920x0, 1, transform, 1"
-        "DP-4, 1920x1080@60Hz, -1080x0, 1, transform, 3"
+        "$monC, 1920x1080@60Hz, 0x550, 1, transform, 0"
+        "$monR, 1920x1080@60Hz, 1920x0, 1, transform, 1"
+        "$monL, 1920x1080@60Hz, -1080x0, 1, transform, 3"
+      ];
+
+      workspace = [
+        "1, monitor:$monC, default:true"
+        "2, monitor:$monC"
+        "3, monitor:$monC"
+
+        "4, monitor:$monL, default:true"
+        "5, monitor:$monL"
+        "6, monitor:$monL"
+
+        "7, monitor:$monR, default:true"
+        "8, monitor:$monR"
+        "9, monitor:$monR"
       ];
 
       # For some reason hardware_cursors draws the cursor like 250px
@@ -22,10 +40,6 @@ in {
       cursor = {
         no_hardware_cursors = "true";
       };
-
-      # $terminal = kitty
-      # $fileManager = dolphin
-      # $menu = wofi --show drun
 
       general = {
         gaps_in = 5;
@@ -132,7 +146,9 @@ in {
         "$mainMod, R, exec, $menu"
         "$mainMod, P, pseudo"
         "$mainMod, J, togglesplit"
-        "SUPER, F, exec, firefox"
+        "$mainMod, O, exec, obsidian"
+        "$mainMod, F, exec, firefox"
+        "$mainMod, Z, exec, zen"
 
         # Focus movement
         "ALT SHIFT, h, movefocus, l"
@@ -141,36 +157,32 @@ in {
         "ALT SHIFT, j, movefocus, d"
 
         # Workspace navigation
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
+        "ALT SHIFT, 1, workspace, 1"
+        "ALT SHIFT, 2, workspace, 2"
+        "ALT SHIFT, 3, workspace, 3"
+        "ALT SHIFT, 4, workspace, 4"
+        "ALT SHIFT, 5, workspace, 5"
+        "ALT SHIFT, 6, workspace, 6"
+        "ALT SHIFT, 7, workspace, 7"
+        "ALT SHIFT, 8, workspace, 8"
+        "ALT SHIFT, 9, workspace, 9"
+        "ALT SHIFT, 0, workspace, 10"
 
         # Move windows to workspaces
-        "CTRL SHIFT, 1, movetoworkspace, 1"
-        "CTRL SHIFT, 2, movetoworkspace, 2"
-        "CTRL SHIFT, 3, movetoworkspace, 3"
-        "CTRL SHIFT, 4, movetoworkspace, 4"
-        "CTRL SHIFT, 5, movetoworkspace, 5"
-        "CTRL SHIFT, 6, movetoworkspace, 6"
-        "CTRL SHIFT, 7, movetoworkspace, 7"
-        "CTRL SHIFT, 8, movetoworkspace, 8"
-        "CTRL SHIFT, 9, movetoworkspace, 9"
-        "CTRL SHIFT, 0, movetoworkspace, 10"
+        "CTRL ALT, 1, movetoworkspace, 1"
+        "CTRL ALT, 2, movetoworkspace, 2"
+        "CTRL ALT, 3, movetoworkspace, 3"
+        "CTRL ALT, 4, movetoworkspace, 4"
+        "CTRL ALT, 5, movetoworkspace, 5"
+        "CTRL ALT, 6, movetoworkspace, 6"
+        "CTRL ALT, 7, movetoworkspace, 7"
+        "CTRL ALT, 8, movetoworkspace, 8"
+        "CTRL ALT, 9, movetoworkspace, 9"
+        "CTRL ALT, 0, movetoworkspace, 10"
 
         # Special workspace
-        "$mainMod, S, togglespecialworkspace, magic"
-        "$mainMod SHIFT, S, movetoworkspace, special:magic"
-
-        # Workspace scrolling
-        "$mainMod, mouse_down, workspace, e+1"
-        "$mainMod, mouse_up, workspace, e-1"
+        "ALT SHIFT, S, togglespecialworkspace, magic"
+        "CTRL ALT, S, movetoworkspace, special:magic"
 
         # Multimedia keys
         ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
