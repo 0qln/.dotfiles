@@ -26,6 +26,8 @@ in {
         "1, monitor:$monC, default:true"
         "2, monitor:$monC"
         "3, monitor:$monC"
+        #TODO: trying to get the window of the special workspace not to follow the mouse cursor, does not work yet
+        "s[true], monitor:$monC"
 
         "4, monitor:$monL, default:true"
         "5, monitor:$monL"
