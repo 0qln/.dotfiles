@@ -15,8 +15,11 @@ let
         (lib.hasPrefix rootStr pathStr)
         "${pathStr} does not start with ${rootStr}";
       runtimeRoot + lib.removePrefix rootStr pathStr;
-
 in {
+# docs:
+# https://nix-community.github.io/home-manager/index.xhtml#sec-install-nixos-module
+# https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
+# https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix
     home-manager.users.oq = { pkgs, config, sops-nix, lib, ... }: {
         imports = [
           inputs.zen-browser.homeModules.twilight
@@ -105,25 +108,25 @@ in {
             userEmail = "linusnag@gmail.com";
         };
         # workaround for making the config writable:
-        home.activation = {
-          replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
-            run cp -RL "${config.xdg.configHome}/git" "${config.xdg.configHome}/git.contents"
-            run rm -rf "${config.xdg.configHome}/git"
-            run mv "${config.xdg.configHome}/git.contents" "${config.xdg.configHome}/git"
-            # run chown -R 711 "${config.xdg.configHome}/git/*"
-          '';
-          # removeExisting = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-          #   rm -rf "${config.xdg.configHome}/.config/git/config"
-          # '';
-          #
-          # copy = let
-          #   new = pkgs.writeText "tmp" (builtins.readFile ./);
-          # in lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-          #   rm -rf "/Users/me/.yabairc"
-          #   cp "${newYabai}" "/Users/me/.yabairc"
-          #   chmod +x "/Users/me/.yabairc"
-          # '';
-        };
+        # home.activation = {
+        #   replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
+        #     run cp -RL "${config.xdg.configHome}/git" "${config.xdg.configHome}/git.contents"
+        #     run rm -rf "${config.xdg.configHome}/git"
+        #     run mv "${config.xdg.configHome}/git.contents" "${config.xdg.configHome}/git"
+        #     run chmod -R 755 "${config.xdg.configHome}/git"
+        #   '';
+        #   # removeExisting = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+        #   #   rm -rf "${config.xdg.configHome}/.config/git/config"
+        #   # '';
+        #   #
+        #   # copy = let
+        #   #   new = pkgs.writeText "tmp" (builtins.readFile ./);
+        #   # in lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        #   #   rm -rf "/Users/me/.yabairc"
+        #   #   cp "${newYabai}" "/Users/me/.yabairc"
+        #   #   chmod +x "/Users/me/.yabairc"
+        #   # '';
+        # };
 
 
         # todo: read keys into the files

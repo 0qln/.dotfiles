@@ -18,6 +18,7 @@ in {
 
       # For some reason hardware_cursors draws the cursor like 250px
       # to the left and some other issues...
+      # fix source: https://github.com/hyprwm/Hyprland/issues/8852
       cursor = {
         no_hardware_cursors = "true";
       };
