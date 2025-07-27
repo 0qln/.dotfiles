@@ -24,6 +24,7 @@ in {
         imports = [
           inputs.zen-browser.homeModules.twilight
           ./hypr/hyprland.nix
+          ./hypr/hyprpaper.nix
         ];
         home.packages = with pkgs; [
             kdePackages.kate
@@ -166,15 +167,6 @@ in {
         #
         # };
 
-
-        # Hyprland.
-
-        # home.file.".config/hypr" = {
-        #   source = ./hypr;
-        #   recursive = true;
-        # };
-
-        # imports = [ ./hypr/hyprland.nix ];
 
         # This value determines the NixOS release from which the default
         # settings for stateful data, like file locations and database versions

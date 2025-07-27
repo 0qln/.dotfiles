@@ -11,7 +11,7 @@ in
       ./users/oq
       ./modules/home-manager
       ./modules/sops
-      ./modules/hyprland
+      ./modules/hypr/hyprland.nix
   ];
 
   # Bootloader.
@@ -98,6 +98,7 @@ in
     vim
     wget
     age
+    jq
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
