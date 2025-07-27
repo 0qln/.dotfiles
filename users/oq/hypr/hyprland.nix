@@ -21,6 +21,8 @@ in {
       ];
 
       workspace = [
+        # don't forget to set defaults, otherwise the monitor assignments won't work:
+        # https://github.com/hyprwm/Hyprland/issues/2331
         "1, monitor:$monC, default:true"
         "2, monitor:$monC"
         "3, monitor:$monC"
