@@ -153,6 +153,8 @@ in {
         "$mainMod, O, exec, obsidian"
         "$mainMod, F, exec, firefox"
         "$mainMod, Z, exec, zen"
+        #TODO: either replace with zen instance with todoist, or inject transparency css...
+        "$mainMod, T, exec, todoist-electron"
 
         # Focus movement
         "ALT SHIFT, h, movefocus, l"
