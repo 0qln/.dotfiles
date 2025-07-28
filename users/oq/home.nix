@@ -58,7 +58,6 @@ in {
             luarocks
             lua
             fd
-            lazygit
             go
             tree-sitter
             nodejs_24
@@ -73,7 +72,7 @@ in {
             dragon-drop
 
 
-            htop
+            wallust
         ];
 
 
@@ -129,13 +128,6 @@ in {
         };
 
 
-        # Configure git
-
-        programs.git = {
-            enable = true;
-            userName  = "0qln";
-            userEmail = "linusnag@gmail.com";
-        };
         # workaround for making the config writable:
         # home.activation = {
         #   replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
