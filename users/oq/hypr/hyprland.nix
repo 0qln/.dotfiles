@@ -2,10 +2,6 @@
 let
   
 in {
-
-  wayland.windowManager.hyprland.plugins = [
-    
-  ];
   wayland.windowManager.hyprland.settings = {
       # ============== VARIABLES ==============
       "$mainMod" = "SUPER";
@@ -129,6 +125,7 @@ in {
         kb_layout = "us";
         follow_mouse = 1;
         sensitivity = 0;
+        accel_profile = "flat";
         touchpad = {
           natural_scroll = false;
         };

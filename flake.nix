@@ -18,10 +18,10 @@
     zen-browser.inputs.home-manager.follows = "home-manager";
 
     # hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "github:hyprwm/hyprland";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
-    hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
-    hyprland-plugins.inputs.hyprland.follows = "hyprland";
+    hyprpaper.url = "github:hyprwm/hyprpaper";
+    hyprpaper.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ home-manager, sops-nix, self, nixpkgs, ... }:

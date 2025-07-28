@@ -27,6 +27,8 @@ in {
           ./hypr/hyprpaper.nix
         ];
         home.packages = with pkgs; [
+            qimgv
+
             kdePackages.kate
 
             obsidian
