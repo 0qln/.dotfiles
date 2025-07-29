@@ -16,10 +16,10 @@ let
         "${pathStr} does not start with ${rootStr}";
       runtimeRoot + lib.removePrefix rootStr pathStr;
 in {
-# docs:
-# https://nix-community.github.io/home-manager/index.xhtml#sec-install-nixos-module
-# https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
-# https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix
+    # docs:
+    # https://nix-community.github.io/home-manager/index.xhtml#sec-install-nixos-module
+    # https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
+    # https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix
     home-manager.users.oq = { pkgs, config, sops-nix, lib, ... }: {
 
         imports = [

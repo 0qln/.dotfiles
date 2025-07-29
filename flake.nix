@@ -39,8 +39,6 @@
         ./hosts/_common/configuration.nix
         ./hosts/pc1/configuration.nix
         ./hosts/pc1/hardware-configuration.nix
-        #TODO: these can be moved downward
-        sops-nix.nixosModules.sops
       ];
     };
   };
