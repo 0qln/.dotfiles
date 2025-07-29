@@ -1,6 +1,7 @@
 { ... }: {
   imports = [
     ./bootloader.nix
+    ./mount.nix
     ../../users/oq
   ];
 

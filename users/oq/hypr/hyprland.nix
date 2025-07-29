@@ -126,6 +126,7 @@ in {
         follow_mouse = 1;
         sensitivity = 0;
         accel_profile = "flat";
+        force_no_accel = true;
         touchpad = {
           natural_scroll = false;
         };
@@ -133,11 +134,6 @@ in {
 
       gestures = {
         workspace_swipe = false;
-      };
-
-      device = {
-        name = "epic-mouse-v1";
-        sensitivity = -0.5;
       };
 
       bind = [

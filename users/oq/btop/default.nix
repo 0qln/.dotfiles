@@ -11,7 +11,7 @@
       show_battery = false;
       check_temp = true;
       show_uptime = true;
-      cpu_bottom = true;
+      cpu_top = true;
     };
   };
 }
