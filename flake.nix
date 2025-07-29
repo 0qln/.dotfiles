@@ -40,7 +40,6 @@
         ./hosts/pc1/configuration.nix
         ./hosts/pc1/hardware-configuration.nix
         #TODO: these can be moved downward
-        home-manager.nixosModules.home-manager
         sops-nix.nixosModules.sops
       ];
     };

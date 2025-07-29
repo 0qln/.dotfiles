@@ -1,5 +1,8 @@
-{ home-manager, specialArgs, ... }: {
-    home-manager.useGlobalPkgs = true;
-    home-manager.useUserPackages = true;
-    home-manager.extraSpecialArgs = specialArgs;
+{ specialArgs, inputs, ... }: {
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+  ];
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.extraSpecialArgs = specialArgs;
 }

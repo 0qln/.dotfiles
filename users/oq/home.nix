@@ -1,4 +1,4 @@
-{ home-manager, lib, inputs, self, ... }:
+{ lib, inputs, self, ... }:
 let
     #todo: move to a utils module at flake rootStr
     #todo: use this and don't hardcode the root path: https://github.com/srid/flake-root
