@@ -21,11 +21,16 @@ in {
 # https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
 # https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix
     home-manager.users.oq = { pkgs, config, sops-nix, lib, ... }: {
+
         imports = [
           inputs.zen-browser.homeModules.twilight
           ./hypr/hyprland.nix
           ./hypr/hyprpaper.nix
+          ./btop
+          ./git
+          ./lf
         ];
+
         home.packages = with pkgs; [
             qimgv
 
@@ -67,31 +72,8 @@ in {
             jdt-language-server
 
 
-            # file manager
-            lf
-            dragon-drop
-
-
             wallust
         ];
-
-
-        # lf
-        #TODO: more configs
-        programs.lf = {
-          enable = true;
-          commands = {
-            dragon-out = ''%${pkgs.xdragon}/bin/xdragon -a -x "$fx"'';
-            editor-open = ''$$EDITOR $f'';
-            mkdir = ''
-            ''${{
-              printf "Directory Name: "
-              read DIR
-              mkdir $DIR
-            }}
-            '';
-          };
-        };
 
 
         # Configure neovim.

@@ -28,12 +28,18 @@
   let
     lib = nixpkgs.lib;
   in {
-    nixosConfigurations.pc1 = lib.nixosSystem {
-      specialArgs = { inherit inputs; inherit self; };
+    nixosConfigurations."pc1" = lib.nixosSystem {
+      specialArgs = {
+        inherit inputs;
+        inherit self;
+        host-name = "pc1";
+      };
       system = "x86_64-linux";
       modules = [
-        ./configuration.nix
+        ./hosts/_common/configuration.nix
+        ./hosts/pc1/configuration.nix
         ./hosts/pc1/hardware-configuration.nix
+        #TODO: these can be moved downward
         home-manager.nixosModules.home-manager
         sops-nix.nixosModules.sops
       ];
