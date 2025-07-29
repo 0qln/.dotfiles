@@ -3,11 +3,11 @@
     enable = true;
     settings = {
       color_theme = "TTY";
-      them_background = false;
+      theme_background = false;
       truecolor = true;
       vim_keys = true;
       force_tty = false;
-      rounded_corners = false;
+      rounded_corners = true;
       show_battery = false;
       check_temp = true;
       show_uptime = true;
