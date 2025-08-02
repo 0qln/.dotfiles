@@ -37,8 +37,7 @@ in
 
       imports = [
         inputs.zen-browser.homeModules.twilight
-        ./hypr/hyprland.nix
-        ./hypr/hyprpaper.nix
+        ./hypr
         ./btop
         ./git
         ./lf

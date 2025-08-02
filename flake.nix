@@ -23,29 +23,38 @@
     hyprpaper.url = "github:hyprwm/hyprpaper";
     hyprpaper.inputs.nixpkgs.follows = "nixpkgs";
 
-    # nixvim, does not follow global nixpkgs. 
-    # Or does it? https://nix-community.github.io/nixvim/user-guide/install.html is 
+    # nixvim, does not follow global nixpkgs.
+    # Or does it? https://nix-community.github.io/nixvim/user-guide/install.html is
     # unclear about this
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ home-manager, sops-nix, nixvim, self, nixpkgs, ... }:
-  let
-    lib = nixpkgs.lib;
-  in {
-    nixosConfigurations."pc1" = lib.nixosSystem {
-      specialArgs = {
-        inherit inputs;
-        inherit self;
-        host-name = "pc1";
+  outputs =
+    inputs@{
+      home-manager,
+      sops-nix,
+      nixvim,
+      self,
+      nixpkgs,
+      ...
+    }:
+    let
+      lib = nixpkgs.lib;
+    in
+    {
+      nixosConfigurations."pc1" = lib.nixosSystem {
+        specialArgs = {
+          inherit inputs;
+          inherit self;
+          host-name = "pc1";
+        };
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/_common/configuration.nix
+          ./hosts/pc1/configuration.nix
+          ./hosts/pc1/hardware-configuration.nix
+        ];
       };
-      system = "x86_64-linux";
-      modules = [
-        ./hosts/_common/configuration.nix
-        ./hosts/pc1/configuration.nix
-        ./hosts/pc1/hardware-configuration.nix
-      ];
     };
-  };
 }

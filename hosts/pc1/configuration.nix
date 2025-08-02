@@ -5,6 +5,7 @@
     ./mount.nix
     ./bluetooth.nix
     ../../users/oq
+    ../../modules/hypr
   ];
 
   # Set your time zone.
