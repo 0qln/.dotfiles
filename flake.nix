@@ -22,9 +22,15 @@
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
     hyprpaper.url = "github:hyprwm/hyprpaper";
     hyprpaper.inputs.nixpkgs.follows = "nixpkgs";
+
+    # nixvim, does not follow global nixpkgs. 
+    # Or does it? https://nix-community.github.io/nixvim/user-guide/install.html is 
+    # unclear about this
+    nixvim.url = "github:nix-community/nixvim";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ home-manager, sops-nix, self, nixpkgs, ... }:
+  outputs = inputs@{ home-manager, sops-nix, nixvim, self, nixpkgs, ... }:
   let
     lib = nixpkgs.lib;
   in {

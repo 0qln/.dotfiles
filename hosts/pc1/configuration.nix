@@ -1,7 +1,9 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./bootloader.nix
     ./mount.nix
+    ./bluetooth.nix
     ../../users/oq
   ];
 
