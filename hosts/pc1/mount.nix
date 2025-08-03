@@ -21,13 +21,24 @@
     ];
   };
 
-  fileSystems."/mnt/windows-efi" = {
-    device = "/dev/disk/by-uuid/3CEB-ADB5";
-    fsType = "vfat";
-    options = [
-      "nofail"
-      "users"
-    ];
-  };
+  # fileSystems."/boot/windows-efi" = {
+  #   device = "/dev/disk/by-uuid/3CEB-ADB5";
+  #   fsType = "vfat";
+  #   options = [
+  #     "nofail"
+  #     "users"
+  #   ];
+  # };
 
+  # fileSystems."/boot/EFI/Microsoft" = {
+  #   depends = [
+  #     "/boot/windows-efi"
+  #   ];
+  #   device = "/boot/windows-efi/EFI/Microsoft";
+  #   fsType = "none";
+  #   options = [
+  #     "bind"
+  #     "ro"
+  #   ];
+  # };
 }

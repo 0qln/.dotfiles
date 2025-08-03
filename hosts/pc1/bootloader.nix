@@ -1,16 +1,21 @@
 { ... }:
 {
   boot.loader = {
-    efi.canTouchEfiVariables = true;
+    efi = {
+      canTouchEfiVariables = true;
+      # efiSysMountPoint = "/boot";
+    };
+
     systemd-boot = {
       enable = true;
-      extraEntries = {
-        "windows.conf" = ''
-          title Windows
-          efi /mnt/windows-efi/EFI/Microsoft/Boot/bootmgfw.efi
-        '';
-      };
+      # extraEntries = {
+      #   "windows.conf" = ''
+      #     title Windows Boot Manager
+      #     efi EFI/Microsoft/Boot/bootmgfw.efi
+      #   '';
+      # };
     };
+
     timeout = 5;
   };
 }

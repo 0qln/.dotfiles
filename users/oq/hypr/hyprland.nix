@@ -1,11 +1,17 @@
-{ options, config, ... }:
+{
+  options,
+  config,
+  pkgs,
+  ...
+}:
 let
-
+  todoist-quick-add = pkgs.callPackage ../todoist/todoist-quick-add.nix { };
 in
 {
+  wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.settings = {
     # =============== COLORS ===============
-    source = "${config.xdg.cache}/pywal/colors-hyprland.conf";
+    #source = "${config.xdg.cache}/pywal/colors-hyprland.conf";
 
     # ============== VARIABLES ==============
     "$mainMod" = "SUPER";
@@ -152,7 +158,7 @@ in
       "$mainMod, F, exec, firefox"
       "$mainMod, Z, exec, zen"
       #TODO: either replace with zen instance with todoist, or inject transparency css...
-      "$mainMod, T, exec, todoist-electron"
+      "$mainMod, T, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
 
       # Focus movement
       "ALT SHIFT, h, movefocus, l"
@@ -208,6 +214,9 @@ in
     ];
 
     # ============== WINDOW RULES ==============
+    windowrule = [
+      "float, title:todoist-quick-add"
+    ];
     # windowrule = [
     #   "float,class:^(kitty)$,title:^(kitty)$"
     #   "suppressevent maximize, class:.*"

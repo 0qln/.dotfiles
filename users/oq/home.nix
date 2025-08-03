@@ -41,6 +41,7 @@ in
         ./btop
         ./git
         ./lf
+        ./todoist
         # ./nvim
         inputs.nixvim.homeModules.nixvim
       ];
@@ -49,8 +50,6 @@ in
         qimgv
 
         obsidian
-
-        todoist-electron
 
         git
         gh
@@ -456,18 +455,19 @@ in
             enable = true;
           };
           undotree.enable = true;
-          smear-cursor = {
-            enable = true;
-            settings = {
-              stiffness = 0.8; # :                     # 0.6      [0, 1]
-              trailing_stiffness = 0.5; # :            # 0.4      [0, 1]
-              stiffness_insert_mode = 0.7; # :         # 0.5      [0, 1]
-              trailing_stiffness_insert_mode = 0.7; # :# 0.5      [0, 1]
-              damping = 0.8; # :                       # 0.65     [0, 1]
-              damping_insert_mode = 0.8; # :           # 0.7      [0, 1]
-              distance_stop_animating = 0.5; # :       # 0.1      > 0
-            };
-          };
+          # did have glitches, so nononoo
+          # smear-cursor = {
+          #   enable = true;
+          #   settings = {
+          #     stiffness = 0.8; # :                     # 0.6      [0, 1]
+          #     trailing_stiffness = 0.5; # :            # 0.4      [0, 1]
+          #     stiffness_insert_mode = 0.7; # :         # 0.5      [0, 1]
+          #     trailing_stiffness_insert_mode = 0.7; # :# 0.5      [0, 1]
+          #     damping = 0.8; # :                       # 0.65     [0, 1]
+          #     damping_insert_mode = 0.8; # :           # 0.7      [0, 1]
+          #     distance_stop_animating = 0.5; # :       # 0.1      > 0
+          #   };
+          # };
           lualine.enable = true;
           transparent = {
             enable = true;
@@ -489,7 +489,7 @@ in
             };
           };
           gitblame.enable = true;
-          hardtime.enable = true;
+          # hardtime.enable = true;
           none-ls = {
             enable = true;
             enableLspFormat = true;
