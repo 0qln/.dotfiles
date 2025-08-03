@@ -35,18 +35,27 @@ in
     }:
     {
 
+      sops = {
+        defaultSopsFormat = "yaml";
+        age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
+        defaultSymlinkPath = "/run/user/1000/secrets";
+        defaultSecretsMountPoint = "/run/user/1000/secrets.d";
+      };
+
       imports = [
         inputs.zen-browser.homeModules.twilight
+        inputs.nixvim.homeModules.nixvim
+        inputs.sops-nix.homeManagerModules.sops
         ./hypr
         ./btop
         ./git
         ./lf
         ./todoist
-        # ./nvim
-        inputs.nixvim.homeModules.nixvim
       ];
 
       home.packages = with pkgs; [
+        sops
+
         qimgv
 
         obsidian
@@ -138,6 +147,7 @@ in
             ];
             options = {
               desc = "Code Format";
+              noremap = true;
             };
           }
           # Go to definition
@@ -766,24 +776,32 @@ in
       };
 
       # workaround for making the config writable:
+      # while this works... it is incredibly ugly :(
       # home.activation = {
-      #   replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
-      #     run cp -RL "${config.xdg.configHome}/git" "${config.xdg.configHome}/git.contents"
-      #     run rm -rf "${config.xdg.configHome}/git"
-      #     run mv "${config.xdg.configHome}/git.contents" "${config.xdg.configHome}/git"
-      #     run chmod -R 755 "${config.xdg.configHome}/git"
-      #   '';
-      #   # removeExisting = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-      #   #   rm -rf "${config.xdg.configHome}/.config/git/config"
-      #   # '';
-      #   #
-      #   # copy = let
-      #   #   new = pkgs.writeText "tmp" (builtins.readFile ./);
-      #   # in lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-      #   #   rm -rf "/Users/me/.yabairc"
-      #   #   cp "${newYabai}" "/Users/me/.yabairc"
-      #   #   chmod +x "/Users/me/.yabairc"
-      #   # '';
+      # run cp -RL "${config.xdg.configHome}/git" "${config.xdg.configHome}/git.contents"
+      # run rm -rf "${config.xdg.configHome}/git"
+      # run mv "${config.xdg.configHome}/git.contents" "${config.xdg.configHome}/git"
+      # run chmod -R 755 "${config.xdg.configHome}/git"
+      # replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
+
+      #   run cp -RL "${config.xdg.configHome}/todoist" "${config.xdg.configHome}/todoist.contents"
+      #   run rm -rf "${config.xdg.configHome}/todoist"
+      #   run mv "${config.xdg.configHome}/todoist.contents" "${config.xdg.configHome}/todoist"
+      #   run chmod 755 "${config.xdg.configHome}/todoist"
+      #   run chmod 600 "${config.xdg.configHome}/todoist/config.json"
+
+      # '';
+      # removeExisting = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+      #   rm -rf "${config.xdg.configHome}/.config/git/config"
+      # '';
+      #
+      # copy = let
+      #   new = pkgs.writeText "tmp" (builtins.readFile ./);
+      # in lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      #   rm -rf "/Users/me/.yabairc"
+      #   cp "${newYabai}" "/Users/me/.yabairc"
+      #   chmod +x "/Users/me/.yabairc"
+      # '';
       # };
 
       # todo: read keys into the files

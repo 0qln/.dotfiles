@@ -13,7 +13,6 @@
 {
   imports = [
     ../../modules/home-manager
-    ../../modules/sops
     ../../modules/hypr/hyprland.nix
   ];
 
