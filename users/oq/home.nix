@@ -5,8 +5,8 @@
   ...
 }:
 let
-  #todo: move to a utils module at flake rootStr
-  #todo: use this and don't hardcode the root path: https://github.com/srid/flake-root
+  #TODO: move to a utils module at flake rootStr
+  #TODO: use this and don't hardcode the root path: https://github.com/srid/flake-root
   # source: https://github.com/nix-community/home-manager/issues/257#issuecomment-1646557848
   # related: https://discourse.nixos.org/t/neovim-config-read-only/35109/10
   runtimeRoot = "/home/oq/.dotfiles";
@@ -31,15 +31,22 @@ in
       config,
       sops-nix,
       lib,
+      sysConfig,
       ...
     }:
-    {
+    let
+      #TODO: use this utils file, ressources are here: https://discourse.nixos.org/t/can-anyone-help-explain-to-me-how-i-pass-values-in-nix/43117
+      # utils = pkgs.callPackage ./utils { inherit lib sysConfig; };
+      # runtimeDir = utils.userRuntimeDir;
 
+      userRuntimeDir = "/run/user/${toString sysConfig.users.users.${config.home.username}.uid}";
+    in
+    {
       sops = {
         defaultSopsFormat = "yaml";
         age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
-        defaultSymlinkPath = "/run/user/1000/secrets";
-        defaultSecretsMountPoint = "/run/user/1000/secrets.d";
+        defaultSymlinkPath = "${userRuntimeDir}/secrets";
+        defaultSecretsMountPoint = "${userRuntimeDir}/secrets.d";
       };
 
       imports = [
@@ -69,7 +76,6 @@ in
 
         fzf
 
-        #neovim
         unzip
         vimPlugins.vim-markdown-toc
         markdownlint-cli2
@@ -663,7 +669,7 @@ in
             folding = false;
             settings = {
               indent.enable = true;
-              highlight.enable = true;
+              # highlight.enable = true; #this caused random erros :(
             };
             grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
           };
@@ -695,7 +701,7 @@ in
 
         highlight.Todo = {
           # todo: replace with wallust scheme color
-          fg = "Blue";
+          fg = "Tomato";
           bg = "Yellow";
         };
 
@@ -750,7 +756,7 @@ in
         enable = true;
         initExtra = ''
           export EDITOR="nvim"
-          wallust run ${toString ./wallpapers/wallhaven-zygxxo.jpg}
+          # wallust run ${toString ./wallpapers/wallhaven-zygxxo.jpg}
         '';
       };
 
@@ -804,16 +810,20 @@ in
       # '';
       # };
 
-      # todo: read keys into the files
-      # https://github.com/Mic92/sops-nix?tab=readme-ov-file#Flakes
-      # waiting for: https://github.com/nix-community/home-manager/issues/3090
       # sops.secrets = {
-      #   "oq-sshKeys-server" = { format = "binary"; sopsFile = ./server/id_ed25519; };
-      #   "oq-sshKeys-server-pub" = { format = "binary"; sopsFile = ./server/id_ed25519.pub; };
+      #   "oq-sshKeys-server" = {
+      #     format = "binary";
+      #     sopsFile = ./server/id_ed25519;
+
+      #   };
+      #   "oq-sshKeys-server-pub" = {
+      #     format = "binary";
+      #     sopsFile = ./server/id_ed25519.pub;
+      #   };
       # };
-      # home.file.".ssh/server" = {
-      #
-      # };
+      # home.activation."ssh-keys" = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
+
+      # '';
 
       # This value determines the NixOS release from which the default
       # settings for stateful data, like file locations and database versions
