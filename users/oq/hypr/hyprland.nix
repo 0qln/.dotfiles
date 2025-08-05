@@ -166,6 +166,7 @@ in
       #TODO: either replace with zen instance with todoist, or inject transparency css...
       "$mainMod, T, exec, todoist-electron"
       "CTRL, SPACE, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
+      "$mainMod, B, exec, $terminal -e bluetoothctl"
 
       # Focus movement
       "ALT SHIFT, H, movefocus, l"
