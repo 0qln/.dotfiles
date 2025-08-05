@@ -206,9 +206,9 @@ in
 
       "CTRL ALT, P, pseudo"
       "CTRL ALT, C, centerwindow"
-      "CTRL ALT, N, togglefloating"
+      "CTRL ALT, B, togglefloating"
       "CTRL ALT, M, fullscreenstate, 0"
-      "CTRL ALT, B, fullscreenstate, 1"
+      "CTRL ALT, N, fullscreenstate, 1"
       "CTRL ALT, F, fullscreenstate, 2"
 
       # Special workspace
