@@ -33,6 +33,8 @@ in
     libratbag
     piper
     usbutils
+
+    #TODO: try out https://github.com/dkbednarczyk/mxw
   ];
 
   services.ratbagd.enable = true;
