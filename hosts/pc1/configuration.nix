@@ -4,6 +4,7 @@
     ./bootloader.nix
     ./mount.nix
     ./bluetooth.nix
+    ./glorious-model-o.nix
     ../../users/oq
     ../../modules/hypr
   ];
