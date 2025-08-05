@@ -465,6 +465,8 @@ in
           )
         '';
 
+        # in case lualine is opaque again: https://www.reddit.com/r/neovim/comments/s4ud1d/comment/hsvesja/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+
         plugins = {
           commentary.enable = true;
           bufferline = {
@@ -615,17 +617,29 @@ in
               };
             };
             servers = {
-
-              yamlls.enable = true;
-
-              nil_ls.enable = true;
-
+              # More: https://nix-community.github.io/nixvim/plugins/lsp/servers/nimls/onAttach.html
+              yamlls.enable = true; # yaml
+              # Rust
               rust_analyzer = {
                 enable = true;
                 installRustc = true;
                 installCargo = true;
               };
-
+              ts_ls.enable = true; # TS/JS
+              cssls.enable = true; # CSS
+              tailwindcss.enable = true; # TailwindCSS
+              html.enable = true; # HTML
+              astro.enable = true; # AstroJS
+              phpactor.enable = true; # PHP
+              svelte.enable = false; # Svelte
+              vuels.enable = false; # Vue
+              pyright.enable = true; # Python
+              nil_ls.enable = true; # Nix
+              dockerls.enable = true; # Docker
+              bashls.enable = true; # Bash
+              clangd.enable = true; # C/C++
+              csharp_ls.enable = true; # C#
+              markdown_oxide.enable = true; # Markdown
             };
           };
           schemastore = {
@@ -635,7 +649,6 @@ in
           };
           #TODO: lz.n lazy loader
           #TODO: noice for toolwindows?
-          nix.enable = true;
           oil.enable = true; # TODO
           indent-blankline.enable = true;
           telescope = {

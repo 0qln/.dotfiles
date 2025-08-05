@@ -6,6 +6,7 @@
 }:
 let
   todoist-quick-add = pkgs.callPackage ../todoist/todoist-quick-add.nix { };
+  monitors = import ../../../hosts/pc1/monitors.nix { };
 in
 {
   wayland.windowManager.hyprland.enable = true;
@@ -19,14 +20,19 @@ in
     "$fileManager" = "lf";
     "$menu" = "wofi --show drun";
 
-    "$monL" = "DP-4";
-    "$monR" = "DP-3";
-    "$monC" = "HDMI-A-1";
+    "$monL" = monitors.left;
+    "$monR" = monitors.right;
+    "$monC" = monitors.center;
 
     monitor = [
       "$monC, 1920x1080@60Hz, 0x550, 1, transform, 0"
       "$monR, 1920x1080@60Hz, 1920x0, 1, transform, 1"
       "$monL, 1920x1080@60Hz, -1080x0, 1, transform, 3"
+    ];
+
+    # =============== OTHER APPS ==============
+    exec-once = [
+      "waybar"
     ];
 
     workspace = [
@@ -158,13 +164,15 @@ in
       "$mainMod, F, exec, firefox"
       "$mainMod, Z, exec, zen"
       #TODO: either replace with zen instance with todoist, or inject transparency css...
-      "$mainMod, T, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
+      "$mainMod, T, exec, todoist-electron"
+      "CTRL, SPACE, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
 
       # Focus movement
-      "ALT SHIFT, h, movefocus, l"
-      "ALT SHIFT, l, movefocus, r"
-      "ALT SHIFT, k, movefocus, u"
-      "ALT SHIFT, j, movefocus, d"
+      "ALT SHIFT, H, movefocus, l"
+      "ALT SHIFT, L, movefocus, r"
+      "ALT SHIFT, K, movefocus, u"
+      "ALT SHIFT, J, movefocus, d"
+      "ALT SHIFT, N, focuswindow, floating"
 
       # Workspace navigation
       "ALT SHIFT, 1, workspace, 1"
@@ -189,6 +197,18 @@ in
       "CTRL ALT, 8, movetoworkspace, 8"
       "CTRL ALT, 9, movetoworkspace, 9"
       "CTRL ALT, 0, movetoworkspace, 10"
+
+      "CTRL ALT, H, movewindow, l"
+      "CTRL ALT, J, movewindow, d"
+      "CTRL ALT, K, movewindow, u"
+      "CTRL ALT, L, movewindow, r"
+
+      "CTRL ALT, P, pseudo"
+      "CTRL ALT, C, centerwindow"
+      "CTRL ALT, N, togglefloating"
+      "CTRL ALT, M, fullscreenstate, 0"
+      "CTRL ALT, B, fullscreenstate, 1"
+      "CTRL ALT, F, fullscreenstate, 2"
 
       # Special workspace
       "ALT SHIFT, S, togglespecialworkspace, magic"
