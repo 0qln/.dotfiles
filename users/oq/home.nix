@@ -642,6 +642,7 @@ in
               markdown_oxide.enable = true; # Markdown
             };
           };
+          nix.enable = true;
           schemastore = {
             enable = true;
             yaml.enable = true;
