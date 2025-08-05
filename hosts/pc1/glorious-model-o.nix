@@ -35,6 +35,8 @@ in
     usbutils
 
     #TODO: try out https://github.com/dkbednarczyk/mxw
+
+    #TODO: try wineWrapping the Windows Application: https://discourse.nixos.org/t/what-is-your-approach-to-packaging-wine-applications-with-nix-derivations/12799
   ];
 
   services.ratbagd.enable = true;
