@@ -105,6 +105,22 @@ in
 
       # Configure neovim.
 
+      # just in case i want to do it via copying my lua config again:
+      # - https://github.com/Kidsan/nixos-config/blob/main/home/programs/neovim/nvim/lua/kidsan/set.lua
+      # - https://github.com/samiulbasirfahim/flakes/blob/main/home/rxen/neovim/config/init.lua
+
+      # docs:
+      # inspiration:
+      #   - https://github.com/LazyVim/LazyVim/blob/25abbf546d564dc484cf903804661ba12de45507/lua/lazyvim/plugins/ui.lua#L12
+      #   - https://github.com/Ahwxorg/nixvim-config/blob/fe2f1c27fa532489800b8f4d17f12c13299afa8d/config/modules/plugins/lsp.nix#L6
+      #   - https://github.com/bkp5190/Home-Manager-Configs/blob/main/plugins/default.nix
+      #   - https://github.com/elythh/nixvim
+      # nixvim options:
+      #   - https://nix-community.github.io/nixvim/NeovimOptions/index.html
+
+      # in case i want to do lazy loading some day:
+      #   - https://github.com/nvim-neorocks/lz.n
+
       programs.nixvim = {
         enable = true;
 
@@ -648,7 +664,6 @@ in
             yaml.enable = true;
             json.enable = false;
           };
-          #TODO: lz.n lazy loader
           #TODO: noice for toolwindows?
           oil.enable = true; # TODO
           indent-blankline.enable = true;

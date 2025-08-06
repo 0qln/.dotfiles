@@ -154,7 +154,6 @@ in
       # Application shortcuts
       "$mainMod, Q, exec, $terminal"
       "$mainMod, C, killactive"
-      "$mainMod, M, exit"
       "$mainMod, E, exec, $fileManager"
       "$mainMod, V, togglefloating"
       "$mainMod, R, exec, $menu"
@@ -167,6 +166,12 @@ in
       "$mainMod, T, exec, todoist-electron"
       "CTRL, SPACE, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
       "$mainMod, B, exec, $terminal -e bluetoothctl"
+      # using dispatchers here, since setting the window rules for zen does not work...
+      "$mainMod, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"
+      #  # && sleep 1 && hyprctl dispatch movewindow mon:${monitors.left} && hyprctl dispatch pseudo && hyprctl dispatch resizeactive exact 80% 30%
+      # "$mainMod ALT, M, "
+      # "$mainMod ALT, M, "
+      # "$mainMod ALT, M, "
 
       # Focus movement
       "ALT SHIFT, H, movefocus, l"
@@ -236,7 +241,13 @@ in
 
     # ============== WINDOW RULES ==============
     windowrule = [
+
       "float, title:todoist-quick-add"
+
+      "tag +music, title:.*YouTube Music.*"
+      "pseudo, tag:music"
+      "monitor ${monitors.left}, tag:music"
+
     ];
     # windowrule = [
     #   "float,class:^(kitty)$,title:^(kitty)$"
