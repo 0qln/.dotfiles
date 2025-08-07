@@ -473,17 +473,113 @@ in
 
         # transparent bufferline
         extraConfigLuaPost = ''
+          -- transparent bufferline
           vim.g.transparent_groups = vim.list_extend(
-            vim.g.transparent_groups or {},
+          vim.g.transparent_groups or {},
             vim.tbl_map(function(v)
               return v.hl_group
             end, vim.tbl_values(require('bufferline.config').highlights))
           )
+
+
+          -- cmp
+
+          local cmp = require'cmp'
+
+          -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+          cmp.setup.cmdline({'/', "?" }, {
+            sources = {
+              { name = 'buffer' }
+            }
+          })
+
+          -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+          cmp.setup.cmdline(':', {
+            sources = cmp.config.sources({
+              { name = 'async-path' }
+            }, {
+              { name = 'cmdline' }
+            }),
+          })
         '';
 
-        # in case lualine is opaque again: https://www.reddit.com/r/neovim/comments/s4ud1d/comment/hsvesja/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+        # in case lualine is opaque again:
+        #https://www.reddit.com/r/neovim/comments/s4ud1d/comment/hsvesja/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+
+        # cmp
 
         plugins = {
+
+          # inspiration: https://github.com/dc-tec/nixvim/blob/main/config/plugins/cmp/cmp.nix
+
+          cmp-emoji.enable = true;
+          cmp_luasnip.enable = true;
+          cmp-cmdline.enable = true;
+          cmp-buffer.enable = true;
+          cmp-nvim-lsp.enable = true;
+          cmp-async-path.enable = true;
+
+          schemastore = {
+            enable = true;
+            yaml.enable = true;
+            json.enable = false;
+          };
+
+          # github: https://github.com/hrsh7th/nvim-cmp?tab=readme-ov-file
+          # nixvim: https://nix-community.github.io/nixvim/plugins/cmp/index.html#cmp
+          cmp = {
+            enable = true;
+            autoEnableSources = true;
+            settings = {
+              sources = [
+                # sources: https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
+                { name = "nvim_lsp"; }
+                { name = "cmp_lsp_rs"; }
+                # go-lang: go_deep
+                { name = "nvim_lsp_signature_help"; }
+                { name = "nvim_lsp_document_symbol"; }
+                { name = "diag-codes"; }
+                { name = "async_path"; }
+                { name = "buffer"; }
+                { name = "luasnip"; }
+                #TODO: https://github.com/lukas-reineke/cmp-rg?tab=readme-ov-file
+                #TODO: https://github.com/tzachar/cmp-ai
+                { name = "emoji"; }
+                { name = "cmdline"; }
+                #TODO: cmp-tw2css does not exist on nixvim?
+              ];
+              snippet = {
+                expand = "luasnip";
+              };
+              window = {
+                completion = {
+                  border = "solid";
+                };
+                documentation = {
+                  border = "solid";
+                };
+              };
+              mapping = {
+                "<C-j>" = "cmp.mapping.select_next_item()";
+                "<C-k>" = "cmp.mapping.select_prev_item()";
+                "<C-e>" = "cmp.mapping.abort()";
+                "<C-b>" = "cmp.mapping.scroll_docs(-4)";
+                "<C-f>" = "cmp.mapping.scroll_docs(4)";
+                "<C-Space>" = "cmp.mapping.complete()";
+                "<CR>" = "cmp.mapping.confirm({ select = true })";
+              };
+            };
+            #TODO
+            # settings.sorting = {
+            #   comparators = [
+            #     ''function(...) return cmp_buffer:compare_locality(...) end''
+            #   ];
+            # };
+            #cmdline = {
+            #  #TODO: https://github.com/hrsh7th/cmp-cmdline
+            #};
+          };
+
           commentary.enable = true;
           bufferline = {
             enable = true;
@@ -659,11 +755,6 @@ in
             };
           };
           nix.enable = true;
-          schemastore = {
-            enable = true;
-            yaml.enable = true;
-            json.enable = false;
-          };
           #TODO: noice for toolwindows?
           oil.enable = true; # TODO
           indent-blankline.enable = true;
