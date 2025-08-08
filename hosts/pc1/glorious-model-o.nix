@@ -27,26 +27,28 @@ let
   };
 in
 {
-  environment.systemPackages = with pkgs; [
-    # if you try to change your mouse settings with this you will likely brick your mouse :)
-    # gloriousctl
-    libratbag
-    piper
-    usbutils
+  # WIP
 
-    #TODO: try out https://github.com/dkbednarczyk/mxw
+  #environment.systemPackages = with pkgs; [
+  #  # if you try to change your mouse settings with this you will likely brick your mouse :)
+  #  # gloriousctl
+  #  libratbag
+  #  piper
+  #  usbutils
 
-    #TODO: try wineWrapping the Windows Application: https://discourse.nixos.org/t/what-is-your-approach-to-packaging-wine-applications-with-nix-derivations/12799
-  ];
+  #  #TODO: try out https://github.com/dkbednarczyk/mxw
 
-  services.ratbagd.enable = true;
+  #  #TODO: try wineWrapping the Windows Application: https://discourse.nixos.org/t/what-is-your-approach-to-packaging-wine-applications-with-nix-derivations/12799
+  #];
 
-  services.udev.extraRules = ''
-    # Glorious mice
-    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0027", MODE="0666"
-    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0033", MODE="0666"
-    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0036", MODE="0666"
-  '';
+  #services.ratbagd.enable = true;
+
+  #services.udev.extraRules = ''
+  #  # Glorious mice
+  #  SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0027", MODE="0666"
+  #  SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0033", MODE="0666"
+  #  SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0036", MODE="0666"
+  #'';
 
   # systemd.services.ratbagd.enable = true;
 }

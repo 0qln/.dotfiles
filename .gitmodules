@@ -1,3 +1,6 @@
 [submodule "users/oq/nvim"]
 	path = users/oq/nvim
 	url = https://github.com/0qln/nvim
+[submodule "users/oq/rofi/rofi-themes-collection"]
+	path = users/oq/rofi/rofi-themes-collection
+	url = https://github.com/newmanls/rofi-themes-collection

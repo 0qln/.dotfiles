@@ -2,6 +2,7 @@
   options,
   config,
   pkgs,
+  host-name,
   ...
 }:
 let
@@ -160,18 +161,34 @@ in
       "$mainMod, P, pseudo"
       "$mainMod, J, togglesplit"
       "$mainMod, O, exec, obsidian"
-      "$mainMod, F, exec, firefox"
+      # "$mainMod, F, exec, firefox"
       "$mainMod, Z, exec, zen"
       #TODO: either replace with zen instance with todoist, or inject transparency css...
       "$mainMod, T, exec, todoist-electron"
       "CTRL, SPACE, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
       "$mainMod, B, exec, $terminal -e bluetoothctl"
+
       # using dispatchers here, since setting the window rules for zen does not work...
-      "$mainMod, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"
+      # "$mainMod, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"
       #  # && sleep 1 && hyprctl dispatch movewindow mon:${monitors.left} && hyprctl dispatch pseudo && hyprctl dispatch resizeactive exact 80% 30%
       # "$mainMod ALT, M, "
       # "$mainMod ALT, M, "
       # "$mainMod ALT, M, "
+      # hyprland can't handle zen so we using an electron app grahh
+      "$mainMod, M, exec, youtube-music"
+
+      # app/window search bar
+      "$mainMod, SPACE, exec, rofi -show combi -modes combi -combi-modes \"window,run,drun\""
+
+      # file searchbar
+      "$mainMod, F, exec, rofi -show filebrowser"
+
+      # ssh connections search bar
+      "$mainMod, S, exec, rofi -show ssh"
+
+      # rebuild current dotfiles
+      # does not work for whatever reason...
+      # "$mainMod, N, exec, [float; center; size 50% 50%] $terminal -e bash -c 'cd ~/.dotfiles && git add . && sudo nixos-rebuild switch --flake ~/.dotfiles#${host-name} ; exec bash'"
 
       # Focus movement
       "ALT SHIFT, H, movefocus, l"
@@ -244,7 +261,11 @@ in
 
       "float, title:todoist-quick-add"
 
-      "tag +music, title:.*YouTube Music.*"
+      "float, title:Open Files"
+      "center, title:Open Files"
+
+      "tag +music, title:(?i).*youtube[-_ ]?music.*"
+      "size 918 536, tag:music"
       "pseudo, tag:music"
       "monitor ${monitors.left}, tag:music"
 

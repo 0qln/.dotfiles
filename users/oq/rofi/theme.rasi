@@ -1,0 +1,5 @@
+@import "~/.config/rofi/rofi-themes-collection/themes/rounded-nord-dark.rasi"
+
+window {
+    transparency: "real";
+}

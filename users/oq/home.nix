@@ -58,6 +58,8 @@ in
         ./git
         ./lf
         ./todoist
+        ./youtube-music
+        ./rofi
       ];
 
       home.packages = with pkgs; [
@@ -103,6 +105,11 @@ in
         wallust
       ];
 
+      # direnv
+      programs.direnv = {
+        enable = true;
+      };
+
       # Configure neovim.
 
       # just in case i want to do it via copying my lua config again:
@@ -137,6 +144,22 @@ in
         };
 
         keymaps = [
+          {
+            action = ">gv";
+            key = ">";
+            mode = [ "v" ];
+          }
+          {
+            action = "<gv";
+            key = "<";
+            mode = [ "v" ];
+          }
+          # # cmp for : or / or ? modes
+          # {
+          #   action = "<cmd>lua require('cmp').mapping.confirm({ select = true })<cr>";
+          #   key = "<tab>";
+          #   mode = [ "c" ];
+          # }
           # oil mapping for file tree
           {
             action = ":Oil<CR>";
@@ -282,22 +305,35 @@ in
           }
           # Buffers
           {
-            action = ":BufferLineCycleNext<CR>";
-            key = "L";
+            action = "<cmd>bnext<CR>";
+            key = "<S-l>";
             options = {
               silent = true;
               noremap = true;
               desc = "Next buffer";
             };
           }
-
           {
-            action = ":BufferLineCyclePrev<CR>";
-            key = "H";
+            action = "<cmd>bprev<CR>";
+            key = "<S-h>";
             options = {
               silent = true;
               noremap = true;
               desc = "Prev buffer";
+            };
+          }
+          {
+            action = "<cmd>e #<cr>";
+            key = "<leader>bb";
+            options = {
+              desc = "Switch to other buffer";
+            };
+          }
+          {
+            action = "<cmd>bd<cr>";
+            key = "<leader>bd";
+            options = {
+              desc = "Close current buffer";
             };
           }
 
@@ -355,28 +391,9 @@ in
               desc = "Open trouble diagnostics";
             };
           }
-          #TODO copy these? what's the diff to my <leader>dj/k ?
-          /*
-            {
-              mode = "n";
-              key = "[c";
-              action = ":lua require('trouble').next {skip_groups = true, jump = true }<CR>";
-              options = {
-                desc = "Trouble next";
-              };
-            }
-            {
-              mode = "n";
-              key = "]c";
-              action = ":lua require('trouble').prev {skip_groups = true, jump = true }<CR>";
-              options = {
-                desc = "Trouble prev";
-              };
-            }
-          */
           #DAP
           {
-            key = "<leader>b";
+            key = "<leader>db";
             action = ":DapToggleBreakpoint<CR>";
             options = {
               silent = true;
@@ -385,7 +402,7 @@ in
             };
           }
           {
-            key = "<leader>B";
+            key = "<leader>dB";
             action = ":DapClearBreakpoints<CR>";
             options = {
               silent = true;
@@ -531,6 +548,9 @@ in
             enable = true;
             autoEnableSources = true;
             settings = {
+              performance = {
+                maxViewEntries = 8;
+              };
               sources = [
                 # sources: https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
                 { name = "nvim_lsp"; }
@@ -565,8 +585,7 @@ in
                 "<C-e>" = "cmp.mapping.abort()";
                 "<C-b>" = "cmp.mapping.scroll_docs(-4)";
                 "<C-f>" = "cmp.mapping.scroll_docs(4)";
-                "<C-Space>" = "cmp.mapping.complete()";
-                "<CR>" = "cmp.mapping.confirm({ select = true })";
+                "<tab>" = "cmp.mapping.confirm({ select = true })";
               };
             };
             #TODO
@@ -779,6 +798,7 @@ in
               ];
               file_ignore_patterns = [
                 "^.git/"
+                "flake.lock"
               ];
               set_env.COLORTERM = "truecolor";
             };
