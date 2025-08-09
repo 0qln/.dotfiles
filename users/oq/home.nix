@@ -64,6 +64,7 @@ in
         ./youtube-music
         ./rofi
         ./starship
+        ./kitty
       ];
 
       home.packages = with pkgs; [
@@ -946,6 +947,7 @@ in
           background_opacity = 0.5;
           font_family = "VictorMono Nerd Font";
         };
+        themeFile = "Catppuccin-Mocha";
       };
 
       # workaround for making the config writable:
