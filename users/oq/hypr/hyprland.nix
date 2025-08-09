@@ -178,10 +178,10 @@ in
       "$mainMod, M, exec, youtube-music"
 
       # app/window search bar
-      "$mainMod, SPACE, exec, rofi -show combi -modes combi -combi-modes \"window,run,drun\""
+      "$mainMod, SPACE, exec, rofi -show combi -modes \"combi,ssh,recursivebrowser\" -combi-modes \"window,run,drun\""
 
       # file searchbar
-      "$mainMod, F, exec, rofi -show filebrowser"
+      "$mainMod, F, exec, rofi -show recursivebrowser"
 
       # ssh connections search bar
       "$mainMod, S, exec, rofi -show ssh"

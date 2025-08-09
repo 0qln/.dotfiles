@@ -8,8 +8,4 @@
     source = ../rofi;
     recursive = true;
   };
-  home.file.".config/rofi/rofi-themes-collection" = {
-    source = ../rofi/rofi-themes-collection;
-    recursive = true;
-  };
 }
