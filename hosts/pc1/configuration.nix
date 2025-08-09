@@ -16,6 +16,11 @@
       "nerd-font-symbols"
       "catppuccin-powerline"
     ];
+    settings = {
+      cmd_duration = {
+        disabled = true;
+      };
+    };
   };
 
   # Set your time zone.
