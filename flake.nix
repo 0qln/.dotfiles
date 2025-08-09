@@ -26,8 +26,8 @@
     # nixvim, does not follow global nixpkgs.
     # Or does it? https://nix-community.github.io/nixvim/user-guide/install.html is
     # unclear about this
-    nixvim.url = "github:nix-community/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    # on unstable luajit tests are failing, so lets pin to stable 🐛
+    nixvim.url = "github:nix-community/nixvim/nixos-25.05";
   };
 
   outputs =

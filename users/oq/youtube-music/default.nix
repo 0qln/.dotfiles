@@ -4,16 +4,14 @@
     youtube-music
   ];
 
-  nixpkgs.overlays = [
-    (
-      final: prev:
-      prev.youtube-music.override {
-        patches = [
-
-        ];
-      }
-    )
-  ];
+  # nixpkgs.overlays = [
+  #   (
+  #     final: prev:
+  #     prev.youtube-music.override {
+  #       patches = [ ./transparency.patch ];
+  #     }
+  #   )
+  # ];
 
   home.file.".config/ytm/stylesheet.css" = {
     text = ''

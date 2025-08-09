@@ -25,6 +25,7 @@ in
   # https://nix-community.github.io/home-manager/index.xhtml#sec-install-nixos-module
   # https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
   # https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix
+  # https://home-manager-options.extranix.com/
   home-manager.users.oq =
     {
       pkgs,
@@ -42,6 +43,8 @@ in
       userRuntimeDir = "/run/user/${toString sysConfig.users.users.${config.home.username}.uid}";
     in
     {
+      nixpkgs.config.allowUnfree = true;
+
       sops = {
         defaultSopsFormat = "yaml";
         age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
@@ -60,6 +63,7 @@ in
         ./todoist
         ./youtube-music
         ./rofi
+        ./starship
       ];
 
       home.packages = with pkgs; [
@@ -103,6 +107,8 @@ in
         imagemagick
 
         wallust
+
+        nerd-fonts.victor-mono
       ];
 
       # direnv
@@ -136,7 +142,8 @@ in
         vimdiffAlias = true;
         defaultEditor = true;
 
-        extraPackages = [ ];
+        # extraPackages = with pkgs.vimPlugins; [ tokyonight-nvim ];
+        colorschemes.kanagawa.enable = true;
 
         globals = {
           mapleader = " ";
@@ -499,6 +506,21 @@ in
           )
 
 
+          -- tab indent colors
+          -- #TODO: make work with half-opaque colors
+          local highlight = {
+              "CursorColumn",
+              "Whitespace",
+          }
+          require("ibl").setup {
+              indent = { highlight = highlight, char = "" },
+              whitespace = {
+                  highlight = highlight,
+                  remove_blankline_trail = false,
+              },
+              scope = { enabled = false },
+          }
+
           -- cmp
 
           local cmp = require'cmp'
@@ -585,7 +607,8 @@ in
                 "<C-e>" = "cmp.mapping.abort()";
                 "<C-b>" = "cmp.mapping.scroll_docs(-4)";
                 "<C-f>" = "cmp.mapping.scroll_docs(4)";
-                "<tab>" = "cmp.mapping.confirm({ select = true })";
+                "<tab>" = "cmp.mapping.confirm({ select = false })";
+                "<S-enter>" = "cmp.mapping.confirm({ select = true })";
               };
             };
             #TODO
@@ -776,7 +799,10 @@ in
           nix.enable = true;
           #TODO: noice for toolwindows?
           oil.enable = true; # TODO
-          indent-blankline.enable = true;
+          indent-blankline = {
+            enable = true;
+            settings = { };
+          };
           telescope = {
             enable = true;
             extensions = {
@@ -842,7 +868,6 @@ in
         highlight.Todo = {
           # todo: replace with wallust scheme color
           fg = "Tomato";
-          bg = "Yellow";
         };
 
         match.TODO = "TODO";
@@ -897,6 +922,8 @@ in
         initExtra = ''
           export EDITOR="nvim"
           # wallust run ${toString ./wallpapers/wallhaven-zygxxo.jpg}
+
+          alias cdf='cd $(fd --hidden --type d | fzf)'
         '';
       };
 
@@ -918,6 +945,7 @@ in
         enable = true;
         settings = {
           background_opacity = 0.5;
+          font_family = "VictorMono Nerd Font";
         };
       };
 
