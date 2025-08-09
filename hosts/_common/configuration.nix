@@ -3,9 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  config,
   pkgs,
-  home-manager,
   host-name,
   ...
 }:
@@ -35,7 +33,6 @@
     wget
     age
     jq
-    xdg-utils
   ];
 
   # This value determines the NixOS release from which the default

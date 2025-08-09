@@ -46,7 +46,7 @@
       nixosConfigurations."pc1" = lib.nixosSystem {
         specialArgs = {
           inherit inputs;
-          inherit self;
+          flake = self;
           host-name = "pc1";
         };
         system = "x86_64-linux";
