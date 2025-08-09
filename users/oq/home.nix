@@ -142,8 +142,7 @@ in
         vimdiffAlias = true;
         defaultEditor = true;
 
-        # extraPackages = with pkgs.vimPlugins; [ tokyonight-nvim ];
-        colorschemes.kanagawa.enable = true;
+        colorschemes.catppuccin.enable = true;
 
         globals = {
           mapleader = " ";
