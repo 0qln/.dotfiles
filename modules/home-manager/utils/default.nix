@@ -8,6 +8,16 @@
   ...
 }:
 rec {
+  # workaround for making the config writable:
+  # while this works... it is incredibly ugly :(
+  # home.activation = {
+  # replaceWithTarget = lib.hm.dag.entryAfter [ "writeBoundry" ] ''
+  #   run cp -RL "${config.xdg.configHome}/todoist" "${config.xdg.configHome}/todoist.contents"
+  #   run rm -rf "${config.xdg.configHome}/todoist"
+  #   run mv "${config.xdg.configHome}/todoist.contents" "${config.xdg.configHome}/todoist"
+  #   run chmod 755 "${config.xdg.configHome}/todoist"
+  #   run chmod 600 "${config.xdg.configHome}/todoist/config.json"
+
   #mkSecretLink =
   #  {
   #    # the secret file. can also contain a path e.g. todoist/todoist-token

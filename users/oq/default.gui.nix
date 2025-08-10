@@ -1,6 +1,6 @@
 { ... }: {
     imports = [
         ./user.nix
-        ./home.nix
+        ./home.gui.nix
     ];
 }

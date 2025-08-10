@@ -1,11 +1,13 @@
 keys:
-  - &server age13ygw3n6x7hph9q5e6zhwwcel32r2lg2ut93ssuj4r79jddx6yspsnrzjvs
-  - &oq age1pj67hxfxw000d2c7qxpq53pyumk6chsxarf2lgvt9r2x8xyd5g8syhd7pc
-  - &pc1 age1akdvdtgd835g84xgyjz377wyw93azvglvggl5aas62z50xpcpatscc58a6
+  - &lifbrasir age13ygw3n6x7hph9q5e6zhwwcel32r2lg2ut93ssuj4r79jddx6yspsnrzjvs
+  - &oq age1akdvdtgd835g84xgyjz377wyw93azvglvggl5aas62z50xpcpatscc58a6
 creation_rules:
+  - path_regex: ^users/oq/.*secrets.*$
+    key_groups:
+      - age:
+          - *oq
   - path_regex: secrets.*$
     key_groups:
       - age:
-          - *server
+          - *lifbrasir
           - *oq
-          - *pc1

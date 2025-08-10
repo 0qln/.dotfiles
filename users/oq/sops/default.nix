@@ -1,8 +1,17 @@
-args@{ config, pkgs, ... }:
+args@{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   inherit (args.utils args) userRuntimeDir;
 in
-  {
+{
+  imports = [
+    inputs.sops-nix.homeManagerModules.sops
+  ];
+
   home.packages = with pkgs; [
     sops
   ];

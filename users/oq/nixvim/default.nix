@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }:
 {
@@ -21,6 +22,10 @@
 
   # in case i want to do lazy loading some day:
   #   - https://github.com/nvim-neorocks/lz.n
+
+  imports = [
+    inputs.nixvim.homeModules.nixvim
+  ];
 
   home.packages = with pkgs; [
     deadnix

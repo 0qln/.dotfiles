@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, host-name, ... }:
 let
-  monitors = import ../../../hosts/pc1/monitors.nix { };
+  monitors = import ../../../hosts/${host-name}/monitors.nix { };
 in
 {
   # docs:
