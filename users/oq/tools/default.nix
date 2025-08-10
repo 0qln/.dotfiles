@@ -13,5 +13,8 @@
     mpv
     imagemagick
     qimgv
+
+    # networking
+    iperf3
   ];
 }

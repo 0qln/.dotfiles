@@ -7,7 +7,12 @@
 {
   imports = [
     ../../modules/home-manager
+    ../../modules/avahi
   ];
+
+  security.sudo.extraConfig = ''
+    Defaults env_keep += "SSH_AUTH_SOCK"
+  '';
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
