@@ -24,7 +24,7 @@
       secrets-env = ./obsidian-livesync/secrets.couchdb.env;
     })
 
-    # ../../services/database
+    ../../services/database
 
     (import ../../services/nextcloud {
       dbpassFile = ./nextcloud/secrets.dbpassFile;
