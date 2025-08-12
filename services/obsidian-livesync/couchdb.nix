@@ -1,5 +1,8 @@
 {
   serviceName,
+  secrets-env,
+}:
+{
   config,
   lib,
   pkgs,
@@ -18,7 +21,7 @@ let
   initScript = pkgs.callPackage ./couchdb-init.nix { };
   initStateFile = "/var/lib/couchdb/.couchdb-initialized";
 in
-secrets-env: {
+{
   config = lib.mkIf config.services.${serviceName}.enable {
     environment.systemPackages = with pkgs; [ couchdb3 ];
 

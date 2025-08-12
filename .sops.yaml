@@ -6,8 +6,11 @@ creation_rules:
     key_groups:
       - age:
           - *oq
-  - path_regex: secrets.*$
+  - path_regex: ^hosts/lif/.*secrets.*$
+    key_groups:
+      - age:
+          - *oq
+  - path_regex: ^hosts/lifbrasir/.*secrets.*$
     key_groups:
       - age:
           - *lifbrasir
-          - *oq

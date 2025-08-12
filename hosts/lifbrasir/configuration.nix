@@ -15,25 +15,39 @@
 
     ../../services/ssh
     ../../services/dashboard
-    # (import ../../services/todoist-backup ./todoist-backup/secrets.env)
-    # (import ../../services/obsidian-livesync ./obsidian-livesync/secrets.couchdb.env)
+
+    (import ../../services/todoist-backup {
+      secrets-env = ./todoist-backup/secrets.env;
+    })
+
+    (import ../../services/obsidian-livesync {
+      secrets-env = ./obsidian-livesync/secrets.couchdb.env;
+    })
+
+    # ../../services/database
+
+    (import ../../services/nextcloud {
+      dbpassFile = ./nextcloud/secrets.dbpassFile;
+      dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
+      adminpassFile = ./nextcloud/secrets.adminpassFile;
+    })
   ];
 
-  # services = {
+  services = {
 
-  #   todoist-backup = {
-  #     enable = true;
-  #   };
+    todoist-backup = {
+      enable = true;
+    };
 
-  #   dashboard = {
-  #     enable = true;
-  #   };
+    dashboard = {
+      enable = true;
+    };
 
-  #   obsidian-livesync = {
-  #     enable = true;
-  #   };
+    obsidian-livesync = {
+      enable = true;
+    };
 
-  # };
+  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";

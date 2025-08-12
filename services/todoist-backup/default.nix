@@ -1,4 +1,7 @@
 {
+  secrets-env,
+}:
+{
   config,
   lib,
   pkgs,
@@ -14,7 +17,7 @@ let
     inherit servicePkgs;
   };
 in
-secrets-env: {
+{
   options.services.${serviceName} = {
     enable = lib.mkEnableOption "Todoist backup service";
   };
