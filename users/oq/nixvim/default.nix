@@ -552,7 +552,6 @@
         };
       };
       gitblame.enable = true;
-      # hardtime.enable = true;
       none-ls = {
         enable = true;
         enableLspFormat = true;
