@@ -84,7 +84,11 @@ in
       };
       settings = {
         default_phone_region = "DE";
-        trusted_domains = [ "192.168.178.50" ];
+        trusted_domains = [
+          "192.168.178.50"
+          "lifbrasir"
+          "0qln.duckdns.org"
+        ];
       };
     };
 

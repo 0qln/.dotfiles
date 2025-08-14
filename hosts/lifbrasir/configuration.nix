@@ -31,6 +31,11 @@
       dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
       adminpassFile = ./nextcloud/secrets.adminpassFile;
     })
+
+    (import ../../services/dynIp-updater-duckdns {
+      tokenFile = ./duckdns/secrets.token;
+      domains = [ "0qln" ];
+    })
   ];
 
   services = {
