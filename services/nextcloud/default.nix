@@ -16,6 +16,7 @@ let
   dbUser = "nextcloud";
   serviceName = "nextcloud";
   storagePath = "/mnt/store-1/services/nextcloud";
+  hostName = "nextcloud.${fqdn}";
 in
 {
   imports = [
@@ -59,90 +60,96 @@ in
         format = "binary";
       };
 
-      "${serviceName}/duckdnsToken" = {
-        sopsFile = duckdnsTokenFile;
-        mode = "0400"; # TODO: set user:group and more restricted
-        format = "binary";
-      };
+      # "${serviceName}/duckdnsToken" = {
+      #   sopsFile = duckdnsTokenFile;
+      #   mode = "0400"; # TODO: set user:group and more restricted
+      #   format = "binary";
+      # };
     };
 
-    # TODO:
-    # no idea why this does not work...
-    # error is something about not being able to reach duckdns with UDP...
-    # docs:
-    # - https://go-acme.github.io/lego/dns/#configuration-and-credentials
-    # - https://go-acme.github.io/lego/dns/duckdns/
-    # - https://www.duckdns.org/spec.jsp
-    #
-    # security.acme = {
-    #   certs."0qln.duckdns.org" = {
-    #     dnsProvider = "duckdns";
-    #     environmentFile = "${pkgs.writeText "duckdns-creds" ''
-    #       DUCKDNS_TOKEN_FILE=${config.sops.secrets."${serviceName}/duckdnsToken".path}
-    #     ''}";
-    #   };
-    # };
+    services = {
 
-    services.nginx.virtualHosts.${fqdn} = {
-      enableACME = true;
-      forceSSL = true;
-      # useACMEHost = "0qln.duckdns.org";
-    };
+      # TODO:
+      # no idea why this does not work...
+      # error is something about not being able to reach duckdns with UDP...
+      # docs:
+      # - https://go-acme.github.io/lego/dns/#configuration-and-credentials
+      # - https://go-acme.github.io/lego/dns/duckdns/
+      # - https://www.duckdns.org/spec.jsp
+      #
+      # TODO: if you ever try this again: remember to update the target fqdn from ${fqdn} to ${hostName}
+      #
+      # security.acme = {
+      #   certs."0qln.duckdns.org" = {
+      #     dnsProvider = "duckdns";
+      #     environmentFile = "${pkgs.writeText "duckdns-creds" ''
+      #       DUCKDNS_TOKEN_FILE=${config.sops.secrets."${serviceName}/duckdnsToken".path}
+      #     ''}";
+      #   };
+      # };
 
-    services.nextcloud = {
-      enable = true;
-      package = pkgs.nextcloud31;
-      hostName = fqdn;
-      home = storagePath;
-      database.createLocally = false;
-      enableImagemagick = true;
-      https = true;
-      extraAppsEnable = true;
-      extraApps = {
-        # TODO
-
+      nginx.virtualHosts.${hostName} = {
+        enableACME = true;
+        forceSSL = true;
+        # useACMEHost = "0qln.duckdns.org";
       };
-      appstoreEnable = true;
-      autoUpdateApps = {
+
+      nextcloud = {
         enable = true;
-        startAt = "Sun 13:00:00";
+        package = pkgs.nextcloud31;
+        inherit hostName;
+        home = storagePath;
+        database.createLocally = false;
+        enableImagemagick = true;
+        https = true;
+        extraAppsEnable = true;
+        extraApps = {
+          # TODO
+
+        };
+        appstoreEnable = true;
+        autoUpdateApps = {
+          enable = true;
+          startAt = "Sun 13:00:00";
+        };
+        config = {
+
+          dbtype = "mysql";
+          dbname = "nextcloud";
+
+          dbuser = dbUser;
+          dbpassFile = "/run/secrets/${serviceName}/dbpass";
+
+          dbhost = "localhost:3306";
+          adminuser = "root";
+          adminpassFile = "/run/secrets/${serviceName}/adminpass";
+        };
+        settings = {
+          default_phone_region = "DE";
+          trusted_domains = [
+            "192.168.178.50"
+            "lifbrasir"
+            fqdn
+            hostName
+          ];
+        };
       };
-      config = {
 
-        dbtype = "mysql";
-        dbname = "nextcloud";
-
-        dbuser = dbUser;
-        dbpassFile = "/run/secrets/${serviceName}/dbpass";
-
-        dbhost = "localhost:3306";
-        adminuser = "root";
-        adminpassFile = "/run/secrets/${serviceName}/adminpass";
-      };
-      settings = {
-        default_phone_region = "DE";
-        trusted_domains = [
-          "192.168.178.50"
-          "lifbrasir"
-          fqdn
+      mysql = {
+        ensureDatabases = [ "nextcloud" ];
+        ensureUsers = [
+          {
+            name = dbUser;
+            ensurePermissions = {
+              "nextcloud.*" = "ALL PRIVILEGES";
+            };
+          }
         ];
       };
     };
 
     users.users.${dbUser} = {
       hashedPasswordFile = "/run/secrets-for-users/${serviceName}/dbpassHashed";
-    };
-
-    services.mysql = {
-      ensureDatabases = [ "nextcloud" ];
-      ensureUsers = [
-        {
-          name = dbUser;
-          ensurePermissions = {
-            "nextcloud.*" = "ALL PRIVILEGES";
-          };
-        }
-      ];
     };
   };
 }
