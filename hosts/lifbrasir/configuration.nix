@@ -24,12 +24,12 @@
       secrets-env = ./obsidian-livesync/secrets.couchdb.env;
     })
 
-    ../../services/database
-
     (import ../../services/nextcloud {
       dbpassFile = ./nextcloud/secrets.dbpassFile;
       dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
       adminpassFile = ./nextcloud/secrets.adminpassFile;
+      fqdn = "0qln.duckdns.org";
+      duckdnsTokenFile = ./duckdns/secrets.token;
     })
 
     (import ../../services/dynIp-updater-duckdns {

@@ -2,6 +2,8 @@
   adminpassFile,
   dbpassFile,
   dbpassFileHashed,
+  fqdn,
+  duckdnsTokenFile,
 }:
 {
   config,
@@ -18,14 +20,19 @@ in
 {
   imports = [
     ../database
+    ../acme
   ];
 
   config = {
-
-    networking.firewall.allowedTCPPorts = [
-      443
-      80
-    ];
+    networking.firewall = {
+      allowedTCPPorts = [
+        443
+        80
+      ];
+      allowedUDPPorts = [
+        53
+      ];
+    };
 
     sops.secrets = {
 
@@ -51,15 +58,45 @@ in
         mode = "0400";
         format = "binary";
       };
+
+      "${serviceName}/duckdnsToken" = {
+        sopsFile = duckdnsTokenFile;
+        mode = "0400"; # TODO: set user:group and more restricted
+        format = "binary";
+      };
+    };
+
+    # TODO:
+    # no idea why this does not work...
+    # error is something about not being able to reach duckdns with UDP...
+    # docs:
+    # - https://go-acme.github.io/lego/dns/#configuration-and-credentials
+    # - https://go-acme.github.io/lego/dns/duckdns/
+    # - https://www.duckdns.org/spec.jsp
+    #
+    # security.acme = {
+    #   certs."0qln.duckdns.org" = {
+    #     dnsProvider = "duckdns";
+    #     environmentFile = "${pkgs.writeText "duckdns-creds" ''
+    #       DUCKDNS_TOKEN_FILE=${config.sops.secrets."${serviceName}/duckdnsToken".path}
+    #     ''}";
+    #   };
+    # };
+
+    services.nginx.virtualHosts.${fqdn} = {
+      enableACME = true;
+      forceSSL = true;
+      # useACMEHost = "0qln.duckdns.org";
     };
 
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud31;
-      hostName = "localhost";
+      hostName = fqdn;
       home = storagePath;
       database.createLocally = false;
       enableImagemagick = true;
+      https = true;
       extraAppsEnable = true;
       extraApps = {
         # TODO
@@ -87,7 +124,7 @@ in
         trusted_domains = [
           "192.168.178.50"
           "lifbrasir"
-          "0qln.duckdns.org"
+          fqdn
         ];
       };
     };
