@@ -22,6 +22,7 @@
 
     (import ../../services/obsidian-livesync {
       secrets-env = ./obsidian-livesync/secrets.couchdb.env;
+      fqdn = "0qln.duckdns.org";
     })
 
     (import ../../services/nextcloud {

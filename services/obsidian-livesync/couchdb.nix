@@ -1,6 +1,7 @@
 {
   serviceName,
   secrets-env,
+  fqdn,
 }:
 {
   config,
@@ -16,7 +17,8 @@ let
   # https://www.youtube.com/watch?v=7sa_I1832Xc
   couchdbUser = "couchdb";
   secretsName = "${serviceName}.couchdb";
-  address = "127.0.0.1";
+  address = "localhost";
+  hostName = "couchdb.${fqdn}";
   port = 5984;
   initScript = pkgs.callPackage ./couchdb-init.nix { };
   initStateFile = "/var/lib/couchdb/.couchdb-initialized";
@@ -32,6 +34,12 @@ in
       mode = "0400";
       format = "dotenv";
       restartUnits = [ "couchdb.service" ];
+    };
+
+    services.nginx.virtualHosts.${hostName} = {
+      locations."/" = {
+        proxyPass = "http://${address}:${(toString port)}";
+      };
     };
 
     networking.firewall.allowedTCPPorts = [ port ];
@@ -51,7 +59,7 @@ in
       user = couchdbUser;
       group = couchdbUser;
       bindAddress = address;
-      port = port;
+      inherit port;
     };
 
     systemd.services.couchdb-init = {
