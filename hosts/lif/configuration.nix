@@ -13,6 +13,11 @@
 
     ../../modules/hypr
 
+    (import ../../services/flake-upgrader {
+      flakeDir = "/home/oq/.dotfiles";
+      mode = "boot";
+    })
+
     # tmp:
     ./starship.nix
   ];

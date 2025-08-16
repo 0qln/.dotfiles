@@ -40,6 +40,10 @@
       tokenFile = ./duckdns/secrets.token;
       domains = [ "0qln" ];
     })
+
+    (import ../../services/flake-upgrader {
+      flakeDir = "/root/.dotfiles";
+    })
   ];
 
   services = {

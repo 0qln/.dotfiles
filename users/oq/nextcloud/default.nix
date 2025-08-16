@@ -2,6 +2,7 @@
 {
   services.nextcloud-client = {
     enable = true;
+    startInBackground = true;
   };
 
   # This is super laggy, so let's just give up on using
