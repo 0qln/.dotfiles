@@ -20,11 +20,14 @@
       secrets-env = ./todoist-backup/secrets.env;
     })
 
+    # https://couchdb.0qln.duckdns.org/_utils/index.html#
     (import ../../services/obsidian-livesync {
       secrets-env = ./obsidian-livesync/secrets.couchdb.env;
       fqdn = "0qln.duckdns.org";
+      configFilePath = ./obsidian-livesync/secrets.couchdb.local-ini;
     })
 
+    # https://nextcloud.0qln.duckdns.org
     (import ../../services/nextcloud {
       dbpassFile = ./nextcloud/secrets.dbpassFile;
       dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;

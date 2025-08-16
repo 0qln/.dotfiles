@@ -1,6 +1,7 @@
 {
   secrets-env,
   fqdn,
+  configFilePath,
 }:
 {
   lib,
@@ -16,6 +17,13 @@ in
   };
 
   imports = [
-    (import ./couchdb.nix { inherit serviceName fqdn secrets-env; })
+    (import ./couchdb.nix {
+      inherit
+        serviceName
+        fqdn
+        secrets-env
+        configFilePath
+        ;
+    })
   ];
 }
