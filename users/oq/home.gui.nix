@@ -9,6 +9,7 @@
         ./fonts
         ./hypr
         ./kitty
+        ./nextcloud
         ./obsidian
         ./rofi
         ./secrets
