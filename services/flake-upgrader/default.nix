@@ -26,7 +26,7 @@ in
       #!${pkgs.bash}/bin/sh
       cd ${flakeDir}
       su ${gitUser} -c "git fetch && git pull && git add . "
-      nix flake update
+      su ${gitUser} -c "nix flake update"
       nixos-rebuild ${mode} --flake ${flakeDir}?submodules=1#${host-name} --max-jobs 1
     '';
   };

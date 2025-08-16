@@ -44,6 +44,9 @@
     (import ../../services/flake-upgrader {
       flakeDir = "/root/.dotfiles";
     })
+
+    (import ../../services/nixos-garbage-disposal {
+    })
   ];
 
   services = {

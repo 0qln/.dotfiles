@@ -18,6 +18,9 @@
       mode = "boot";
     })
 
+    (import ../../services/nixos-garbage-disposal {
+    })
+
     # tmp:
     ./starship.nix
   ];
