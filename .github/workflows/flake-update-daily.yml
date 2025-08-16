@@ -21,5 +21,8 @@ jobs:
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@main
         with:
+          pr-labels: |                  # Labels to be set on the PR
+            dependencies
+            automated
           inputs: zen-browser
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
