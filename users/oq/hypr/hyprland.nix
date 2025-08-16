@@ -270,6 +270,11 @@ in
       "pseudo, tag:music"
       "monitor ${monitors.left}, tag:music"
 
+      # chromium popups
+      "tag +chromium_popup, title: about:blank - Chromium"
+      "float, tag:chromium_popup"
+      "center, tag:chromium_popup"
+      "size 900 900, tag:chromium_popup"
     ];
     # windowrule = [
     #   "float,class:^(kitty)$,title:^(kitty)$"

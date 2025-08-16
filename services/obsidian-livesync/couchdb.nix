@@ -86,6 +86,7 @@ in
       # adminPass = initialAdminPass;
       # extraConfig = ''
       # '';
+      #TODO: update this to use the `extraConfigFiles` option.
       configFile = config.sops.secrets."obsidian-livesync/couchdb/local.ini".path;
       user = couchdbUser;
       group = couchdbUser;

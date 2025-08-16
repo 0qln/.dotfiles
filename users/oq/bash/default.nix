@@ -8,6 +8,7 @@
     initExtra = ''
       export EDITOR="nvim"
       alias cdf='cd $(fd --hidden --type d | fzf)'
+      alias ssh='kitten ssh'
     '';
   };
 
