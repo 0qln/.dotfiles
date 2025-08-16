@@ -1,4 +1,4 @@
-name: update-flake-lock
+name: flake-update-weekly
 
 on:
   workflow_dispatch: 
