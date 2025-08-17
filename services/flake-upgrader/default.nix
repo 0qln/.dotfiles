@@ -24,7 +24,6 @@ in
   };
 
   systemd.services.${serviceName} = {
-    wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     description = "Flake update and build the system.";
     serviceConfig = {

@@ -9,7 +9,6 @@ in
 {
   # https://nix.dev/manual/nix/2.18/command-ref/nix-collect-garbage#opt-delete-older-than
   systemd.services.${serviceName} = {
-    wantedBy = [ "multi-user.target" ];
     description = "Garbage disposal for the nix/store";
     serviceConfig = {
       User = "root";

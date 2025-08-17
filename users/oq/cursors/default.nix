@@ -1,7 +1,7 @@
 args@{ pkgs, ... }:
 let
   # change this import to change the cursor
-  cursorPack = utils.mkCursorPack (import ./frieren-winter.nix);
+  cursorPack = utils.mkCursorPack (import ./capitaine-cursors.nix);
   utils = args.utils args;
 in
 {
