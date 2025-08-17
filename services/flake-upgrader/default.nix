@@ -1,7 +1,6 @@
 {
   flakeDir,
   mode ? "rebuild",
-  gitUser ? "oq",
   onCalendar ? "Sat *-*-* 00:00:00",
 }:
 { pkgs, host-name, ... }:
@@ -12,6 +11,17 @@ in
   environment.systemPackages = with pkgs; [
     shadow
   ];
+
+  # does not work with submodules
+
+  programs.git = {
+    enable = true;
+    config = {
+      safe.directory = [
+        flakeDir
+      ];
+    };
+  };
 
   systemd.services.${serviceName} = {
     wantedBy = [ "multi-user.target" ];
@@ -25,9 +35,9 @@ in
     script = ''
       #!${pkgs.bash}/bin/sh
       cd ${flakeDir}
-      su ${gitUser} -c "git fetch && git pull && git add . "
-      su ${gitUser} -c "nix flake update"
-      nixos-rebuild ${mode} --flake ${flakeDir}?submodules=1#${host-name} --max-jobs 1
+      git fetch && git pull && git add .
+      nix flake update
+      nixos-rebuild ${mode} --flake ${flakeDir}?submodules=0#${host-name} --max-jobs 1
     '';
   };
 

@@ -8,6 +8,29 @@
   ...
 }:
 rec {
+  # https://nixos.wiki/wiki/Cursor_Themes
+  mkCursorPack =
+    {
+      url,
+      hash,
+      name,
+    }:
+    {
+      gtk.enable = true;
+      x11.enable = true;
+      inherit name;
+      size = 48;
+      package = pkgs.runCommand "moveUp" { } ''
+        mkdir -p $out/share/icons
+        ln -s ${
+          pkgs.fetchzip {
+            inherit url;
+            inherit hash;
+          }
+        } $out/share/icons/${name}
+      '';
+    };
+
   # workaround for making the config writable:
   # while this works... it is incredibly ugly :(
   # home.activation = {

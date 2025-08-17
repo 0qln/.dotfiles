@@ -6,6 +6,7 @@
       imports = [
         ./home._common.nix
         ./browsers
+        ./cursors
         ./fonts
         ./hypr
         ./kitty
