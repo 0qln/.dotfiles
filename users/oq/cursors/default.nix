@@ -20,7 +20,9 @@ let
 in
 {
   imports = [
+    # (import ./neco-arc { inherit reload-service; })
     (import ./hatsune-miku-cursors { inherit reload-service; })
     ./oneko.nix
+    ./dev.nix
   ];
 }

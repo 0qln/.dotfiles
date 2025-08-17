@@ -41,12 +41,13 @@
       domains = [ "0qln" ];
     })
 
-    (import ../../services/flake-upgrader {
-      flakeDir = "/root/.dotfiles";
-    })
-
-    (import ../../services/nixos-garbage-disposal {
-    })
+    #TODO: these are intested for lifbrasir. test first then activate them.
+    # (import ../../services/flake-upgrader {
+    #   flakeDir = "/root/.dotfiles";
+    # })
+    #
+    # (import ../../services/nixos-garbage-disposal {
+    # })
   ];
 
   services = {

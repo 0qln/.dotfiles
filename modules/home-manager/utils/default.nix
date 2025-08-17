@@ -58,6 +58,62 @@ rec {
       inherit size;
     };
 
+  # Converts a windows pack to linux pack
+  # This currently can only handle .zip files
+  mkCursorPackWin =
+    {
+      url,
+      hash,
+      name,
+      size,
+    }:
+    let
+      # we rename here bc sometimes the name of the download is the url part like "/cursor-downloadset.php?id=neco-arc"
+      # and when that happens the mkDerviation.src fucks itself over
+      winPack = pkgs.runCommand "rename" { } ''
+        mkdir -p $out
+        cp ${
+          pkgs.fetchurl {
+            inherit url;
+            inherit hash;
+          }
+        } $out/winPack.zip
+      '';
+      pack = pkgs.stdenv.mkDerivation {
+        inherit name;
+        src = winPack;
+        buildInputs = with pkgs; [
+          win2xcur
+          unzip
+        ];
+        buildPhase = ''
+          unzip winPack.zip -d winPack
+
+          iconsDir="$out/share/icons/${name}"
+
+          mkdir -p "$iconsDir/cursors"
+          win2xcur winPack/*.{ani,cur} -o "$iconsDir/cursors"
+
+          touch "$iconsDir/index.theme"
+          cat > "$iconsDir/index.theme" << EOF
+          [Icon Theme]
+          Name=${name}
+          EOF
+
+        '';
+        installPhase = ''
+
+        '';
+      };
+    in
+    {
+      gtk.enable = true;
+      x11.enable = true;
+      inherit name;
+      inherit size;
+      package = pack;
+    };
+
   # workaround for making the config writable:
   # while this works... it is incredibly ugly :(
   # home.activation = {
