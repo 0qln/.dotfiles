@@ -8,18 +8,22 @@
   ...
 }:
 rec {
+  # some reading material on fetchers:
+  # https://ryantm.github.io/nixpkgs/builders/fetchers/
+
   # https://nixos.wiki/wiki/Cursor_Themes
   mkCursorPack =
     {
       url,
       hash,
       name,
+      size,
     }:
     {
       gtk.enable = true;
       x11.enable = true;
       inherit name;
-      size = 24;
+      inherit size;
       package = pkgs.runCommand "moveUp" { } ''
         mkdir -p $out/share/icons
         ln -s ${
@@ -29,6 +33,29 @@ rec {
           }
         } $out/share/icons/${name}
       '';
+    };
+
+  mkCursorPackLocal =
+    {
+      url,
+      fileName,
+      archiveHash,
+      packName,
+      packHash,
+      size,
+    }:
+    let
+      archive = pkgs.requireFile {
+        name = fileName;
+        inherit url;
+        sha256 = archiveHash;
+      };
+    in
+    mkCursorPack {
+      url = "file://${toString archive}";
+      hash = packHash;
+      name = packName;
+      inherit size;
     };
 
   # workaround for making the config writable:

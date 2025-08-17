@@ -20,8 +20,7 @@ let
 in
 {
   imports = [
-    (import ./capitaine-cursors-themed.nix { inherit reload-service; })
-    # (import ./vanilla-dmz.nix { inherit reload-service; })
+    (import ./hatsune-miku-cursors { inherit reload-service; })
     ./oneko.nix
   ];
 }
