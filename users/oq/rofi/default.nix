@@ -1,11 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   home.packages = with pkgs; [
     rofi-wayland
   ];
 
   home.file.".config/rofi" = {
-    source = ../rofi;
+    source = config.lib.file.mkOutOfStoreSymlink ./rasi;
     recursive = true;
   };
 }
