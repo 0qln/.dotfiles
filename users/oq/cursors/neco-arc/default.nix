@@ -13,6 +13,9 @@ let
     hash = "sha256-MgEvVB9kWowqfuXC3UJtOFLTpWbWfdSnvNOXdZwqYxM=";
     inherit name;
     inherit size;
+    # nameMap = {
+
+    # }
   };
 in
 {

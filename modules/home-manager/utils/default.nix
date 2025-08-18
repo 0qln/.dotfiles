@@ -66,6 +66,79 @@ rec {
       hash,
       name,
       size,
+      nameMap ? {
+        "normal" = [
+          "left_ptr"
+          "default"
+          "arrow"
+          "top_left_arrow"
+          "left_arrow"
+        ];
+        "help" = [
+          "question_arrow"
+          "help"
+        ];
+        "text" = [
+          "xterm"
+          "text"
+        ];
+        "busy" = [ "watch" ];
+        "work" = [
+          "left_ptr_watch"
+          "half-busy"
+          "progress"
+        ];
+        "vertical" = [
+          "sb_v_double_arrow"
+          "size_ver"
+          "v_double_arrow"
+        ];
+        "horizontal" = [
+          "sb_h_double_arrow"
+          "size_hor"
+          "h_double_arrow"
+        ];
+        "diagonal 1" = [
+          "size_bdiag"
+          "top_right_corner"
+          "bottom_left_corner"
+        ];
+        "diagonal 2" = [
+          "size_fdiag"
+          "top_left_corner"
+          "bottom_right_corner"
+        ];
+        "move" = [
+          "fleur"
+          "move"
+          "all-scroll"
+          "dnd-move"
+        ];
+        "precision" = [
+          "crosshair"
+          "cross"
+          "tcross"
+          "color-picker"
+        ];
+        "hand" = [
+          "hand1"
+          "hand"
+          "pointer"
+          "pointing_hand"
+        ];
+        "link" = [
+          "hand2"
+          "link"
+          "alias"
+          "dnd-link"
+        ];
+        "unavailable" = [
+          "crossed_circle"
+          "not-allowed"
+          "forbidden"
+        ];
+        "alt" = [ "center_ptr" ];
+      },
     }:
     let
       # we rename here bc sometimes the name of the download is the url part like "/cursor-downloadset.php?id=neco-arc"
@@ -79,6 +152,7 @@ rec {
           }
         } $out/winPack.zip
       '';
+
       pack = pkgs.stdenv.mkDerivation {
         inherit name;
         src = winPack;
@@ -94,16 +168,38 @@ rec {
           mkdir -p "$iconsDir/cursors"
           win2xcur winPack/*.{ani,cur} -o "$iconsDir/cursors"
 
+          # name mapping
+          (
+            cd "$iconsDir/cursors"
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (k: v: ''
+                # either a perfect match
+                if [ -f "${k}" ]; then
+                  ${lib.concatMapStringsSep "\n" (v: ''[ "$winFile" != "${v}" ] && cp "$winFile" "${v}"'') v}
+                fi
+                # or a partial match e.g. $file='neco-arc normal'
+                for file in * ; do
+                  pat="${k}"
+                  lowercase_pat="''${pat,,}"
+                  lowercase_file="''${file,,}"
+                  if [[ "$lowercase_file" =~ "$lowercase_pat" ]]; then
+                    ${lib.concatMapStringsSep "\n" (v: ''[ "$file" != "${v}" ] && cp "$file" "${v}"'') v}
+                  fi
+                done
+              '') nameMap
+            )}
+          )
+
+          # index.theme
           touch "$iconsDir/index.theme"
           cat > "$iconsDir/index.theme" << EOF
           [Icon Theme]
           Name=${name}
+          Comment=Windows cursor theme converted for Linux
           EOF
 
         '';
-        installPhase = ''
-
-        '';
+        installPhase = ":";
       };
     in
     {
