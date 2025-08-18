@@ -4,7 +4,7 @@ let
   utils = args.utils args;
   name = "Neco Arc";
   size = 24;
-  #TODO: mappings from the win states to linux states
+  # mappings from the win states to linux states
   # - https://www.reddit.com/r/linuxquestions/comments/mkvdel/comment/khaxcvt/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
   # - https://www.opendesktop.org/p/999853
   # - https://archive.ph/5NRMb
@@ -13,9 +13,6 @@ let
     hash = "sha256-MgEvVB9kWowqfuXC3UJtOFLTpWbWfdSnvNOXdZwqYxM=";
     inherit name;
     inherit size;
-    # nameMap = {
-
-    # }
   };
 in
 {
