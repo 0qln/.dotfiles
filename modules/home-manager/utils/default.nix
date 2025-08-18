@@ -66,6 +66,7 @@ rec {
       hash,
       name,
       size,
+      # TODO: the default name mapping can be improved...
       nameMap ? {
         "normal" = [
           "left_ptr"
@@ -164,9 +165,20 @@ rec {
           unzip winPack.zip -d winPack
 
           iconsDir="$out/share/icons/${name}"
-
           mkdir -p "$iconsDir/cursors"
-          win2xcur winPack/*.{ani,cur} -o "$iconsDir/cursors"
+
+          (
+            # sometimes the files are at the zip root they are...
+            cd winPack
+
+            # sometimes they are a level deeper...
+            if [ -d "${name}" ]; then
+              cd "${name}"
+            fi
+
+            # try unpacking >w< 🎁
+            win2xcur *.{ani,cur} -o "$iconsDir/cursors"
+          )
 
           # name mapping
           (
