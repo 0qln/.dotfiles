@@ -20,7 +20,7 @@ let
 in
 {
   imports = [
-    (import ./frieren-winter.nix { inherit reload-service; })
+    (import ./frieren.nix { inherit reload-service; })
     ./oneko.nix
     ./dev.nix
   ];
