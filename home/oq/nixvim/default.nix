@@ -453,6 +453,7 @@
 
     plugins = {
 
+      # does not work: https://github.com/amitds1997/remote-nvim.nvim/issues/203
       remote-nvim = {
         enable = true;
         settings = {
