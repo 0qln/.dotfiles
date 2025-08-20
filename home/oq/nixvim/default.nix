@@ -453,6 +453,13 @@
 
     plugins = {
 
+      remote-nvim = {
+        enable = true;
+        settings = {
+
+        };
+      };
+
       # inspiration: https://github.com/dc-tec/nixvim/blob/main/config/plugins/cmp/cmp.nix
 
       cmp-emoji.enable = true;
