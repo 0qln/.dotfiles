@@ -9,7 +9,7 @@
     ./glorious-model-o.nix
     ./packages.nix
 
-    ../../users/oq/default.gui.nix
+    ../../home/oq/default.gui.nix
 
     ../../modules/hypr
 
@@ -19,6 +19,12 @@
     })
 
     (import ../../services/nixos-garbage-disposal {
+    })
+
+    ./sops.nix
+
+    (import ../../modules/wireguard/unicorns {
+      configFile = ./wireguard/unicorns/secrets.unicorns;
     })
 
     # tmp:

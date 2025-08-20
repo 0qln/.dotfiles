@@ -67,79 +67,86 @@ rec {
       name,
       size,
       # TODO: the default name mapping can be improved...
-      nameMap ? {
-        "normal" = [
-          "left_ptr"
-          "default"
-          "arrow"
-          "top_left_arrow"
-          "left_arrow"
-        ];
-        "help" = [
-          "question_arrow"
-          "help"
-        ];
-        "text" = [
-          "xterm"
-          "text"
-        ];
-        "busy" = [ "watch" ];
-        "work" = [
-          "left_ptr_watch"
-          "half-busy"
-          "progress"
-        ];
-        "vertical" = [
-          "sb_v_double_arrow"
-          "size_ver"
-          "v_double_arrow"
-        ];
-        "horizontal" = [
-          "sb_h_double_arrow"
-          "size_hor"
-          "h_double_arrow"
-        ];
-        "diagonal 1" = [
-          "size_bdiag"
-          "top_right_corner"
-          "bottom_left_corner"
-        ];
-        "diagonal 2" = [
-          "size_fdiag"
-          "top_left_corner"
-          "bottom_right_corner"
-        ];
-        "move" = [
-          "fleur"
-          "move"
-          "all-scroll"
-          "dnd-move"
-        ];
-        "precision" = [
-          "crosshair"
-          "cross"
-          "tcross"
-          "color-picker"
-        ];
-        "hand" = [
-          "hand1"
-          "hand"
-          "pointer"
-          "pointing_hand"
-        ];
-        "link" = [
-          "hand2"
-          "link"
-          "alias"
-          "dnd-link"
-        ];
-        "unavailable" = [
-          "crossed_circle"
-          "not-allowed"
-          "forbidden"
-        ];
-        "alt" = [ "center_ptr" ];
-      },
+      nameMap ?
+        let
+          diagonal1 = [
+            "size_fdiag"
+            "top_left_corner"
+            "bottom_right_corner"
+          ];
+          diagonal2 = [
+            "size_bdiag"
+            "top_right_corner"
+            "bottom_left_corner"
+          ];
+        in
+        {
+          "normal" = [
+            "left_ptr"
+            "default"
+            "arrow"
+            "top_left_arrow"
+            "left_arrow"
+          ];
+          "help" = [
+            "question_arrow"
+            "help"
+          ];
+          "text" = [
+            "xterm"
+            "text"
+          ];
+          "busy" = [ "watch" ];
+          "work" = [
+            "left_ptr_watch"
+            "half-busy"
+            "progress"
+          ];
+          "vertical" = [
+            "sb_v_double_arrow"
+            "size_ver"
+            "v_double_arrow"
+          ];
+          "horizontal" = [
+            "sb_h_double_arrow"
+            "size_hor"
+            "h_double_arrow"
+          ];
+          #TODO: remove common prefix (e.g. 'Maomao') and go for full matches
+          "^diagonal (resize)?$" = diagonal1;
+          "^diagonal (resize)? 1$" = diagonal1;
+          "^diagonal (resize)? 2$" = diagonal2;
+          "move" = [
+            "fleur"
+            "move"
+            "all-scroll"
+            "dnd-move"
+          ];
+          "precision" = [
+            "crosshair"
+            "cross"
+            "tcross"
+            "color-picker"
+          ];
+          "hand" = [
+            "hand1"
+            "hand"
+            "pointer"
+            "pointing_hand"
+          ];
+          "link" = [
+            "hand2"
+            "link"
+            "alias"
+            "dnd-link"
+          ];
+          "unavailable" = [
+            "crossed_circle"
+            "not-allowed"
+            "forbidden"
+          ];
+          "alt" = [ "center_ptr" ];
+        },
     }:
     let
       # we rename here bc sometimes the name of the download is the url part like "/cursor-downloadset.php?id=neco-arc"

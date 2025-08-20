@@ -11,7 +11,7 @@
     ./lid.nix
     ./sops.nix
 
-    ../../users/oq/default.tui.nix
+    ../../home/oq/default.tui.nix
 
     ../../services/ssh
     ../../services/dashboard
