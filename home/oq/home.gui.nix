@@ -18,6 +18,8 @@
         ./youtube-music
         ./starship
         ./theme
+        ./vscode
+        ./repos
       ];
     };
 }
