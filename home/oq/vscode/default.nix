@@ -1,13 +1,19 @@
 { pkgs, ... }:
+let
+  package = pkgs.vscode-fhs;
+in
 {
-  home.packages = with pkgs; [
-    vscodium
+  imports = [
+    ./profiles/default.nix
+    ./profiles/Worksimple.KimaiEfecteSyncPlugin.nix
   ];
+
+  home.packages = with pkgs; [
+    package
+  ];
+
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
-    profiles.default.extensions = with pkgs.vscode-extensions; [
-      asvetliakov.vscode-neovim
-    ];
+    inherit package;
   };
 }

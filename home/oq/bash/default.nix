@@ -1,6 +1,10 @@
 { ... }:
 {
 
+  programs.direnv = {
+    enableBashIntegration = true;
+  };
+
   programs.bash = {
     enable = true;
     # Setting session variables normally is broken when using home-manager ;(
@@ -10,6 +14,9 @@
       alias cdf='cd $(fd --hidden --type d | fzf)'
       alias ssh='kitten ssh'
       alias la='ll -a'
+    '';
+    bashrcExtra = ''
+      eval "$(direnv hook bash)"
     '';
   };
 

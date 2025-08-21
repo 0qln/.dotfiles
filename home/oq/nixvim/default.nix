@@ -47,7 +47,7 @@
     vimdiffAlias = true;
     defaultEditor = true;
 
-    colorschemes.catppuccin.enable = true;
+    colorschemes.everforest.enable = true;
 
     globals = {
       mapleader = " ";
@@ -550,7 +550,7 @@
         };
       };
       web-devicons.enable = true;
-      image.enable = true;
+      # image.enable = true;
       nvim-autopairs.enable = true;
       nvim-surround.enable = true;
       trim = {

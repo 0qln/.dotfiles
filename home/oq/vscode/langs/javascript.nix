@@ -1,0 +1,1 @@
+#"javascript.updateImportsOnFileMove.enabled": "always",

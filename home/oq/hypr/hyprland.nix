@@ -275,6 +275,18 @@ in
       "float, tag:chromium_popup"
       "center, tag:chromium_popup"
       "size 900 900, tag:chromium_popup"
+
+      # image windows
+      "tag +qimgv, class:qimgv"
+      "float, tag:qimgv"
+      "center, tag:qimgv"
+      "size 900 900, tag:qimgv"
+
+      # dialogs
+      "tag +dialog, class:code, title:Open File"
+      "float, tag:dialog"
+      "center, tag:dialog"
+      "size 900 900, tag:dialog"
     ];
     # windowrule = [
     #   "float,class:^(kitty)$,title:^(kitty)$"
