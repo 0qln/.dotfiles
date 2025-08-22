@@ -12,6 +12,8 @@
     ../../home/oq/default.gui.nix
 
     ../../modules/hypr
+    ../../modules/ydotool
+    ../../modules/steam
 
     (import ../../services/flake-upgrader {
       flakeDir = "/home/oq/.dotfiles";
@@ -26,8 +28,6 @@
     (import ../../modules/wireguard/unicorns {
       configFile = ./wireguard/unicorns/secrets.unicorns;
     })
-
-    ../../modules/ydotool
 
     # tmp:
     ./starship.nix

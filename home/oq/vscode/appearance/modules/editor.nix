@@ -12,7 +12,7 @@ profile:
       "editor.minimap.renderCharacters" = false;
       "editor.occurrencesHighlight" = "multiFile";
       "editor.fontSize" = 13;
-      # TODO: "editor.fontFamily": "Cartograph CF"
+      "editor.fontFamily" = "CartographCF Nerd Font";
       "editor.fontLigatures" = true;
       # "workbench.colorCustomizations": {
       #     "editorError.background":   "#FF000000",

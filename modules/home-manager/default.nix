@@ -15,5 +15,8 @@ in
 
   home-manager.useGlobalPkgs = false;
   home-manager.useUserPackages = true;
-  home-manager.extraSpecialArgs = specialArgs // { inherit utils; };
+  home-manager.extraSpecialArgs = specialArgs // {
+    inherit utils;
+  };
+  home-manager.backupFileExtension = "hm-bac";
 }
