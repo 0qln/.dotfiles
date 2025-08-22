@@ -7,5 +7,6 @@ profile:
     (import ./keybinds.nix profile)
     (import ./nix-shells.nix profile)
     (import ./ssh-remote.nix profile)
+    (import ./format-files.nix profile)
   ];
 }

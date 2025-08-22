@@ -155,19 +155,19 @@ in
     bind = [
       # Application shortcuts
       "$mainMod, Q, exec, $terminal"
-      "$mainMod, C, killactive"
+      "$mainMod, C, exec, hyprpicker | wl-copy"
+      "$mainMod, DELETE, killactive"
       "$mainMod, E, exec, $fileManager"
       "$mainMod, V, togglefloating"
       "$mainMod, R, exec, $menu"
       "$mainMod, P, pseudo"
       "$mainMod, J, togglesplit"
       "$mainMod, O, exec, obsidian"
-      # "$mainMod, F, exec, firefox"
+      "$mainMod, E, exec, splatmoji --disable-emoji-db copy" # copypaste or type commands don't work; type bc ydotool is goofy and the prior idk why
       "$mainMod, Z, exec, zen"
-      #TODO: either replace with zen instance with todoist, or inject transparency css...
-      "$mainMod, T, exec, todoist-electron"
-      "CTRL, SPACE, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
       "$mainMod, B, exec, $terminal -e bluetoothctl"
+      "$mainMod, T, exec, todoist-electron" # TODO: either replace with zen instance with todoist, or inject transparency css...
+      "CTRL, SPACE, exec, [float; center; size 600 100] $terminal -e ${todoist-quick-add}/bin/todoist-quick-add"
 
       # using dispatchers here, since setting the window rules for zen does not work...
       # "$mainMod, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"

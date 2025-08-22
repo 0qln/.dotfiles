@@ -16,28 +16,34 @@ in
     "sshKeys/server" = {
       format = "binary";
       sopsFile = ./server/id_ed25519;
+      mode = "0600";
     };
     "sshKeys/server.pub" = {
       format = "binary";
       sopsFile = ./server/id_ed25519.pub;
+      mode = "0644";
     };
 
     "sshKeys/work" = {
       format = "binary";
       sopsFile = ./work/id_ed25519;
+      mode = "0600";
     };
     "sshKeys/work.pub" = {
       format = "binary";
       sopsFile = ./work/id_ed25519.pub;
+      mode = "0644";
     };
 
     "sshKeys/work.devops" = {
       format = "binary";
       sopsFile = ./work.devops/id_rsa;
+      mode = "0600";
     };
     "sshKeys/work.devops.pub" = {
       format = "binary";
       sopsFile = ./work.devops/id_rsa.pub;
+      mode = "0644";
     };
   };
 

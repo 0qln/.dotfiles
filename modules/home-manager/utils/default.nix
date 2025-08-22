@@ -295,6 +295,24 @@ rec {
       run cp -Lrp "$src" "$dst"
     '';
 
+  mkCopy =
+    {
+      source,
+      destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
+      newMode ? "700",
+      deps ? [ "writeBoundary" ],
+    }:
+    lib.hm.dag.entryAfter deps ''
+      #!${pkgs.bash}/bin/bash
+      dst="${destPath}"
+      src="${source}"
+      if [[ -e "$dst" ]]; then
+        run rm -r "$dst"
+      fi
+      run cp -Lrp "$src" "$dst"
+      chmod ${newMode} $dst
+    '';
+
   userRuntimeDir = "/run/user/${toString osConfig.users.users.${config.home.username}.uid}";
 
   #TODO: use this and don't hardcode the root path: https://github.com/srid/flake-root

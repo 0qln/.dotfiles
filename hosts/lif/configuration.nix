@@ -27,6 +27,8 @@
       configFile = ./wireguard/unicorns/secrets.unicorns;
     })
 
+    ../../modules/ydotool
+
     # tmp:
     ./starship.nix
   ];

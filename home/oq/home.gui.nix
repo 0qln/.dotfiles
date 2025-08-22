@@ -6,7 +6,9 @@
       imports = [
         ./home._common.nix
         ./browsers
+        ./citrix
         ./cursors
+        ./discord
         ./fonts
         ./hypr
         ./kitty
@@ -16,10 +18,12 @@
         ./secrets
         ./todoist
         ./youtube-music
+        ./postman
         ./starship
         ./theme
         ./vscode
         ./repos
+        ./splatmoji
       ];
     };
 }
