@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   home.file.".local/share/fonts/CartographCF" = {
-    source = ./CartographCF;
+    source = "${import ./derivation.nix { inherit pkgs; }}";
     recursive = true;
   };
 }

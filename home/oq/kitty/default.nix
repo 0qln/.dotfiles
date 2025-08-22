@@ -14,7 +14,7 @@
       cursor_trail_decay = "0.1 0.4";
 
       # font_family = "VictorMono Nerd Font";
-      font_family = "Cartograph CF";
+      font_family = "CartographCF Nerd Font";
 
     };
 

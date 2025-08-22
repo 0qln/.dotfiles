@@ -16,5 +16,6 @@ in
 
   imports = [
     ./cartograph-cf/default.nix
+    ./tools.nix
   ];
 }
