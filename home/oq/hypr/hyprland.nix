@@ -233,6 +233,9 @@ in
       "CTRL ALT, M, fullscreenstate, 0"
       "CTRL ALT, N, fullscreenstate, 1"
       "CTRL ALT, F, fullscreenstate, 2"
+      "CTRL SHIFT, M, fullscreenstate, -1, 0"
+      "CTRL SHIFT, N, fullscreenstate, -1, 1"
+      "CTRL SHIFT, F, fullscreenstate, -1, 2"
 
       # Special workspace
       "ALT SHIFT, S, togglespecialworkspace, magic"

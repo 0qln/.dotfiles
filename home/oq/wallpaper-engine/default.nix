@@ -1,4 +1,7 @@
-{ ... }:
+{ pkgs, host-name, ... }:
+let
+  monitors = import ../../../hosts/${host-name}/monitors.nix { };
+in
 {
   # docs:
   # https://home-manager-options.extranix.com/?query=linux-wallpaperengine&release=release-25.05
@@ -10,5 +13,11 @@
 
   services.linux-wallpaperengine = {
     enable = true;
+    wallpapers = [
+      {
+        monitor = monitors.center;
+        wallpaperId = "3549235003";
+      }
+    ];
   };
 }

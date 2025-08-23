@@ -24,6 +24,7 @@
         ./vscode
         ./repos
         ./splatmoji
+        ./wallpaper-engine
       ];
     };
 }
