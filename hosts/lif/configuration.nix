@@ -16,6 +16,12 @@
     ../../modules/ydotool
     ../../modules/steam
 
+    (import ../../modules/home-manager {
+      extraArgs = {
+        monitors = import ./monitors.nix { };
+      };
+    })
+
     (import ../../services/flake-upgrader {
       flakeDir = "/home/oq/.dotfiles";
       mode = "boot";

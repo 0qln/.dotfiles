@@ -16,5 +16,8 @@
 
     # networking
     iperf3
+
+    # super important
+    neofetch
   ];
 }

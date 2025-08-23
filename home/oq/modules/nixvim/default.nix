@@ -47,7 +47,17 @@
     vimdiffAlias = true;
     defaultEditor = true;
 
-    colorschemes.everforest.enable = true;
+    # colorschemes.everforest.enable = true;
+    # colorschemes.rose-pine.enable = true;
+    colorschemes.melange.enable = true;
+    # colorschemes.kanagawa.enable = true;
+    # colorschemes.kanagawa-paper.enable = true;
+
+    #TODO:
+    # https://github.com/ramojus/mellifluous.nvim
+    # https://github.com/dgox16/oldworld.nvim
+    # https://github.com/everviolet/nvim
+    # https://github.com/vague2k/vague.nvim
 
     globals = {
       mapleader = " ";

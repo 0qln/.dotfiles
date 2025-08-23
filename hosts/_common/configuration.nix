@@ -6,7 +6,6 @@
 
 {
   imports = [
-    ../../modules/home-manager
     ../../modules/avahi
   ];
 

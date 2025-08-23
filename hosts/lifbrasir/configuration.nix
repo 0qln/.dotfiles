@@ -13,6 +13,10 @@
 
     ../../home/oq/users/root/default.tui.nix
 
+    (import ../../modules/home-manager {
+      extraArgs = { };
+    })
+
     ../../services/ssh
     ../../services/dashboard
 

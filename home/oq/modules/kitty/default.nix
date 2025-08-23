@@ -24,5 +24,8 @@
     };
 
     # themeFile = "Catppuccin-Mocha";
+    # themeFile = "Glacier";
+    # themeFile = "HachikoRed";
+    themeFile = "IR_Black";
   };
 }

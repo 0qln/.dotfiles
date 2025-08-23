@@ -1,3 +1,4 @@
+{ extraArgs }:
 {
   specialArgs,
   inputs,
@@ -15,8 +16,11 @@ in
 
   home-manager.useGlobalPkgs = false;
   home-manager.useUserPackages = true;
-  home-manager.extraSpecialArgs = specialArgs // {
-    inherit utils;
-  };
+  home-manager.extraSpecialArgs =
+    specialArgs
+    // {
+      inherit utils;
+    }
+    // extraArgs;
   home-manager.backupFileExtension = "hm-bac";
 }

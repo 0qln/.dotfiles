@@ -15,19 +15,15 @@ let
   );
 in
 {
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      ipc = "on";
-      preload = [
-        wallhaven-zygxxo
-        wallhaven-6o1lrl
-        wallhaven-5gx2q5
-      ];
-      wallpaper = [
-        # "HDMI-A-1, ${wallpaper1}"
-        ",${wallhaven-5gx2q5}"
-      ];
-    };
+  services.hyprpaper.settings = {
+    preload = [
+      wallhaven-zygxxo
+      wallhaven-6o1lrl
+      wallhaven-5gx2q5
+    ];
+    wallpaper = [
+      # "HDMI-A-1, ${wallpaper1}"
+      ",${wallhaven-5gx2q5}"
+    ];
   };
 }

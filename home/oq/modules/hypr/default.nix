@@ -2,8 +2,8 @@
 {
   imports = [
     ./hyprpicker.nix
-    ./hyprland.nix
-    ./hyprpaper.nix
+    ./hyprland
+    ./hyprpaper
     ./hyprshot.nix
     ./waybar.nix
   ];
