@@ -40,25 +40,29 @@
       "s[true], monitor:$monC"
 
       "4, monitor:$monL, default:true"
+      "4, layoutopt:orientation:bottom"
       "5, monitor:$monL"
+      "5, layoutopt:orientation:bottom"
       "6, monitor:$monL"
+      "6, layoutopt:orientation:bottom"
 
       "7, monitor:$monR, default:true"
+      "7, layoutopt:orientation:bottom"
       "8, monitor:$monR"
+      "8, layoutopt:orientation:bottom"
       "9, monitor:$monR"
+      "9, layoutopt:orientation:bottom"
     ];
 
     general = {
       gaps_in = 10;
       gaps_out = 20;
-      border_size = 0;
-      # "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-      # "col.inactive_border" = "rgba(595959aa)";
-      "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-      "col.inactive_border" = "rgba(595959aa)";
+      border_size = 1;
+      "col.active_border" = "rgba(ff000099) rgba(ffffffee) 45deg";
+      "col.inactive_border" = "rgba(ffffffee) rgba(ff000099) 45deg";
       resize_on_border = true;
       allow_tearing = false;
-      layout = "dwindle";
+      layout = "master";
     };
 
     decoration = {
@@ -67,7 +71,7 @@
       active_opacity = 1.0;
       inactive_opacity = 1.0;
       shadow = {
-        enabled = true;
+        enabled = false;
         range = 4;
         render_power = 3;
         color = "rgba(1a1a1aee)";
@@ -116,7 +120,8 @@
     };
 
     master = {
-      new_status = "master";
+      new_on_top = true;
+      new_status = "slave";
     };
 
     misc = {
