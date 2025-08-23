@@ -7,7 +7,7 @@
 }:
 let
   todoist-quick-add = pkgs.callPackage ../todoist/todoist-quick-add.nix { };
-  monitors = import ../../../hosts/${host-name}/monitors.nix { };
+  monitors = import ../../../../hosts/${host-name}/monitors.nix { };
 in
 {
   wayland.windowManager.hyprland.enable = true;

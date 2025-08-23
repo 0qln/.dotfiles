@@ -11,15 +11,15 @@
   nixpkgs.config.allowUnfree = true;
 
   imports = [
-    ./bash
-    ./btop
-    ./direnv
-    ./git
-    ./lf
-    ./nixvim
-    ./sops
-    ./ssh
-    ./tools
+    ../../modules/bash
+    ../../modules/btop
+    ../../modules/direnv
+    ../../modules/git
+    ../../modules/lf
+    ../../modules/nixvim
+    ../../modules/sops
+    ../../modules/ssh
+    ../../modules/tools
   ];
 
   home.packages = with pkgs; [

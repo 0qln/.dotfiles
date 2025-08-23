@@ -5,7 +5,7 @@
     {
       imports = [
         ./home._common.nix
-        ./tmux
+        ../../modules/tmux
       ];
     };
 }
