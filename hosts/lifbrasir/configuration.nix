@@ -45,6 +45,11 @@
       domains = [ "0qln" ];
     })
 
+    (import ../../services/wireguard {
+      privateKeyFile = ./wireguard/0qln/private.key.secrets;
+      externalInterface = "wlo1";
+    })
+
     #TODO: these are intested for lifbrasir. test first then activate them.
     # (import ../../services/flake-upgrader {
     #   flakeDir = "/root/.dotfiles";

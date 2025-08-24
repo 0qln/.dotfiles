@@ -36,6 +36,13 @@
       configFile = ./wireguard/unicorns/secrets.unicorns;
     })
 
+    # (import ../../modules/wireguard/0qln {
+    #   ip = "10.100.0.2/32";
+    #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
+    #   serverAddress = "0qln.duckdns.org";
+    #   serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
+    # })
+
     # tmp:
     ./starship.nix
   ];

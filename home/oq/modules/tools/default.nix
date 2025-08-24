@@ -7,6 +7,7 @@
     tree
     unzip
     ripgrep
+    srm
 
     # images/videos
     ffmpeg

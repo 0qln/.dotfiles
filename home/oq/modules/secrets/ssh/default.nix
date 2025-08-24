@@ -1,3 +1,9 @@
+#>
+#> Note:
+#> This breaks for the root user.
+#> I don't know why but it just does and then systemd fails
+#> to find the sops-nix.service because idkklklj;lkjasd;lfkjalkfj
+#>
 { config, lib, ... }:
 let
   linkPair =

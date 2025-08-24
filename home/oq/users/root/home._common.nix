@@ -13,7 +13,6 @@
     ../../modules/lf
     ../../modules/nixvim
     ../../modules/sops
-    ../../modules/ssh
     ../../modules/tools
   ];
 
