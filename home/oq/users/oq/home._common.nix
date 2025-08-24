@@ -15,6 +15,7 @@
     ../../modules/btop
     ../../modules/direnv
     ../../modules/git
+    ../../modules/gh
     ../../modules/lf
     ../../modules/nixvim
     ../../modules/sops
