@@ -1,6 +1,6 @@
 { ... }:
 {
   center = "HDMI-A-1";
-  left = "DP-4";
-  right = "DP-3";
+  left = "DP-3";
+  right = "DP-2";
 }

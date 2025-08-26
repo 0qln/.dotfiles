@@ -8,6 +8,7 @@
     ./bluetooth.nix
     ./glorious-model-o.nix
     ./packages.nix
+    ./nvidia.nix
 
     ../../home/oq/users/oq/default.gui.nix
     ../../home/oq/users/root/default.tui.nix

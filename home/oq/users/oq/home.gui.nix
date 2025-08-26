@@ -24,7 +24,9 @@
         ../../modules/vscode
         ../../modules/repos
         ../../modules/splatmoji
+        ../../modules/teams
         # ../../modules/wallpaper-engine
+        ../../modules/rider
       ];
     };
 }

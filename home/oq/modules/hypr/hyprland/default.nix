@@ -20,7 +20,7 @@
     "$monC" = monitors.center;
 
     monitor = [
-      "$monC, 1920x1080@60Hz, 0x550, 1, transform, 0"
+      "$monC, 1920x1080@144Hz, 0x550, 1, transform, 0"
       "$monR, 1920x1080@60Hz, 1920x0, 1, transform, 1"
       "$monL, 1920x1080@60Hz, -1080x0, 1, transform, 3"
     ];
@@ -78,8 +78,8 @@
       };
       blur = {
         enabled = true;
-        size = 5;
-        passes = 1;
+        size = 10;
+        passes = 2;
         vibrancy = 0.5696;
       };
     };

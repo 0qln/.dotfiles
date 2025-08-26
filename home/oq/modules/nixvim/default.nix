@@ -65,6 +65,15 @@
     };
 
     keymaps = [
+      # Lazy git
+      {
+        action = "<cmd>LazyGit<cr>";
+        key = "<leader>lg";
+        options = {
+          desc = "LazyGit";
+        };
+      }
+      # improved > <
       {
         action = ">gv";
         key = ">";
@@ -463,6 +472,10 @@
 
     plugins = {
 
+      lazygit = {
+        enable = true;
+      };
+
       # does not work: https://github.com/amitds1997/remote-nvim.nvim/issues/203
       remote-nvim = {
         enable = true;
@@ -797,7 +810,6 @@
       which-key.enable = true;
       #TODO: configure more dap
       dap.enable = true;
-      dap-go.enable = true;
       dap-ui.enable = true;
       dap-virtual-text.enable = true;
       neotest = {

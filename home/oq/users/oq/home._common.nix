@@ -11,6 +11,7 @@
   nixpkgs.config.allowUnfree = true;
 
   imports = [
+    ../../modules/tmux
     ../../modules/bash
     ../../modules/btop
     ../../modules/direnv
