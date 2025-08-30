@@ -18,6 +18,7 @@
       alias cdf='cd $(fd --hidden --type d | fzf)'
       alias ssh='kitten ssh'
       alias la='ll -a'
+      alias lg='lazygit'
     '';
     bashrcExtra = ''
       eval "$(direnv hook bash)"
