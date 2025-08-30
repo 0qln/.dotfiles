@@ -5,6 +5,10 @@
     enableBashIntegration = true;
   };
 
+  programs.zoxide = {
+    enableBashIntegration = true;
+  };
+
   programs.bash = {
     enable = true;
     # Setting session variables normally is broken when using home-manager ;(
