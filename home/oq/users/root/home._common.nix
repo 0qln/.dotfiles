@@ -14,6 +14,7 @@
     ../../modules/nixvim
     ../../modules/sops
     ../../modules/tools
+    ../../modules/zoxide
   ];
 
   home.packages = with pkgs; [
