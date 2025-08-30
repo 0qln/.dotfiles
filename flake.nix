@@ -34,6 +34,10 @@
     # unclear about this
     # on unstable luajit tests are failing, so lets pin to stable 🐛
     nixvim.url = "github:nix-community/nixvim/nixos-25.05";
+
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+    };
   };
 
   outputs =
@@ -47,14 +51,13 @@
     }:
     let
       inherit (nixpkgs) lib;
-      system = "x86_64-linux";
     in
     {
       # https://discourse.nixos.org/t/how-do-specialargs-work/50615/4
       # https://nixos-modules.nix.xn--q9jyb4c/lessons/function-arguments/lesson/
 
       nixosConfigurations."lif" = lib.nixosSystem {
-        inherit system;
+        system = "x86_64-linux";
         modules = [ ./hosts/lif ];
         specialArgs = {
           inherit inputs;
@@ -64,12 +67,24 @@
       };
 
       nixosConfigurations."lifbrasir" = lib.nixosSystem {
-        inherit system;
+        system = "x86_64-linux";
         modules = [ ./hosts/lifbrasir ];
         specialArgs = {
           inherit inputs;
           flake = self;
           host-name = "lifbrasir";
+        };
+      };
+
+      nixosConfigurations."loki" = lib.nixosSystem {
+#TODO: which one is correct?
+        # system = "x86_64-unknown-linux-gnu";
+        system = "x86_64-linux";
+        modules = [ ./hosts/loki ];
+        specialArgs = {
+          inherit inputs;
+          flake = self;
+          host-name = "loki";
         };
       };
     };
