@@ -22,6 +22,7 @@
     ../../modules/sops
     ../../modules/ssh
     ../../modules/tools
+    ../../modules/zoxide
   ];
 
   home.packages = with pkgs; [
