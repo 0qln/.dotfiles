@@ -159,6 +159,14 @@
       "float, tag:dialog"
       "center, tag:dialog"
       "size 900 900, tag:dialog"
+
+      # no animations
+      "tag +no-anim, class:ueberzug.*"
+      "noanim, tag:no-anim"
+
+      # move ueberzug windows off the screen so they don't
+      # flicker in the center until ueberzug moves them.
+      "move -10000 -10000, initialClass:ueberzug.*"
     ];
     # windowrule = [
     #   "float,class:^(kitty)$,title:^(kitty)$"

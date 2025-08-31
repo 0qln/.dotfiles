@@ -19,6 +19,7 @@
       alias ssh='kitten ssh'
       alias la='ll -a'
       alias lg='lazygit'
+      alias lf='lf-ueberzug'
     '';
     bashrcExtra = ''
       eval "$(direnv hook bash)"
