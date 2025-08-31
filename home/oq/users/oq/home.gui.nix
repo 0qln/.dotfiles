@@ -27,6 +27,8 @@
         ../../modules/teams
         ../../modules/wallpaper-engine
         ../../modules/rider
+        ../../modules/kooha
+        ../../modules/shotcut
       ];
     };
 }
