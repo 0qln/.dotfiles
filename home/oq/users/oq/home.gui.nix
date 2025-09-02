@@ -29,6 +29,8 @@
         ../../modules/rider
         ../../modules/kooha
         ../../modules/shotcut
+        ../../modules/zathura
+        ../../modules/xdg-utils
       ];
     };
 }
