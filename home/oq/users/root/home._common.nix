@@ -10,6 +10,7 @@
     ../../modules/btop
     ../../modules/direnv
     ../../modules/git
+    ../../modules/tmux
     ../../modules/lf
     ../../modules/nixvim
     ../../modules/sops

@@ -50,7 +50,6 @@
     wget
     age
     jq
-    tmux
   ];
 
   nix.settings.experimental-features = [

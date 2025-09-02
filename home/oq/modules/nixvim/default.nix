@@ -472,6 +472,8 @@
 
     plugins = {
 
+      tmux-navigator.enable = true;
+
       lazygit = {
         enable = true;
       };
