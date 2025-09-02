@@ -23,6 +23,7 @@
     ../../modules/ssh
     ../../modules/tools
     ../../modules/zoxide
+    # ../../modules/azure
   ];
 
   home.packages = with pkgs; [
