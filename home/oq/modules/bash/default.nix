@@ -20,9 +20,11 @@
       alias la='ll -a'
       alias lg='lazygit'
       alias lf='lf-ueberzug'
+      alias nivm='nvim'
     '';
     bashrcExtra = ''
       eval "$(direnv hook bash)"
+      set -o vi
     '';
   };
 

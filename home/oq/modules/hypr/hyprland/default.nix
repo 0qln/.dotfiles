@@ -36,19 +36,18 @@
       "1, monitor:$monC, default:true"
       "2, monitor:$monC"
       "3, monitor:$monC"
+      "4, monitor:$monC"
+      "5, monitor:$monC"
+
       #TODO: trying to get the window of the special workspace not to follow the mouse cursor, does not work yet
       "s[true], monitor:$monC"
 
-      "4, monitor:$monL, default:true"
-      "4, layoutopt:orientation:bottom"
-      "5, monitor:$monL"
-      "5, layoutopt:orientation:bottom"
-      "6, monitor:$monL"
+      "6, monitor:$monL, default:true"
       "6, layoutopt:orientation:bottom"
-
-      "7, monitor:$monR, default:true"
+      "7, monitor:$monL"
       "7, layoutopt:orientation:bottom"
-      "8, monitor:$monR"
+
+      "8, monitor:$monR, default:true"
       "8, layoutopt:orientation:bottom"
       "9, monitor:$monR"
       "9, layoutopt:orientation:bottom"
