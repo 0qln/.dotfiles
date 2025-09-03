@@ -24,6 +24,7 @@
     ../../modules/tools
     ../../modules/zoxide
     # ../../modules/azure
+    # ../../modules/agents
   ];
 
   home.packages = with pkgs; [
