@@ -1,6 +1,4 @@
-{ ... }:
-{
-
+{...}: {
   programs.direnv = {
     enableBashIntegration = true;
   };
@@ -24,8 +22,8 @@
     '';
     bashrcExtra = ''
       eval "$(direnv hook bash)"
+      shopt -s dotglob
       set -o vi
     '';
   };
-
 }

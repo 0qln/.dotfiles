@@ -1,15 +1,29 @@
-{ pkgs, ... }:
 {
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = with pkgs; [
     git
     gh
     delta
   ];
 
+  sops.secrets."work.config" = {
+    sopsFile = ./work.config.secrets;
+    format = "binary";
+  };
+
   programs.git = {
     enable = true;
     userName = "0qln";
     userEmail = "linusnag@gmail.com";
+    includes = [
+      {
+        condition = "gitdir:~/repos/work.devops/**";
+        path = config.sops.secrets."work.config".path;
+      }
+    ];
   };
 
   programs.lazygit = {
@@ -25,5 +39,4 @@
       };
     };
   };
-
 }

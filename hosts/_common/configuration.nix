@@ -2,9 +2,7 @@
   pkgs,
   host-name,
   ...
-}:
-
-{
+}: {
   imports = [
     ../../modules/avahi
   ];

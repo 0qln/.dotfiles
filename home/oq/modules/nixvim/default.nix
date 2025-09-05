@@ -4,8 +4,7 @@
   config,
   inputs,
   ...
-}:
-{
+}: {
   # just in case i want to do it via copying my lua config again:
   # - https://github.com/Kidsan/nixos-config/blob/main/home/programs/neovim/nvim/lua/kidsan/set.lua
   # - https://github.com/samiulbasirfahim/flakes/blob/main/home/rxen/neovim/config/init.lua
@@ -36,7 +35,8 @@
     shellcheck
     statix
     yamllint
-    nixfmt-rfc-style
+    alejandra
+    vale-ls
   ];
 
   programs.nixvim = {
@@ -77,12 +77,12 @@
       {
         action = ">gv";
         key = ">";
-        mode = [ "v" ];
+        mode = ["v"];
       }
       {
         action = "<gv";
         key = "<";
-        mode = [ "v" ];
+        mode = ["v"];
       }
       # # cmp for : or / or ? modes
       # {
@@ -428,7 +428,6 @@
         end, vim.tbl_values(require('bufferline.config').highlights))
       )
 
-
       -- tab indent colors
       -- #TODO: make work with half-opaque colors
       local highlight = {
@@ -471,6 +470,61 @@
     # cmp
 
     plugins = {
+      vimtex = {
+        enable = true;
+        settings = {
+          compiler_method = "generic";
+          compiler_generic = let
+            compiler = pkgs.writeShellScriptBin "latex-compiler" ''
+
+              if [ -f "@tex" ]; then
+                file="@tex"
+              else
+                file="main.tex"
+              fi
+              echo "Compiling tex file: $file"
+
+              # latexmk integration docs: https://github.com/lervag/vimtex/blob/master/doc/vimtex.txt#L1019
+              cmd_latex="latexmk -verbose \
+                -file-line-error \
+                -synctex=1 \
+                -interaction=nonstopmode \
+                -pvc \
+                '$file' "
+
+              cmd="$cmd_latex"
+
+              echo "Executing: $cmd"
+
+              if [ -f shell.nix ]; then
+                shell="shell.nix"
+                echo "Using shell: $shell"
+                nix-shell "$shell" --command "$cmd"
+              else
+                exec "$cmd"
+              fi
+            '';
+          in {
+            command = ''${compiler}/bin/latex-compiler'';
+          };
+          view_method = "zathura";
+          syntax_conceal = {
+            "accents" = 1;
+            "ligatures" = 1;
+            "cites" = 1;
+            "fancy" = 1;
+            "spacing" = 1;
+            "greek" = 1;
+            "math_bounds" = 1;
+            "math_delimiters" = 1;
+            "math_fracs" = 1;
+            "math_super_sub" = 1;
+            "math_symbols" = 1;
+            "sections" = 1;
+            "styles" = 1;
+          };
+        };
+      };
 
       tmux-navigator.enable = true;
 
@@ -482,14 +536,13 @@
       remote-nvim = {
         enable = true;
         settings = {
-
         };
       };
 
       # inspiration: https://github.com/dc-tec/nixvim/blob/main/config/plugins/cmp/cmp.nix
 
       cmp-emoji.enable = true;
-      cmp_luasnip.enable = true;
+      # cmp_luasnip.enable = true;
       cmp-cmdline.enable = true;
       cmp-buffer.enable = true;
       cmp-nvim-lsp.enable = true;
@@ -499,6 +552,12 @@
         enable = true;
         yaml.enable = true;
         json.enable = false;
+      };
+
+      cmp-nvim-ultisnips = {
+        # enable = true;
+        # settings = {
+        # };
       };
 
       # github: https://github.com/hrsh7th/nvim-cmp?tab=readme-ov-file
@@ -512,23 +571,26 @@
           };
           sources = [
             # sources: https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
-            { name = "nvim_lsp"; }
-            { name = "cmp_lsp_rs"; }
+            {name = "nvim_lsp";}
+            {name = "cmp_lsp_rs";}
             # go-lang: go_deep
-            { name = "nvim_lsp_signature_help"; }
-            { name = "nvim_lsp_document_symbol"; }
-            { name = "diag-codes"; }
-            { name = "async_path"; }
-            { name = "buffer"; }
-            { name = "luasnip"; }
+            {name = "nvim_lsp_signature_help";}
+            {name = "nvim_lsp_document_symbol";}
+            {name = "diag-codes";}
+            {name = "async_path";}
+            {name = "buffer";}
+            {name = "luasnip";}
+            # {name = "ultisnips";}
             #TODO: https://github.com/lukas-reineke/cmp-rg?tab=readme-ov-file
             #TODO: https://github.com/tzachar/cmp-ai
-            { name = "emoji"; }
-            { name = "cmdline"; }
-            #TODO: cmp-tw2css does not exist on nixvim?
+            {name = "emoji";}
+            {name = "cmdline";}
+            # { name = "cmp-tw2css"; } # TODO: cmp-tw2css does not exist on nixvim?
+            {name = "latex_symbols";}
           ];
           snippet = {
             expand = "luasnip";
+            # expand = "ultisnips";
           };
           window = {
             completion = {
@@ -570,7 +632,6 @@
         settings = {
           auto = true;
           groups = [
-
           ];
         };
       };
@@ -585,78 +646,102 @@
         };
       };
       gitblame.enable = true;
-      none-ls = {
-        enable = true;
-        enableLspFormat = true;
-        settings = {
-          updateInInsert = false;
-        };
-        sources = {
-          code_actions = {
-            gitsigns.enable = true;
-            statix.enable = true;
-          };
-          diagnostics = {
-            statix.enable = true;
-            yamllint.enable = true;
-          };
-          formatting = {
-            nixfmt = {
-              enable = true;
-              package = pkgs.nixfmt-rfc-style;
-            };
-            black = {
-              enable = true;
-              settings = ''
-                {
-                  extra_args = { "--fast" },
-                }
-              '';
-            };
-            prettier = {
-              enable = true;
-              disableTsServerFormatter = true;
-              settings = ''
-                {
-                  extra_args = { "--no-semi" },
-                }
-              '';
-            };
-            stylua.enable = true;
-            yamlfmt = {
-              enable = true;
-            };
-            hclfmt.enable = true;
-          };
-        };
-      };
+      # none-ls = {
+      #   enable = true;
+      #   # enableLspFormat = true; # default is: plugins.lsp-format.enable
+      #   settings = {
+      #     updateInInsert = false;
+      #   };
+      #   sources = {
+      #     code_actions = {
+      #       gitsigns.enable = true;
+      #       statix.enable = true;
+      #     };
+      #     diagnostics = {
+      #       statix.enable = true;
+      #       yamllint.enable = true;
+      #     };
+      #     formatting = {
+      #       nixfmt = {
+      #         enable = true;
+      #         package = pkgs.nixfmt-rfc-style;
+      #       };
+      #       black = {
+      #         enable = true;
+      #         settings = ''
+      #           {
+      #             extra_args = { "--fast" },
+      #           }
+      #         '';
+      #       };
+      #       prettier = {
+      #         enable = true;
+      #         # disableTsServerFormatter = true;
+      #         settings = ''
+      #           {
+      #             extra_args = { "--no-semi" },
+      #           }
+      #         '';
+      #       };
+      #       stylua.enable = true;
+      #       yamlfmt = {
+      #         enable = true;
+      #       };
+      #       hclfmt.enable = true;
+      #     };
+      #   };
+      # };
       lsp-format.enable = true;
       conform-nvim = {
         enable = true;
         settings = {
+          # formatters: https://github.com/stevearc/conform.nvim?tab=readme-ov-file#formatters
           format_on_save = {
             lspFallback = true;
           };
           notify_on_error = true;
+          formatters_by_ft = {
+            bash = [
+              "shellcheck"
+              "shellharden"
+              "shfmt"
+            ];
+            cpp = ["clang_format"];
+            nix = {
+              __unkeyed-1 = "alejandra";
+            };
+            javascript = {
+              __unkeyed-1 = "prettierd";
+              __unkeyed-2 = "prettier";
+              timeout_ms = 2000;
+              stop_after_first = true;
+            };
+            latex = ["latexindent"];
+            "_" = [
+              "squeeze_blanks"
+              "trim_whitespace"
+              "trim_newlines"
+            ];
+          };
         };
       };
       lint = {
         enable = true;
         lintersByFt = {
-          bash = [ "shellcheck" ];
-          json = [ "jsonlint" ];
-          markdown = [ "vale" ];
-          go = [ "golangcilint" ];
-          dockerfile = [ "hadolint" ];
-          lua = [ "luacheck" ];
+          bash = ["shellcheck"];
+          json = ["jsonlint"];
+          # markdown = ["vale"];
+          go = ["golangcilint"];
+          dockerfile = ["hadolint"];
+          lua = ["luacheck"];
           nix = [
             "deadnix"
             "nix"
             "statix"
           ];
-          python = [ "pylint" ];
-          sh = [ "shellcheck" ];
-          yaml = [ "yamllint" ];
+          python = ["pylint"];
+          sh = ["shellcheck"];
+          yaml = ["yamllint"];
         };
 
         linters = {
@@ -672,6 +757,9 @@
           luacheck = {
             cmd = lib.getExe pkgs.luaPackages.luacheck;
           };
+          # vale = { # exits with code 2 fsr
+          #   cmd = lib.getExe pkgs.vale-ls;
+          # };
           # markdownlint = {
           #   cmd = lib.getExe pkgs.markdownlint-cli;
           # };
@@ -740,7 +828,7 @@
             installRustc = true;
             installCargo = true;
           };
-          ts_ls.enable = true; # TS/JS
+          # ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
           tailwindcss.enable = true; # TailwindCSS
           html.enable = true; # HTML
@@ -755,6 +843,7 @@
           clangd.enable = true; # C/C++
           csharp_ls.enable = true; # C#
           markdown_oxide.enable = true; # Markdown
+          texlab.enable = true; # latex
         };
       };
       nix.enable = true;
@@ -762,7 +851,7 @@
       oil.enable = true;
       indent-blankline = {
         enable = true;
-        settings = { };
+        settings = {};
       };
       telescope = {
         enable = true;
@@ -833,6 +922,8 @@
     match.TODO = "TODO";
 
     opts = {
+      conceallevel = 1;
+
       updatetime = 100;
 
       relativenumber = true;
