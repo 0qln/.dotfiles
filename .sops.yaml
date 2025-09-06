@@ -1,16 +1,20 @@
 keys:
   - &lifbrasir age13ygw3n6x7hph9q5e6zhwwcel32r2lg2ut93ssuj4r79jddx6yspsnrzjvs
   - &oq age1akdvdtgd835g84xgyjz377wyw93azvglvggl5aas62z50xpcpatscc58a6
+  - &oq-yubi1 age1yubikey1qtk6ap8wyjw9qvt4xe6uze0ucp63nqefpqhel6rl2uv7kp6ddmsz5ujkuvq
 creation_rules:
   - path_regex: ^home/oq/.*secrets.*$
     key_groups:
       - age:
           - *oq
+          - *oq-yubi1
   - path_regex: ^hosts/lif/.*secrets.*$
     key_groups:
       - age:
           - *oq
+          - *oq-yubi1
   - path_regex: ^hosts/lifbrasir/.*secrets.*$
     key_groups:
       - age:
           - *lifbrasir
+          - *oq-yubi1

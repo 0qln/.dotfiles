@@ -1,17 +1,13 @@
-{ pkgs, ... }:
-let
-  previewer = import ./previewer.nix { inherit pkgs; };
-  cleaner = import ./cleaner.nix { inherit pkgs; };
-  lf-ueberzug = import ./lf-ueberzug.nix { inherit pkgs; };
-in
-{
+{pkgs, ...}: let
+  previewer = import ./previewer.nix {inherit pkgs;};
+  cleaner = import ./cleaner.nix {inherit pkgs;};
+  lf-ueberzug = import ./lf-ueberzug.nix {inherit pkgs;};
+in {
   home.packages = with pkgs; [
-
     # TODO:
     # `Gtk-Message: 20:24:39.360: Failed to load module "colorreload-gtk-module"`
     # even though gtk 3 is installed and in the path
     dragon-drop
-    gtk3
 
     unzip
     mescc-tools-extra # untar
@@ -44,7 +40,6 @@ in
   # https://home-manager-options.extranix.com/?query=lf&release=release-25.05
 
   programs.lf = {
-
     enable = true;
 
     settings = {
@@ -61,7 +56,6 @@ in
     '';
 
     commands = {
-
       dragon-out = ''%${pkgs.xdragon}/bin/xdragon -a -x "$fx"'';
 
       open = ''
@@ -153,11 +147,9 @@ in
           done
         }}
       '';
-
     };
 
     keybindings = {
-
       "c" = null;
       "d" = null;
 
@@ -187,8 +179,6 @@ in
       "md" = "mkdir";
 
       "au" = "unarchive";
-
     };
   };
-
 }
