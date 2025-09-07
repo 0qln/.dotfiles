@@ -1,12 +1,9 @@
 {
   onCalendar ? "Sun *-*-* 00:00:00",
   olderThan ? "14d",
-}:
-{ ... }:
-let
+}: {...}: let
   serviceName = "nixos-garbage-disposal";
-in
-{
+in {
   # https://nix.dev/manual/nix/2.18/command-ref/nix-collect-garbage#opt-delete-older-than
   systemd.services.${serviceName} = {
     description = "Garbage disposal for the nix/store";
@@ -17,11 +14,13 @@ in
     };
     script = ''
       nix-collect-garbage --delete-older-than ${olderThan}
+      # TODO: you should probably rebuild-switch here, such that we have a
+      # working config for the next reboot.
     '';
   };
 
   systemd.timers.${serviceName} = {
-    wantedBy = [ "timers.target" ];
+    wantedBy = ["timers.target"];
     timerConfig = {
       OnCalendar = onCalendar;
       Persistent = true;
