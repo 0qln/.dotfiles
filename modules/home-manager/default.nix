@@ -1,15 +1,12 @@
-{ extraArgs }:
-{
+{extraArgs}: {
   specialArgs,
   inputs,
   pkgs,
   config,
   ...
-}:
-let
+}: let
   utils = import ./utils;
-in
-{
+in {
   imports = [
     inputs.home-manager.nixosModules.home-manager
   ];
@@ -18,9 +15,7 @@ in
   home-manager.useUserPackages = true;
   home-manager.extraSpecialArgs =
     specialArgs
-    // {
-      inherit utils;
-    }
+    // {inherit utils;}
     // extraArgs;
   home-manager.backupFileExtension = "hm-bac";
 }

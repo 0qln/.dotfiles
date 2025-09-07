@@ -16,9 +16,8 @@ in {
 
   sops = {
     defaultSopsFormat = "yaml";
-    # age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
+    age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
     # age.keyFile = "/home/oq/age-yubikey-identity-ca0b293d.txt";
-    age.keyFile = "${config.xdg.configHome}/sops/age/not-keys.txt";
     defaultSymlinkPath = "${userRuntimeDir}/secrets";
     defaultSecretsMountPoint = "${userRuntimeDir}/secrets.d";
   };

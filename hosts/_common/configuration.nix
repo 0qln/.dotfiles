@@ -5,7 +5,6 @@
 }: {
   imports = [
     ../../modules/avahi
-    ./smart-card-daemon.nix
   ];
 
   security.sudo.extraConfig = ''
