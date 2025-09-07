@@ -9,18 +9,21 @@
     setupSecrets.deps = [name];
   };
 
-  mkSopsDependant = name: script: {
-    ${name} = {
-      text = script;
-      deps = ["setupSecrets"];
-    };
+  mkAgeIdentity = name: rec {
+    # use a combined key file instead of `path = "${root}/${name}"`,
+    # this way, sops can automatically fallback to use the backup key.
+    file = ../../yubis/${name};
+    root = "/root/.config/sops/age/";
+    path = "${root}/yubi-combined";
+    name = name;
   };
 
-  ageIdentity = rec {
-    name = "age-yubikey-identity-ca0b293d.txt";
-    file = ../../yubis/yubi-1/${name};
-    path = "/root/.config/sops/age/${name}";
+  ageIdentities = {
+    yubi-1 = mkAgeIdentity "yubi-1/age-yubikey-identity-ca0b293d.txt";
+    yubi-2 = mkAgeIdentity "yubi-2/age-yubikey-identity-7432b76e.txt";
   };
+
+  flatten = xs: builtins.foldl' (acc: s: acc // s) {} xs;
 in {
   imports = [
     inputs.sops-nix.nixosModules.sops
@@ -28,7 +31,7 @@ in {
 
   sops = {
     defaultSopsFormat = "yaml";
-    age.keyFile = ageIdentity.path;
+    age.keyFile = ageIdentities.yubi-1.path;
   };
 
   environment.systemPackages = with pkgs; [
@@ -39,12 +42,13 @@ in {
   system.activationScripts =
     # Copy the age identity to somewhere outside of the nix store since, sops
     # does not allow paths to the nix store.
-    mkSopsDependency "createIdentityCopy" (with ageIdentity; ''
-      DEST="$(dirname ${path})"
-      mkdir -p "$DEST"
-      cp -f ${file} "$DEST/${name}"
-    '')
-    # ;
+    (flatten (lib.attrsets.mapAttrsToList
+      (name: identity:
+        mkSopsDependency "createIdentityCopy_${name}" (with identity; ''
+          mkdir -p "$(dirname "${path}")"
+          cat "${file}" >> "${path}"
+        ''))
+      ageIdentities))
     //
     # https://github.com/Mic92/sops-nix/issues/377#issuecomment-2926579189
     (mkSopsDependency "setupYubikeyForSopsNix" (with pkgs; ''
