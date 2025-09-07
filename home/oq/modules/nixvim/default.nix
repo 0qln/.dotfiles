@@ -36,7 +36,7 @@
     statix
     yamllint
     alejandra
-    vale-ls
+    # vale-ls
   ];
 
   programs.nixvim = {
