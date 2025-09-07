@@ -273,7 +273,7 @@
     lib.hm.dag.entryAfter deps ''
       #!${pkgs.bash}/bin/bash
       dst="${destPath}"
-      src="${userRuntimeDir}/secrets/${secret}"
+      src="$XDG_RUNTIME_DIR/secrets/${secret}"
       if [[ -e "$dst" ]]; then
         run rm -r "$dst"
       fi
