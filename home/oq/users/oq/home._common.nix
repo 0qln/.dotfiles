@@ -12,6 +12,10 @@
     ../../modules/btop
     ../../modules/direnv
     ../../modules/git
+    # TODO: sort out the work stuff and move it to another home
+    # module or user or something, such that i can select it
+    # on a per host basis.
+    ../../modules/git/work.nix
     ../../modules/gh
     ../../modules/lf
     ../../modules/nixvim
