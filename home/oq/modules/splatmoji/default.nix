@@ -1,7 +1,9 @@
-{ pkgs, lib, ... }:
-let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   splatmoji = pkgs.stdenv.mkDerivation rec {
-
     pname = "splatmoji";
 
     version = "v1.2.0";
@@ -22,14 +24,12 @@ let
       cp -R ./* $out/bin
     '';
   };
-in
-{
+in {
   imports = [
     ../rofi
   ];
 
-  home.packages =
-    with pkgs;
+  home.packages = with pkgs;
     [
       xsel
       jq

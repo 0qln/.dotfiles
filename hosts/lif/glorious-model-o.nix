@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   gloriousctl = pkgs.stdenv.mkDerivation {
     pname = "gloriousctl";
     version = "1.0.0";
@@ -11,7 +10,7 @@ let
       sha256 = "sha256-69yRab0Mx6elwkvxpmAWeaQEDTl5jBObUnoPlh0Jba0=";
     };
 
-    buildInputs = [ pkgs.hidapi ];
+    buildInputs = [pkgs.hidapi];
 
     # Patch the source to add new device IDs
     postPatch = ''
@@ -25,8 +24,7 @@ let
       runHook postInstall
     '';
   };
-in
-{
+in {
   # WIP
 
   #environment.systemPackages = with pkgs; [

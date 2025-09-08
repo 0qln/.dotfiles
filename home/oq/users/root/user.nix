@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   users.users.root = {
     # this is set explicitly such that things like:
     # userRuntimeDir = "/run/user/${toString sysConfig.users.users.${config.home.username}.uid}";

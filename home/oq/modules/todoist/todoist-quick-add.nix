@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   name = "todoist-quick-add";
   text = ''
     #!${pkgs.bash}/bin/bash
@@ -8,15 +7,16 @@ let
   '';
   script = pkgs.writeScriptBin name text;
 in
-pkgs.symlinkJoin {
-  inherit name;
-  paths = [
-    script
-  ]
-  ++ (with pkgs; [
-    bash
-    todoist
-  ]);
-  buildInputs = [ pkgs.makeWrapper ];
-  postBuild = "wrapProgram $out/bin/${name} --prefix PATH : $out/bin";
-}
+  pkgs.symlinkJoin {
+    inherit name;
+    paths =
+      [
+        script
+      ]
+      ++ (with pkgs; [
+        bash
+        todoist
+      ]);
+    buildInputs = [pkgs.makeWrapper];
+    postBuild = "wrapProgram $out/bin/${name} --prefix PATH : $out/bin";
+  }

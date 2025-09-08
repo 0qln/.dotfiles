@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-{
+{pkgs, ...}: {
   # docs:
   # https://nix-community.github.io/home-manager/index.xhtml#sec-install-nixos-module
   # https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation

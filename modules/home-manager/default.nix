@@ -1,15 +1,12 @@
-{ extraArgs }:
-{
+{extraArgs}: {
   specialArgs,
   inputs,
   pkgs,
   config,
   ...
-}:
-let
+}: let
   utils = import ./utils;
-in
-{
+in {
   imports = [
     inputs.home-manager.nixosModules.home-manager
   ];

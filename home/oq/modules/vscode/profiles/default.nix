@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   profile = "default";
-in
-{
+in {
   imports = [
     (import ../langs/_all.nix profile)
     (import ../appearance/profiles/default/default.nix profile)

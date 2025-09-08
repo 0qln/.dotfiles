@@ -1,12 +1,9 @@
-profile:
-{ pkgs, ... }:
-{
+profile: {pkgs, ...}: {
   imports = [
     (import ./default.nix profile)
   ];
 
   programs.vscode.profiles.${profile} = {
-
     userSettings = {
       # "backgroundCover.imagePath" = "${pkgs.fetchurl {
       #   url = "https =//w.wallhaven.cc/full/qz/wallhaven-qzv6rd.jpg";
@@ -45,6 +42,5 @@ profile:
       #   "katsute.code-background"
       # ];
     };
-
   };
 }

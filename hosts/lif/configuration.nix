@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ../_common/configuration.nix
 
@@ -19,7 +18,7 @@
 
     (import ../../modules/home-manager {
       extraArgs = {
-        monitors = import ./monitors.nix { };
+        monitors = import ./monitors.nix {};
       };
     })
 
@@ -29,7 +28,7 @@
     })
 
     (import ../../services/nixos-garbage-disposal {
-    })
+      })
 
     ./sops.nix
 

@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ../fonts
   ];
@@ -7,7 +6,6 @@
   programs.kitty = {
     enable = true;
     settings = {
-
       background_opacity = 0.7;
 
       cursor_trail = 1;
@@ -15,7 +13,6 @@
 
       # font_family = "VictorMono Nerd Font";
       font_family = "CartographCF Nerd Font";
-
     };
 
     keybindings = {

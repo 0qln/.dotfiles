@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   profile = "Worksimple.KimaiEfecteSyncPlugin | apoth_everforest";
-in
-{
+in {
   imports = [
     (import ../langs/php.remote.nix profile)
     (import ../langs/_common.nix profile)

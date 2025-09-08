@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   wallhaven-zygxxo = toString ../wallpapers/wallhaven-zygxxo.jpg;
   wallhaven-6o1lrl = toString (
     pkgs.fetchurl {
@@ -13,8 +12,7 @@ let
       hash = "sha256-2gpyEJ9GkTCnVMYbreKXB6QJTVvKc2Up8LHoPCHJ9Os=";
     }
   );
-in
-{
+in {
   services.hyprpaper.settings = {
     preload = [
       wallhaven-zygxxo

@@ -6,51 +6,46 @@
   osConfig,
   flake,
   ...
-}:
-rec {
+}: rec {
   # some reading material on fetchers:
   # https://ryantm.github.io/nixpkgs/builders/fetchers/
 
   # https://nixos.wiki/wiki/Cursor_Themes
-  mkCursorPack =
-    {
-      url,
-      hash,
-      name,
-      size,
-    }:
-    {
-      gtk.enable = true;
-      x11.enable = true;
-      inherit name;
-      inherit size;
-      package = pkgs.runCommand "moveUp" { } ''
-        mkdir -p $out/share/icons
-        ln -s ${
-          pkgs.fetchzip {
-            inherit url;
-            inherit hash;
-          }
-        } $out/share/icons/${name}
-      '';
-    };
+  mkCursorPack = {
+    url,
+    hash,
+    name,
+    size,
+  }: {
+    gtk.enable = true;
+    x11.enable = true;
+    inherit name;
+    inherit size;
+    package = pkgs.runCommand "moveUp" {} ''
+      mkdir -p $out/share/icons
+      ln -s ${
+        pkgs.fetchzip {
+          inherit url;
+          inherit hash;
+        }
+      } $out/share/icons/${name}
+    '';
+  };
 
-  mkCursorPackLocal =
-    {
-      url,
-      fileName,
-      archiveHash,
-      packName,
-      packHash,
-      size,
-    }:
-    let
-      archive = pkgs.requireFile {
-        name = fileName;
-        inherit url;
-        sha256 = archiveHash;
-      };
-    in
+  mkCursorPackLocal = {
+    url,
+    fileName,
+    archiveHash,
+    packName,
+    packHash,
+    size,
+  }: let
+    archive = pkgs.requireFile {
+      name = fileName;
+      inherit url;
+      sha256 = archiveHash;
+    };
+  in
     mkCursorPack {
       url = "file://${toString archive}";
       hash = packHash;
@@ -60,174 +55,170 @@ rec {
 
   # Converts a windows pack to linux pack
   # This currently can only handle .zip files
-  mkCursorPackWin =
-    {
-      url,
-      hash,
-      name,
-      size,
-      # TODO: the default name mapping can be improved...
-      nameMap ?
-        let
-          diagonal1 = [
-            "size_fdiag"
-            "top_left_corner"
-            "bottom_right_corner"
-          ];
-          diagonal2 = [
-            "size_bdiag"
-            "top_right_corner"
-            "bottom_left_corner"
-          ];
-        in
-        {
-          "normal" = [
-            "left_ptr"
-            "default"
-            "arrow"
-            "top_left_arrow"
-            "left_arrow"
-          ];
-          "help" = [
-            "question_arrow"
-            "help"
-          ];
-          "text" = [
-            "xterm"
-            "text"
-          ];
-          "busy" = [ "watch" ];
-          "work" = [
-            "left_ptr_watch"
-            "half-busy"
-            "progress"
-          ];
-          "vertical" = [
-            "sb_v_double_arrow"
-            "size_ver"
-            "v_double_arrow"
-          ];
-          "horizontal" = [
-            "sb_h_double_arrow"
-            "size_hor"
-            "h_double_arrow"
-          ];
-          #TODO: remove common prefix (e.g. 'Maomao') and go for full matches
-          "^diagonal (resize)?$" = diagonal1;
-          "^diagonal (resize)? 1$" = diagonal1;
-          "^diagonal (resize)? 2$" = diagonal2;
-          "move" = [
-            "fleur"
-            "move"
-            "all-scroll"
-            "dnd-move"
-          ];
-          "precision" = [
-            "crosshair"
-            "cross"
-            "tcross"
-            "color-picker"
-          ];
-          "hand" = [
-            "hand1"
-            "hand"
-            "pointer"
-            "pointing_hand"
-          ];
-          "link" = [
-            "hand2"
-            "link"
-            "alias"
-            "dnd-link"
-          ];
-          "unavailable" = [
-            "crossed_circle"
-            "not-allowed"
-            "forbidden"
-          ];
-          "alt" = [ "center_ptr" ];
-        },
-    }:
-    let
-      # we rename here bc sometimes the name of the download is the url part like "/cursor-downloadset.php?id=neco-arc"
-      # and when that happens the mkDerviation.src fucks itself over
-      winPack = pkgs.runCommand "rename" { } ''
-        mkdir -p $out
-        cp ${
-          pkgs.fetchurl {
-            inherit url;
-            inherit hash;
-          }
-        } $out/winPack.zip
-      '';
+  mkCursorPackWin = {
+    url,
+    hash,
+    name,
+    size,
+    # TODO: the default name mapping can be improved...
+    nameMap ? let
+      diagonal1 = [
+        "size_fdiag"
+        "top_left_corner"
+        "bottom_right_corner"
+      ];
+      diagonal2 = [
+        "size_bdiag"
+        "top_right_corner"
+        "bottom_left_corner"
+      ];
+    in {
+      "normal" = [
+        "left_ptr"
+        "default"
+        "arrow"
+        "top_left_arrow"
+        "left_arrow"
+      ];
+      "help" = [
+        "question_arrow"
+        "help"
+      ];
+      "text" = [
+        "xterm"
+        "text"
+      ];
+      "busy" = ["watch"];
+      "work" = [
+        "left_ptr_watch"
+        "half-busy"
+        "progress"
+      ];
+      "vertical" = [
+        "sb_v_double_arrow"
+        "size_ver"
+        "v_double_arrow"
+      ];
+      "horizontal" = [
+        "sb_h_double_arrow"
+        "size_hor"
+        "h_double_arrow"
+      ];
+      #TODO: remove common prefix (e.g. 'Maomao') and go for full matches
+      "^diagonal (resize)?$" = diagonal1;
+      "^diagonal (resize)? 1$" = diagonal1;
+      "^diagonal (resize)? 2$" = diagonal2;
+      "move" = [
+        "fleur"
+        "move"
+        "all-scroll"
+        "dnd-move"
+      ];
+      "precision" = [
+        "crosshair"
+        "cross"
+        "tcross"
+        "color-picker"
+      ];
+      "hand" = [
+        "hand1"
+        "hand"
+        "pointer"
+        "pointing_hand"
+      ];
+      "link" = [
+        "hand2"
+        "link"
+        "alias"
+        "dnd-link"
+      ];
+      "unavailable" = [
+        "crossed_circle"
+        "not-allowed"
+        "forbidden"
+      ];
+      "alt" = ["center_ptr"];
+    },
+  }: let
+    # we rename here bc sometimes the name of the download is the url part like "/cursor-downloadset.php?id=neco-arc"
+    # and when that happens the mkDerviation.src fucks itself over
+    winPack = pkgs.runCommand "rename" {} ''
+      mkdir -p $out
+      cp ${
+        pkgs.fetchurl {
+          inherit url;
+          inherit hash;
+        }
+      } $out/winPack.zip
+    '';
 
-      pack = pkgs.stdenv.mkDerivation {
-        inherit name;
-        src = winPack;
-        buildInputs = with pkgs; [
-          win2xcur
-          unzip
-        ];
-        buildPhase = ''
-          unzip winPack.zip -d winPack
-
-          iconsDir="$out/share/icons/${name}"
-          mkdir -p "$iconsDir/cursors"
-
-          (
-            # sometimes the files are at the zip root...
-            cd winPack
-
-            # sometimes they are a level deeper...
-            if [ -d "${name}" ]; then
-              cd "${name}"
-            fi
-
-            # try unpacking >w< 🎁
-            win2xcur *.{ani,cur} -o "$iconsDir/cursors"
-          )
-
-          # name mapping
-          (
-            cd "$iconsDir/cursors"
-            ${lib.concatStringsSep "\n" (
-              lib.mapAttrsToList (k: v: ''
-                # either a perfect match
-                if [ -f "${k}" ]; then
-                  ${lib.concatMapStringsSep "\n" (v: ''[ "$winFile" != "${v}" ] && cp "$winFile" "${v}"'') v}
-                fi
-                # or a partial match e.g. $file='neco-arc normal'
-                for file in * ; do
-                  pat="${k}"
-                  lowercase_pat="''${pat,,}"
-                  lowercase_file="''${file,,}"
-                  if [[ "$lowercase_file" =~ "$lowercase_pat" ]]; then
-                    ${lib.concatMapStringsSep "\n" (v: ''[ "$file" != "${v}" ] && cp "$file" "${v}"'') v}
-                  fi
-                done
-              '') nameMap
-            )}
-          )
-
-          # index.theme
-          touch "$iconsDir/index.theme"
-          cat > "$iconsDir/index.theme" << EOF
-          [Icon Theme]
-          Name=${name}
-          Comment=Windows cursor theme converted for Linux
-          EOF
-
-        '';
-        installPhase = ":";
-      };
-    in
-    {
-      gtk.enable = true;
-      x11.enable = true;
+    pack = pkgs.stdenv.mkDerivation {
       inherit name;
-      inherit size;
-      package = pack;
+      src = winPack;
+      buildInputs = with pkgs; [
+        win2xcur
+        unzip
+      ];
+      buildPhase = ''
+        unzip winPack.zip -d winPack
+
+        iconsDir="$out/share/icons/${name}"
+        mkdir -p "$iconsDir/cursors"
+
+        (
+          # sometimes the files are at the zip root...
+          cd winPack
+
+          # sometimes they are a level deeper...
+          if [ -d "${name}" ]; then
+            cd "${name}"
+          fi
+
+          # try unpacking >w< 🎁
+          win2xcur *.{ani,cur} -o "$iconsDir/cursors"
+        )
+
+        # name mapping
+        (
+          cd "$iconsDir/cursors"
+          ${lib.concatStringsSep "\n" (
+          lib.mapAttrsToList (k: v: ''
+            # either a perfect match
+            if [ -f "${k}" ]; then
+              ${lib.concatMapStringsSep "\n" (v: ''[ "$winFile" != "${v}" ] && cp "$winFile" "${v}"'') v}
+            fi
+            # or a partial match e.g. $file='neco-arc normal'
+            for file in * ; do
+              pat="${k}"
+              lowercase_pat="''${pat,,}"
+              lowercase_file="''${file,,}"
+              if [[ "$lowercase_file" =~ "$lowercase_pat" ]]; then
+                ${lib.concatMapStringsSep "\n" (v: ''[ "$file" != "${v}" ] && cp "$file" "${v}"'') v}
+              fi
+            done
+          '')
+          nameMap
+        )}
+        )
+
+        # index.theme
+        touch "$iconsDir/index.theme"
+        cat > "$iconsDir/index.theme" << EOF
+        [Icon Theme]
+        Name=${name}
+        Comment=Windows cursor theme converted for Linux
+        EOF
+
+      '';
+      installPhase = ":";
     };
+  in {
+    gtk.enable = true;
+    x11.enable = true;
+    inherit name;
+    inherit size;
+    package = pack;
+  };
 
   # workaround for making the config writable:
   # while this works... it is incredibly ugly :(
@@ -274,12 +265,11 @@ rec {
   #    ln -s "$src" "$dst"
   #  '';
 
-  mkForceCopySecret =
-    {
-      secret, # can also contain a path e.g. todoist/todoist-token
-      destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
-      deps ? [ "writeBoundary" ],
-    }:
+  mkForceCopySecret = {
+    secret, # can also contain a path e.g. todoist/todoist-token
+    destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
+    deps ? ["writeBoundary"],
+  }:
     lib.hm.dag.entryAfter deps ''
       #!${pkgs.bash}/bin/bash
       dst="${destPath}"
@@ -295,13 +285,12 @@ rec {
       run cp -Lrp "$src" "$dst"
     '';
 
-  mkCopy =
-    {
-      source,
-      destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
-      newMode ? "700",
-      deps ? [ "writeBoundary" ],
-    }:
+  mkCopy = {
+    source,
+    destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
+    newMode ? "700",
+    deps ? ["writeBoundary"],
+  }:
     lib.hm.dag.entryAfter deps ''
       #!${pkgs.bash}/bin/bash
       dst="${destPath}"
@@ -334,12 +323,10 @@ rec {
   # source: https://github.com/nix-community/home-manager/issues/257#issuecomment-1646557848
   # related: https://discourse.nixos.org/t/neovim-config-read-only/35109/10
   runtimeRoot = "/home/${config.home.username}/.dotfiles"; # path to flake
-  runtimePath =
-    path:
-    let
-      rootStr = toString flake; # current flake path
-      pathStr = toString path; # path path
-    in
+  runtimePath = path: let
+    rootStr = toString flake; # current flake path
+    pathStr = toString path; # path path
+  in
     assert lib.assertMsg (lib.hasPrefix rootStr pathStr) "${pathStr} does not start with ${rootStr}";
-    runtimeRoot + lib.removePrefix rootStr pathStr;
+      runtimeRoot + lib.removePrefix rootStr pathStr;
 }

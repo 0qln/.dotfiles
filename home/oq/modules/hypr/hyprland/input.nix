@@ -2,18 +2,15 @@
   pkgs,
   monitors,
   ...
-}:
-let
-  todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix { };
+}: let
+  todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix {};
 
   #TODO: pull these meta-variables up into some module
   fileManager = "lf";
   mainMod = "SUPER";
   terminal = "kitty";
-in
-{
+in {
   wayland.windowManager.hyprland.settings = {
-
     # For some reason hardware_cursors draws the cursor like 250px
     # to the left and some other issues...
     # fix source: https://github.com/hyprwm/Hyprland/issues/8852
@@ -143,6 +140,5 @@ in
       "${mainMod}, mouse:272, movewindow"
       "${mainMod}, mouse:273, resizewindow"
     ];
-
   };
 }

@@ -1,9 +1,7 @@
-{ config, ... }:
-let
+{config, ...}: let
   hosts = "gh/hosts.yml";
   home = config.home.homeDirectory;
-in
-{
+in {
   programs.gh-dash = {
     enable = true;
   };

@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   package = pkgs.vscode-fhs;
-in
-{
+in {
   imports = [
     ./profiles/default.nix
     ./profiles/Worksimple.KimaiEfecteSyncPlugin.nix

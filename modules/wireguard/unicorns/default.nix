@@ -1,10 +1,11 @@
-{ configFile }:
-{ config, pkgs, ... }:
-let
+{configFile}: {
+  config,
+  pkgs,
+  ...
+}: let
   name = "unicorns";
   confName = "wireguard/${name}.conf";
-in
-{
+in {
   imports = [
     ../default.nix
   ];

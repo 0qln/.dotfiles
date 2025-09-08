@@ -1,6 +1,4 @@
-{ ... }:
-{
-
+{...}: {
   # docs: https://nixos.wiki/wiki/Filesystems
 
   fileSystems."/mnt/store-1" = {
@@ -11,5 +9,4 @@
       "users"
     ];
   };
-
 }

@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   users.users.oq = {
     isNormalUser = true;
     # this is set explicitly such that things like:

@@ -4,21 +4,18 @@
   dbpassFileHashed,
   fqdn,
   duckdnsTokenFile,
-}:
-{
+}: {
   config,
   pkgs,
   lib,
   ...
-}:
-let
+}: let
   systemUser = "nextcloud";
   dbUser = "nextcloud";
   serviceName = "nextcloud";
   storagePath = "/mnt/store-1/services/nextcloud";
   hostName = "nextcloud.${fqdn}";
-in
-{
+in {
   imports = [
     ../database
     ../acme
@@ -36,7 +33,6 @@ in
     };
 
     sops.secrets = {
-
       "${serviceName}/dbpass" = {
         sopsFile = dbpassFile;
         owner = systemUser;
@@ -68,7 +64,6 @@ in
     };
 
     services = {
-
       # TODO:
       # no idea why this does not work...
       # error is something about not being able to reach duckdns with UDP...
@@ -105,7 +100,6 @@ in
         extraAppsEnable = true;
         extraApps = {
           # TODO
-
         };
         appstoreEnable = true;
         autoUpdateApps = {
@@ -113,7 +107,6 @@ in
           startAt = "Sun 13:00:00";
         };
         config = {
-
           dbtype = "mysql";
           dbname = "nextcloud";
 
@@ -136,7 +129,7 @@ in
       };
 
       mysql = {
-        ensureDatabases = [ "nextcloud" ];
+        ensureDatabases = ["nextcloud"];
         ensureUsers = [
           {
             name = dbUser;

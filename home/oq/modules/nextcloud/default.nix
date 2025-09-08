@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   services.nextcloud-client = {
     enable = true;
     startInBackground = true;
@@ -37,5 +36,4 @@
   # };
 
   # davfs2 also doe snot work properly
-
 }

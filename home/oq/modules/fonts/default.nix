@@ -1,7 +1,5 @@
-{ pkgs, ... }:
-let
-  fonts =
-    with pkgs;
+{pkgs, ...}: let
+  fonts = with pkgs;
     [
       nerd-fonts.victor-mono
       ibm-plex
@@ -9,8 +7,7 @@ let
     ++ [
       # (import ./cartograph-cf/derivation.nix { inherit pkgs; })
     ];
-in
-{
+in {
   home.packages = fonts;
   fonts.fontconfig.enable = true;
 

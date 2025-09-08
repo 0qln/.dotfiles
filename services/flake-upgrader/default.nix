@@ -2,12 +2,13 @@
   flakeDir,
   mode ? "rebuild",
   onCalendar ? "Sat *-*-* 00:00:00",
-}:
-{ pkgs, host-name, ... }:
-let
+}: {
+  pkgs,
+  host-name,
+  ...
+}: let
   serviceName = "flake-upgrader";
-in
-{
+in {
   environment.systemPackages = with pkgs; [
     shadow
   ];
@@ -24,12 +25,12 @@ in
   };
 
   systemd.services.${serviceName} = {
-    after = [ "network.target" ];
+    after = ["network.target"];
     description = "Flake update and build the system.";
     serviceConfig = {
       User = "root";
       Type = "exec";
-      Environment = "PATH=${pkgs.lib.makeBinPath [ pkgs.shadow ]}:/run/current-system/sw/bin";
+      Environment = "PATH=${pkgs.lib.makeBinPath [pkgs.shadow]}:/run/current-system/sw/bin";
     };
     script = ''
       #!${pkgs.bash}/bin/sh
@@ -41,7 +42,7 @@ in
   };
 
   systemd.timers.${serviceName} = {
-    wantedBy = [ "timers.target" ];
+    wantedBy = ["timers.target"];
     timerConfig = {
       OnCalendar = onCalendar;
       Persistent = true;

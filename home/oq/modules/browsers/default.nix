@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./chrome.nix
     ./tor.nix

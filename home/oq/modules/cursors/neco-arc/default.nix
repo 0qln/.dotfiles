@@ -1,6 +1,4 @@
-{ reload-service }:
-args@{ pkgs, ... }:
-let
+{reload-service}: args @ {pkgs, ...}: let
   utils = args.utils args;
   name = "Neco Arc";
   size = 24;
@@ -14,8 +12,7 @@ let
     inherit name;
     inherit size;
   };
-in
-{
+in {
   home.pointerCursor = cursorPack;
 
   systemd.user.services."reload-cursor" = reload-service name size;

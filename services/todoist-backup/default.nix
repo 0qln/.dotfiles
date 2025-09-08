@@ -1,23 +1,18 @@
-{
-  secrets-env,
-}:
-{
+{secrets-env}: {
   config,
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   serviceName = "todoist-backup";
   serviceUser = "todoist-backup";
   serviceGroup = "todoist-backup";
-  servicePkgs = import ./packages.nix { inherit pkgs; };
+  servicePkgs = import ./packages.nix {inherit pkgs;};
   service = pkgs.callPackage ./derivation.nix {
     name = serviceName;
     inherit servicePkgs;
   };
-in
-{
+in {
   options.services.${serviceName} = {
     enable = lib.mkEnableOption "Todoist backup service";
   };
@@ -29,7 +24,7 @@ in
       group = serviceGroup;
       mode = "0400";
       format = "dotenv";
-      restartUnits = [ "${serviceName}.service" ];
+      restartUnits = ["${serviceName}.service"];
     };
 
     # Systemd service definition
@@ -40,13 +35,13 @@ in
         EnvironmentFile = "/run/secrets/${serviceName}";
       };
       # Combine script with dependencies
-      path = [ service ] ++ servicePkgs;
+      path = [service] ++ servicePkgs;
       script = "${service}/bin/${serviceName}";
     };
 
     # Scheduled execution
     systemd.timers.${serviceName} = {
-      wantedBy = [ "timers.target" ];
+      wantedBy = ["timers.target"];
       timerConfig = {
         OnCalendar = "daily";
         Persistent = true;
@@ -55,7 +50,7 @@ in
     };
 
     # Dedicated user
-    users.groups.${serviceGroup} = { };
+    users.groups.${serviceGroup} = {};
     users.users.${serviceUser} = {
       isSystemUser = true;
       group = serviceGroup;

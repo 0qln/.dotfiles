@@ -1,11 +1,9 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   # https://wiki.nixos.org/wiki/Default_applications
 
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-
       # https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
 
       "image/png" = "qimgv.desktop";
@@ -27,7 +25,6 @@
       "application/xhtml+xml" = "zen-twilight.desktop";
       "application/x-extension-xhtml" = "zen-twilight.desktop";
       "application/x-extension-xht" = "zen-twilight.desktop";
-
     };
   };
 }

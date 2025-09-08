@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   home.file."repos/work.devops/.envrc".text = ''
 
 

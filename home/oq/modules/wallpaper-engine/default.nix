@@ -1,5 +1,4 @@
-{ monitors, ... }:
-{
+{monitors, ...}: {
   # docs:
   # https://home-manager-options.extranix.com/?query=linux-wallpaperengine&release=release-25.05
   # https://mynixos.com/home-manager/options/services.linux-wallpaperengine

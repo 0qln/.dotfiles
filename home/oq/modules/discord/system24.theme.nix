@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   home.file.".config/vesktop/themes/system24.theme.css" = {
     source = "${pkgs.fetchurl {
       url = "https://github.com/refact0r/system24/raw/main/theme/system24.theme.css";

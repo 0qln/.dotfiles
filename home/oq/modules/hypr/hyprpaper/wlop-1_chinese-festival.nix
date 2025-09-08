@@ -3,8 +3,7 @@
   monitors,
   lib,
   ...
-}:
-let
+}: let
   wals = {
     vert1 = "${pkgs.fetchurl {
       url = "https://w.wallhaven.cc/full/ex/wallhaven-exj8jl.jpg";
@@ -19,8 +18,7 @@ let
       hash = "sha256-bo2omvgTQ8oOoAbuxXTiRLSVAevUA4Tu60IUHCM99bA=";
     }}";
   };
-in
-{
+in {
   services.hyprpaper = {
     settings = {
       preload = lib.attrsets.attrValues wals;
