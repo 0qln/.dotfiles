@@ -1,11 +1,9 @@
-{ defaultUser }:
-{ pkgs, inputs, ... }: 
-{
-	imports  = [
-		inputs.nixos-wsl.nixosModules.default
-	];
-	wsl = {
-		enable = true;
-		defaultUser = "oq";
-	};
+{defaultUser}: {inputs, ...}: {
+  imports = [
+    inputs.nixos-wsl.nixosModules.default
+  ];
+  wsl = {
+    enable = true;
+    inherit defaultUser;
+  };
 }

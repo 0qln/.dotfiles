@@ -1,0 +1,6 @@
+{...}: {
+  imports = [
+    ../loki
+    ./configuration.nix
+  ];
+}

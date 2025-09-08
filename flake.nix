@@ -40,60 +40,57 @@
     };
   };
 
-  outputs =
-    inputs@{
-      home-manager,
-      sops-nix,
-      nixvim,
-      self,
-      nixpkgs,
-      ...
-    }:
-    let
-      inherit (nixpkgs) lib;
-    in
-    {
-      # https://discourse.nixos.org/t/how-do-specialargs-work/50615/4
-      # https://nixos-modules.nix.xn--q9jyb4c/lessons/function-arguments/lesson/
+  outputs = inputs @ {
+    home-manager,
+    sops-nix,
+    nixvim,
+    self,
+    nixpkgs,
+    ...
+  }: let
+    inherit (nixpkgs) lib;
+  in {
+    # https://discourse.nixos.org/t/how-do-specialargs-work/50615/4
+    # https://nixos-modules.nix.xn--q9jyb4c/lessons/function-arguments/lesson/
 
-      nixosConfigurations."lif" = lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./hosts/lif ];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "lif";
-        };
-      };
-
-      nixosConfigurations."lifbrasir" = lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./hosts/lifbrasir ];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "lifbrasir";
-        };
-      };
-
-      nixosConfigurations."loki" = lib.nixosSystem {
-#TODO: which one is correct?
-        # system = "x86_64-linux";
-        system = "x86_64-linux";
-        # modules = [ ./hosts/loki ];
-modules = [
-		./hosts/loki
-          inputs.nixos-wsl.nixosModules.default
-          {
-            system.stateVersion = "25.05";
-            wsl.enable = true;
-          }
-];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "loki";
-        };
+    nixosConfigurations."lif" = lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [./hosts/lif];
+      specialArgs = {
+        inherit inputs;
+        flake = self;
+        host-name = "lif";
       };
     };
+
+    nixosConfigurations."lifbrasir" = lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [./hosts/lifbrasir];
+      specialArgs = {
+        inherit inputs;
+        flake = self;
+        host-name = "lifbrasir";
+      };
+    };
+
+    nixosConfigurations."loki" = lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [./hosts/loki];
+      specialArgs = {
+        inherit inputs;
+        flake = self;
+        host-name = "loki";
+      };
+    };
+
+    nixosConfigurations."loki.lif" = lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [./hosts/loki.lif];
+      specialArgs = {
+        inherit inputs;
+        flake = self;
+        host-name = "loki.lif";
+      };
+    };
+  };
 }
