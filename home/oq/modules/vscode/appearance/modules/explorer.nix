@@ -1,6 +1,4 @@
-profile:
-{ pkgs, ... }:
-{
+profile: {pkgs, ...}: {
   programs.vscode.profiles.${profile} = {
     userSettings = {
       "gitlens.views.commitDetails.files.layout" = "tree";

@@ -1,10 +1,7 @@
-{ ... }:
-{
-  home-manager.users.root =
-    { ... }:
-    {
-      imports = [
-        ./home._common.nix
-      ];
-    };
+{...}: {
+  home-manager.users.root = {...}: {
+    imports = [
+      ./home._common.nix
+    ];
+  };
 }

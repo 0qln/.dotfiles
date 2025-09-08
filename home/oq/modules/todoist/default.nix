@@ -1,12 +1,10 @@
-args@{
+args @ {
   pkgs,
   config,
   ...
-}:
-let
+}: let
   utils = args.utils args;
-in
-{
+in {
   home.packages = with pkgs; [
     todoist-electron
     todoist

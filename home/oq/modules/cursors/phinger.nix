@@ -1,10 +1,7 @@
-{ reload-service }:
-{ pkgs, ... }:
-let
+{reload-service}: {pkgs, ...}: let
   size = 24;
   name = "phinger-cursors-dark";
-in
-{
+in {
   home.file.".icons/default" = {
     source = "${pkgs.phinger-cursors}/share/icons/${name}";
   };

@@ -1,10 +1,7 @@
-{ ... }:
-{
-  home-manager.users.oq =
-    { ... }:
-    {
-      imports = [
-        ./home._common.nix
-      ];
-    };
+{...}: {
+  home-manager.users.oq = {...}: {
+    imports = [
+      ./home._common.nix
+    ];
+  };
 }

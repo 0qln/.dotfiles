@@ -1,8 +1,5 @@
-profile:
-{ pkgs, ... }:
-{
+profile: {pkgs, ...}: {
   programs.vscode.profiles.${profile} = {
-
     extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace [
       {
         name = "everforest";
@@ -17,6 +14,5 @@ profile:
       "everforest.darkContrast" = "hard";
       "everforest.diagnosticTextBackgroundOpacity" = "50%";
     };
-
   };
 }

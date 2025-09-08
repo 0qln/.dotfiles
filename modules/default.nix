@@ -1,5 +1,4 @@
-{ defaultUser }:
-{ ... }: {
+{defaultUser}: {...}: {
   imports = [
     nixos-wsl.nixosModules.default
   ];

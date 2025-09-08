@@ -1,4 +1,4 @@
-{ pkgs }:
+{pkgs}:
 pkgs.stdenvNoCC.mkDerivation {
   pname = "Cartograph CF Nerd Font";
   version = "v1.0.0";

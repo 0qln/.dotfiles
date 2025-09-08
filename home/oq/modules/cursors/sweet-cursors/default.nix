@@ -1,6 +1,4 @@
-{ reload-service }:
-args@{ pkgs, ... }:
-let
+{reload-service}: args @ {pkgs, ...}: let
   utils = args.utils args;
   name = "Sweet-Dark";
   size = 24;
@@ -12,8 +10,7 @@ let
     packHash = "sha256-RPGnszDsQRKtmHK16Daw1Awuqa4uSTqtoxK4mqyzM8A=";
     inherit size;
   };
-in
-{
+in {
   home.pointerCursor = cursorPack;
 
   systemd.user.services."reload-cursor" = reload-service name size;

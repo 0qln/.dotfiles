@@ -1,8 +1,5 @@
-profile:
-{ pkgs, ... }:
-{
+profile: {pkgs, ...}: {
   programs.vscode.profiles.${profile} = {
-
     extensions = with pkgs.vscode-extensions; [
       asvetliakov.vscode-neovim
     ];
@@ -12,6 +9,5 @@ profile:
         "asvetliakov.vscode-neovim" = 1;
       };
     };
-
   };
 }

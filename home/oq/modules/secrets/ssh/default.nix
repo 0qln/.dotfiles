@@ -4,20 +4,19 @@
 #> I don't know why but it just does and then systemd fails
 #> to find the sops-nix.service because idkklklj;lkjasd;lfkjalkfj
 #>
-{ config, lib, ... }:
-let
-  linkPair =
-    name: method:
-    let
-      home = config.home.homeDirectory;
-      inherit (config.sops) secrets;
-    in
-    [
-      "L ${home}/.ssh/${name}/${method} - - - - ${secrets."sshKeys/${name}".path}"
-      "L ${home}/.ssh/${name}/${method}.pub - - - - ${secrets."sshKeys/${name}.pub".path}"
-    ];
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  linkPair = name: method: let
+    home = config.home.homeDirectory;
+    inherit (config.sops) secrets;
+  in [
+    "L ${home}/.ssh/${name}/${method} - - - - ${secrets."sshKeys/${name}".path}"
+    "L ${home}/.ssh/${name}/${method}.pub - - - - ${secrets."sshKeys/${name}.pub".path}"
+  ];
+in {
   sops.secrets = {
     "sshKeys/server" = {
       format = "binary";

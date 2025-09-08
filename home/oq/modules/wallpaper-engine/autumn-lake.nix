@@ -1,5 +1,4 @@
-{ monitors, ... }:
-{
+{monitors, ...}: {
   services.linux-wallpaperengine = {
     enable = true;
     wallpapers = [

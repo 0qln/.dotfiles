@@ -1,6 +1,4 @@
-profile:
-{ ... }:
-{
+profile: {...}: {
   imports = [
     (import ../../modules/misc.nix profile)
     (import ../../modules/editor.nix profile)

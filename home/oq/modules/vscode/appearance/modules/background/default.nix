@@ -1,8 +1,5 @@
-profile:
-{ pkgs, ... }:
-{
+profile: {pkgs, ...}: {
   programs.vscode.profiles.${profile} = {
-
     extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace [
       # {
       #   name = "background-cover";
@@ -34,6 +31,5 @@ profile:
       # "background.useInvertedOpacity" = true;
       # "background.autoInstall" = false;
     };
-
   };
 }

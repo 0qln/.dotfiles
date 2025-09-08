@@ -1,5 +1,8 @@
-{ pkgs, inputs, ... }:
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     ../_common/configuration.nix
 
@@ -14,7 +17,7 @@
     ../../home/oq/users/root/default.tui.nix
 
     (import ../../modules/home-manager {
-      extraArgs = { };
+      extraArgs = {};
     })
 
     ../../services/ssh
@@ -42,7 +45,7 @@
 
     (import ../../services/dynIp-updater-duckdns {
       tokenFile = ./duckdns/secrets.token;
-      domains = [ "0qln" ];
+      domains = ["0qln"];
     })
 
     (import ../../services/wireguard {
@@ -60,7 +63,6 @@
   ];
 
   services = {
-
     todoist-backup = {
       enable = true;
     };
@@ -72,7 +74,6 @@
     obsidian-livesync = {
       enable = true;
     };
-
   };
 
   # This value determines the NixOS release from which the default

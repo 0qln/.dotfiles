@@ -2,16 +2,13 @@
   secrets-env,
   fqdn,
   configFilePath,
-}:
-{
+}: {
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   serviceName = "obsidian-livesync";
-in
-{
+in {
   options.services.${serviceName} = {
     enable = lib.mkEnableOption "Obsidian LiveSync";
   };

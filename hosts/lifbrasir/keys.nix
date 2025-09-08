@@ -1,7 +1,9 @@
-{ config, pkgs, ... }:
-let
-in
 {
+  config,
+  pkgs,
+  ...
+}: let
+in {
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "de";
@@ -42,13 +44,13 @@ in
     enable = true;
     bindings = [
       {
-        keys = [ 224 ];
-        events = [ "key" ];
+        keys = [224];
+        events = ["key"];
         command = "${pkgs.light}/bin/light -U 10";
       }
       {
-        keys = [ 225 ];
-        events = [ "key" ];
+        keys = [225];
+        events = ["key"];
         command = "${pkgs.light}/bin/light -A 10";
       }
     ];

@@ -1,5 +1,4 @@
-{ monitors, ... }:
-{
+{monitors, ...}: {
   # docs:
   # waybar in nix:
   #   - https://mynixos.com/home-manager/option/programs.waybar.settings

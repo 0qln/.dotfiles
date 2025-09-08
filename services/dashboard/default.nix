@@ -1,10 +1,17 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   serviceName = "dashboard";
   serviceUser = "dashboard";
   serviceGroup = "dashboard";
-  servicePkgs = import ./packages.nix { inherit pkgs; };
-  service = pkgs.callPackage ./derivation.nix { name = serviceName; inherit servicePkgs; };
+  servicePkgs = import ./packages.nix {inherit pkgs;};
+  service = pkgs.callPackage ./derivation.nix {
+    name = serviceName;
+    inherit servicePkgs;
+  };
 in {
   options.services.${serviceName} = {
     enable = lib.mkEnableOption "Dashboard";
@@ -18,7 +25,7 @@ in {
       isNormalUser = true;
       packages = servicePkgs;
       hashedPassword = "!"; # Lock Password
-      extraGroups = [ "tty" ];
+      extraGroups = ["tty"];
     };
 
     # Set session as startup
@@ -35,7 +42,7 @@ in {
         # https://gist.github.com/caadar/7884b1bf16cb1fc2c7cde33d329ae37f
         # https://man7.org/linux/man-pages/man8/agetty.8.htmlhttps://man7.org/linux/man-pages/man8/agetty.8.html
         Type = "simple";
-        ExecStart = lib.mkForce [ "" "${service}/bin/${serviceName}" ];
+        ExecStart = lib.mkForce ["" "${service}/bin/${serviceName}"];
         StandardOutput = "tty";
         StandardInput = "tty";
         User = serviceUser;

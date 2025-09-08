@@ -1,11 +1,8 @@
-{ reload-service }:
-{ pkgs, ... }:
-let
+{reload-service}: {pkgs, ...}: let
   size = 24;
   name = "Capitaine Cursors";
   # name = "Capitaine Cursors (Nord)";
-in
-{
+in {
   home.file.".icons/default" = {
     source = "${pkgs.capitaine-cursors-themed}/share/icons/${name}";
   };

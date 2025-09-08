@@ -3,6 +3,7 @@
   lib,
   config,
   inputs,
+  osConfig,
   ...
 }: {
   # just in case i want to do it via copying my lua config again:
@@ -36,7 +37,7 @@
     statix
     yamllint
     alejandra
-    vale-ls
+    # vale-ls
   ];
 
   programs.nixvim = {
@@ -911,7 +912,7 @@
 
     clipboard = {
       register = "unnamedplus";
-      providers.wl-copy.enable = true;
+      providers.wl-copy.enable = osConfig.services.displayManager.sddm.wayland.enable;
     };
 
     highlight.Todo = {

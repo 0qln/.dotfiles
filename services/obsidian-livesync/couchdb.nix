@@ -3,15 +3,12 @@
   secrets-env,
   fqdn,
   configFilePath,
-}:
-{
+}: {
   config,
   lib,
   pkgs,
   ...
-}:
-let
-
+}: let
   # Documentation:
   #
   # CouchDB obs-livesync specific setup:
@@ -26,18 +23,16 @@ let
   # - https://docs.couchdb.org/en/stable/setup/single-node.html
   # - https://docs.couchdb.org/en/stable/intro/security.html
   # - https://github.com/apache/couchdb/issues/2623
-
   couchdbUser = "couchdb";
   secretsName = "${serviceName}.couchdb";
   hostName = "couchdb.${fqdn}";
   port = 5984;
-  initScript = pkgs.callPackage ./couchdb-init.nix { };
+  initScript = pkgs.callPackage ./couchdb-init.nix {};
   initStateFile = "/var/lib/couchdb/.couchdb-initialized";
   serviceDataDir = "/mnt/store-1/services/couchdb";
-in
-{
+in {
   config = lib.mkIf config.services.${serviceName}.enable {
-    environment.systemPackages = with pkgs; [ couchdb3 ];
+    environment.systemPackages = with pkgs; [couchdb3];
 
     systemd.tmpfiles.rules = [
       "d ${dirOf serviceDataDir} 0755 root root - -"
@@ -51,7 +46,7 @@ in
       group = couchdbUser;
       mode = "0400";
       format = "dotenv";
-      restartUnits = [ "couchdb.service" ];
+      restartUnits = ["couchdb.service"];
     };
 
     # for couchdb local.ini
@@ -71,9 +66,9 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ port ];
+    networking.firewall.allowedTCPPorts = [port];
 
-    users.groups.${couchdbUser} = { };
+    users.groups.${couchdbUser} = {};
     users.users.${couchdbUser} = {
       group = couchdbUser;
       isSystemUser = true;
@@ -101,9 +96,9 @@ in
     };
 
     systemd.services.couchdb-init = {
-      after = [ "couchdb.service" ];
-      requires = [ "couchdb.service" ];
-      wantedBy = [ "multi-user.target" ];
+      after = ["couchdb.service"];
+      requires = ["couchdb.service"];
+      wantedBy = ["multi-user.target"];
 
       serviceConfig = {
         User = couchdbUser;

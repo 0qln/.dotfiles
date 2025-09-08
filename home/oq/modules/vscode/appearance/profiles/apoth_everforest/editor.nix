@@ -1,6 +1,4 @@
-profile:
-{ ... }:
-{
+profile: {...}: {
   programs.vscode.profiles.${profile} = {
     userSettings = {
       "editor.minimap.enabled" = false;

@@ -1,6 +1,4 @@
-profile:
-{ pkgs, ... }:
-{
+profile: {pkgs, ...}: {
   imports = [
     (import ../../modules/background/_apoth-1.nix profile)
   ];

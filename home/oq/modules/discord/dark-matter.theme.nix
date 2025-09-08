@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   home.file.".config/vesktop/themes/dark-matter.theme.css" = {
     source = "${pkgs.fetchurl {
       url = "https://betterdiscord.app/Download?id=174";

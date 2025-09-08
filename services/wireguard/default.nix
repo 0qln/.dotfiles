@@ -1,19 +1,16 @@
 {
   privateKeyFile,
   externalInterface,
-}:
-{
+}: {
   pkgs,
   host-name,
   config,
   ...
-}:
-let
+}: let
   port = 51820;
   interface = "wg_${host-name}";
   privateKey = "wg/${host-name}/privateKey";
-in
-{
+in {
   sops.secrets.${privateKey} = {
     sopsFile = privateKeyFile;
     format = "binary";
@@ -25,11 +22,11 @@ in
       # enable NAT
       enable = true;
       inherit externalInterface;
-      internalInterfaces = [ interface ];
+      internalInterfaces = [interface];
     };
 
     firewall = {
-      allowedUDPPorts = [ port ];
+      allowedUDPPorts = [port];
     };
 
     wireguard.interfaces = {
@@ -63,7 +60,7 @@ in
           {
             # lif
             publicKey = builtins.readFile ../../hosts/lif/wireguard/0qln/public.key;
-            allowedIPs = [ "10.100.0.2/32" ];
+            allowedIPs = ["10.100.0.2/32"];
           }
         ];
       };

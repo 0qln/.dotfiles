@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   # docs around acme:
   # - https://nixos.org/manual/nixos/stable/index.html#module-security-acme
   # -

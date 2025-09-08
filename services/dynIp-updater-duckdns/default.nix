@@ -1,23 +1,23 @@
-{ tokenFile, domains }:
 {
+  tokenFile,
+  domains,
+}: {
   lib,
   config,
   pkgs,
   ...
-}:
-let
+}: let
   serviceName = "dynIp-updater-duckdns";
   systemUser = "dynIp-updater-duckdns";
   domainsStr = lib.concatStringsSep "," domains;
-in
-{
+in {
   config = {
     environment.systemPackages = with pkgs; [
       curl
       bash
     ];
 
-    users.groups.${systemUser} = { };
+    users.groups.${systemUser} = {};
     users.users.${systemUser} = {
       group = systemUser;
       isSystemUser = true;
@@ -32,8 +32,8 @@ in
     };
 
     systemd.services.${serviceName} = {
-      after = [ "network.target" ];
-      wants = [ "network-online.target" ];
+      after = ["network.target"];
+      wants = ["network-online.target"];
       description = "Send dynamic ip address changes to duckdns.";
       serviceConfig = {
         User = systemUser;
@@ -53,12 +53,11 @@ in
     };
 
     systemd.timers.${serviceName} = {
-      wantedBy = [ "timers.target" ];
+      wantedBy = ["timers.target"];
       timerConfig = {
         OnBootSec = "2min";
         OnUnitActiveSec = "2min";
       };
     };
-
   };
 }

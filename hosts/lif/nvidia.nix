@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+{config, ...}: {
   # Enable OpenGL
   hardware.graphics = {
     # "So If you have an GPU with Turing architecture (RTX 20-Series)
@@ -8,10 +7,9 @@
   };
 
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
-
     # Modesetting is required.
     modesetting.enable = true;
 

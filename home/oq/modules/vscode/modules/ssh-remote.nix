@@ -1,13 +1,8 @@
-profile:
-args@{ pkgs, ... }:
-let
+profile: args @ {pkgs, ...}: let
   sshConfigFile = "/home/oq/.vscode/ssh.config";
   utils = args.utils args;
-in
-{
-
+in {
   programs.vscode.profiles.${profile} = {
-
     extensions = with pkgs.vscode-extensions; [
       ms-vscode-remote.remote-ssh
       ms-vscode.remote-explorer

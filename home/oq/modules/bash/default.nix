@@ -1,4 +1,8 @@
-{...}: {
+{
+  lib,
+  config,
+  ...
+}: {
   programs.direnv = {
     enableBashIntegration = true;
   };
@@ -14,7 +18,11 @@
     initExtra = ''
       export EDITOR="nvim"
       alias cdf='cd $(fd --hidden --type d | fzf)'
-      alias ssh='kitten ssh'
+      ${
+        if config.programs.kitty.enable
+        then "alias ssh='kitten ssh'"
+        else ""
+      }
       alias la='ll -a'
       alias lg='lazygit'
       alias lf='lf-ueberzug'

@@ -3,8 +3,7 @@
   pkgs,
   monitors,
   ...
-}:
-{
+}: {
   imports = [
     ./input.nix
   ];
@@ -130,7 +129,6 @@
 
     # ============== WINDOW RULES ==============
     windowrule = [
-
       "float, title:todoist-quick-add"
 
       "float, title:Open Files"

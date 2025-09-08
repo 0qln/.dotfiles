@@ -1,6 +1,4 @@
-profile:
-{ ... }:
-{
+profile: {...}: {
   imports = [
     (import ../../colors/everforest.nix profile)
   ];

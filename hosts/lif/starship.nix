@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   #TODO: move this in the home config, as soon as the home manager options have the presets...
   programs.starship = {
     enable = true;

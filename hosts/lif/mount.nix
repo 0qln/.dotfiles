@@ -1,6 +1,4 @@
-{ ... }:
-{
-
+{...}: {
   # docs: https://nixos.wiki/wiki/Filesystems
 
   fileSystems."/mnt/volume-d" = {

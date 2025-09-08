@@ -1,6 +1,4 @@
-profile:
-{ ... }:
-{
+profile: {...}: {
   imports = [
     (import ./git.nix profile)
     (import ./neovim.nix profile)

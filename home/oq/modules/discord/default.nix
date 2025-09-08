@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     ./frosted-glass.theme.nix
     ./dark-matter.theme.nix
