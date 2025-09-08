@@ -2,7 +2,7 @@ keys:
   - &lifbrasir age13ygw3n6x7hph9q5e6zhwwcel32r2lg2ut93ssuj4r79jddx6yspsnrzjvs
   - &oq age1akdvdtgd835g84xgyjz377wyw93azvglvggl5aas62z50xpcpatscc58a6
   - &oq-yubi1 age1yubikey1qtk6ap8wyjw9qvt4xe6uze0ucp63nqefpqhel6rl2uv7kp6ddmsz5ujkuvq
-  - &oq-yubi2 age1yubikey1qtqwt6yyn894y7xlqgx33ljlmqawkz59dcrthqj8tt5hkpx5gy3v5aqf8wd
+  - &oq-yubi2 age1yubikey1qt6apkfjlfpun32ppk4zxrj9jh7dyrcfwr59trl2des3r7pmfxdu5jst7yf
 creation_rules:
   - path_regex: ^home/oq/.*secrets.*$
     key_groups:

@@ -1,7 +1,7 @@
 #       Serial: 34059735, Slot: 1
 #         Name: oq.age
-#      Created: Sun, 07 Sep 2025 17:40:30 +0000
+#      Created: Mon, 08 Sep 2025 21:39:55 +0000
 #   PIN policy: Once   (A PIN is required once per session, if set)
-# Touch policy: Always (A physical touch is required for every decryption)
-#    Recipient: age1yubikey1qtqwt6yyn894y7xlqgx33ljlmqawkz59dcrthqj8tt5hkpx5gy3v5aqf8wd
-AGE-PLUGIN-YUBIKEY-1676SWQ5ZWSETWMSPF8GDH
+# Touch policy: Cached (A physical touch is required for decryption, and is cached for 15 seconds)
+#    Recipient: age1yubikey1qt6apkfjlfpun32ppk4zxrj9jh7dyrcfwr59trl2des3r7pmfxdu5jst7yf
+AGE-PLUGIN-YUBIKEY-1676SWQ5ZLM6ZK9Q67AVAP
