@@ -6,6 +6,7 @@ with import <nixpkgs> {};
       alejandra
       fd
       sops
+      age-plugin-yubikey
     ];
 
     shellHook = ''
