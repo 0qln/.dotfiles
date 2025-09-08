@@ -78,9 +78,17 @@
 
       nixosConfigurations."loki" = lib.nixosSystem {
 #TODO: which one is correct?
-        # system = "x86_64-unknown-linux-gnu";
+        # system = "x86_64-linux";
         system = "x86_64-linux";
-        modules = [ ./hosts/loki ];
+        # modules = [ ./hosts/loki ];
+modules = [
+		./hosts/loki
+          inputs.nixos-wsl.nixosModules.default
+          {
+            system.stateVersion = "25.05";
+            wsl.enable = true;
+          }
+];
         specialArgs = {
           inherit inputs;
           flake = self;
