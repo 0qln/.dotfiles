@@ -342,7 +342,7 @@
         };
       }
       {
-        key = "<leadr>dc";
+        key = "<leader>dc";
         action = "<cmd>DapContinue<CR>";
         options = {
           silent = true;
@@ -829,7 +829,7 @@
             installRustc = true;
             installCargo = true;
           };
-          # ts_ls.enable = true; # TS/JS
+          ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
           tailwindcss.enable = true; # TailwindCSS
           html.enable = true; # HTML
