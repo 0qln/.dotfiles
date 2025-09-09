@@ -148,6 +148,8 @@ in {
           done
         }}
       '';
+
+      copy-name = ''$basename "$f" | wl-copy'';
     };
 
     keybindings = {
@@ -170,6 +172,8 @@ in {
       "p" = "paste";
       "x" = "cut";
       "y" = "copy";
+      "Y" = "copy-name";
+      "o" = "dragon-out";
 
       "<enter>" = "open";
 
