@@ -25,6 +25,7 @@
 
   imports = [
     inputs.nixvim.homeModules.nixvim
+    ./colors.nix
   ];
 
   home.packages = with pkgs; [
@@ -47,18 +48,6 @@
     vimAlias = true;
     vimdiffAlias = true;
     defaultEditor = true;
-
-    # colorschemes.everforest.enable = true;
-    # colorschemes.rose-pine.enable = true;
-    colorschemes.melange.enable = true;
-    # colorschemes.kanagawa.enable = true;
-    # colorschemes.kanagawa-paper.enable = true;
-
-    #TODO:
-    # https://github.com/ramojus/mellifluous.nvim
-    # https://github.com/dgox16/oldworld.nvim
-    # https://github.com/everviolet/nvim
-    # https://github.com/vague2k/vague.nvim
 
     globals = {
       mapleader = " ";
@@ -969,7 +958,8 @@
         command = "norm zz";
       }
       {
-        event = "VimEnter";
+        # TODO: sometimes does not work idk
+        event = ["ColorScheme" "VimEnter"];
         command = ":TransparentEnable";
       }
     ];
