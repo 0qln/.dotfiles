@@ -150,6 +150,7 @@ in {
       '';
 
       copy-name = ''$basename "$f" | wl-copy'';
+      copy-path = ''$echo "$f" | wl-copy'';
     };
 
     keybindings = {
@@ -173,6 +174,7 @@ in {
       "x" = "cut";
       "y" = "copy";
       "Y" = "copy-name";
+      "<C-y>" = "copy-path";
       "o" = "dragon-out";
 
       "<enter>" = "open";
