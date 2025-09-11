@@ -417,6 +417,14 @@
         '';
         options.silent = true;
       }
+      {
+        key = "j";
+        action = "gj";
+      }
+      {
+        key = "k";
+        action = "gk";
+      }
     ];
 
     # transparent bufferline
@@ -965,5 +973,13 @@
         command = ":TransparentEnable";
       }
     ];
+
+    extraConfigVim = ''
+      augroup WrapLinePerFT
+          autocmd!
+          autocmd FileType tex setlocal wrap
+          autocmd FileType md setlocal wrap
+      augroup END
+    '';
   };
 }
