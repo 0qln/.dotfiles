@@ -940,8 +940,6 @@
 
       scrolloff = 8;
 
-      termguicolors = true;
-
       tabstop = 4;
       shiftwidth = 4;
       expandtab = true;
@@ -956,11 +954,6 @@
       {
         event = "InsertEnter";
         command = "norm zz";
-      }
-      {
-        # TODO: sometimes does not work idk
-        event = ["ColorScheme" "VimEnter"];
-        command = ":TransparentEnable";
       }
     ];
 

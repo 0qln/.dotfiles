@@ -14,5 +14,17 @@
       # https://github.com/vague2k/vague.nvim
     ];
     colorschemes."kanagawa".enable = true;
+
+    opts = {
+      termguicolors = true;
+    };
+
+    autoCmd = [
+      {
+        # TODO: sometimes does not work idk
+        event = ["ColorScheme" "VimEnter"];
+        command = ":TransparentEnable";
+      }
+    ];
   };
 }
