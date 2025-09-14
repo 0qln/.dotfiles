@@ -2,8 +2,7 @@
   adminpassFile,
   dbpassFile,
   dbpassFileHashed,
-  fqdn,
-  duckdnsTokenFile,
+  fqdns,
 }: {
   config,
   pkgs,
@@ -14,11 +13,14 @@
   dbUser = "nextcloud";
   serviceName = "nextcloud";
   storagePath = "/mnt/store-1/services/nextcloud";
-  hostName = "nextcloud.${fqdn}";
+  hostNames = map (fqdn: "nextcloud.${fqdn}") fqdns;
+  package = pkgs.nextcloud31;
+  packages = pkgs.nextcloud31Packages;
 in {
   imports = [
     ../database
     ../acme
+    (import ./calendar.nix {inherit (packages) apps;})
   ];
 
   config = {
@@ -55,52 +57,31 @@ in {
         mode = "0400";
         format = "binary";
       };
-
-      # "${serviceName}/duckdnsToken" = {
-      #   sopsFile = duckdnsTokenFile;
-      #   mode = "0400"; # TODO: set user:group and more restricted
-      #   format = "binary";
-      # };
     };
 
     services = {
-      # TODO:
-      # no idea why this does not work...
-      # error is something about not being able to reach duckdns with UDP...
-      # docs:
-      # - https://go-acme.github.io/lego/dns/#configuration-and-credentials
-      # - https://go-acme.github.io/lego/dns/duckdns/
-      # - https://www.duckdns.org/spec.jsp
-      #
-      # TODO: if you ever try this again: remember to update the target fqdn from ${fqdn} to ${hostName}
-      #
-      # security.acme = {
-      #   certs."0qln.duckdns.org" = {
-      #     dnsProvider = "duckdns";
-      #     environmentFile = "${pkgs.writeText "duckdns-creds" ''
-      #       DUCKDNS_TOKEN_FILE=${config.sops.secrets."${serviceName}/duckdnsToken".path}
-      #     ''}";
-      #   };
-      # };
-
-      nginx.virtualHosts.${hostName} = {
-        enableACME = true;
-        forceSSL = true;
-        # useACMEHost = "0qln.duckdns.org";
-      };
+      nginx.virtualHosts =
+        lib.lists.foldl
+        (acc: hostName:
+          {
+            ${hostName} = {
+              enableACME = true;
+              forceSSL = true;
+            };
+          }
+          // acc)
+        {}
+        hostNames;
 
       nextcloud = {
         enable = true;
-        package = pkgs.nextcloud31;
-        inherit hostName;
+        inherit package;
+        hostName = builtins.elemAt hostNames 0;
         home = storagePath;
         database.createLocally = false;
         enableImagemagick = true;
         https = true;
         extraAppsEnable = true;
-        extraApps = {
-          # TODO
-        };
         appstoreEnable = true;
         autoUpdateApps = {
           enable = true;
@@ -119,12 +100,13 @@ in {
         };
         settings = {
           default_phone_region = "DE";
-          trusted_domains = [
-            "192.168.178.50"
-            "lifbrasir"
-            fqdn
-            hostName
-          ];
+          trusted_domains =
+            [
+              "192.168.178.50"
+              "lifbrasir"
+            ]
+            ++ fqdns
+            ++ hostNames;
         };
       };
 
