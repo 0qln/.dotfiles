@@ -56,10 +56,7 @@ in {
       domains = ["0qln"];
     })
 
-    (import ../../services/dynIp-updater/afraid.nix {
-      credentialsFile = ./afraid/secrets.credentials.env;
-      domains = ["oq.404.mn"];
-    })
+    ../../services/dynIp-updater/afraid.nix
 
     (import ../../services/wireguard {
       privateKeyFile = ./wireguard/0qln/private.key.secrets;
@@ -86,6 +83,12 @@ in {
 
     obsidian-livesync = {
       enable = true;
+    };
+
+    dynIp-updater-afraid = {
+      enable = true;
+      credentialsFile = ./afraid/secrets.credentials.env;
+      domains = ["oq.404.mn"];
     };
   };
 
