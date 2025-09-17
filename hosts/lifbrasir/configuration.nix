@@ -39,13 +39,7 @@ in {
       configFilePath = ./obsidian-livesync/secrets.couchdb.local-ini;
     })
 
-    # https://nextcloud.0qln.duckdns.org
-    (import ../../services/nextcloud {
-      dbpassFile = ./nextcloud/secrets.dbpassFile;
-      dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
-      adminpassFile = ./nextcloud/secrets.adminpassFile;
-      inherit fqdns;
-    })
+    ../../services/nextcloud
 
     (import ../../services/nextcloud/calendar.owa-workaround.nix {
       nextcloudEnvFile = ./nextcloud/secrets.owa-cal.env;
@@ -89,6 +83,23 @@ in {
       enable = true;
       credentialsFile = ./afraid/secrets.credentials.env;
       domains = ["oq.404.mn"];
+    };
+
+    my-nextcloud = {
+      enable = true;
+      dbpassFile = ./nextcloud/secrets.dbpassFile;
+      dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
+      adminpassFile = ./nextcloud/secrets.adminpassFile;
+      storagePath = "/mnt/store-1/services/nextcloud";
+      primaryFqdn = "nextcloud.0qln.duckdns.org";
+      secondaryFqdns = [
+        "nextcloud.oq.404.mn"
+        "nextcloud.myaddr.dev"
+      ];
+      localFqdns = [
+        "lifbrasir"
+        "192.168.178.50"
+      ];
     };
   };
 
