@@ -8,6 +8,7 @@
     ./glorious-model-o.nix
     ./packages.nix
     ./nvidia.nix
+    ./intel.nix
 
     ../../home/oq/users/oq/default.gui.nix
     ../../home/oq/users/root/default.tui.nix
