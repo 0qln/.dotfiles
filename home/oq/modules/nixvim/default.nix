@@ -414,6 +414,13 @@
         key = "k";
         action = "gk";
       }
+      {
+        key = "<leader>dr";
+        action = "<cmd>lua ra_flycheck()<CR>";
+        options = {
+          desc = "[D]iagnostics [R]un (Run rust flycheck)";
+        };
+      }
     ];
 
     # transparent bufferline
@@ -460,6 +467,17 @@
           { name = 'cmdline' }
         }),
       })
+
+      -- rust_analyzer flycheck
+      function ra_flycheck()
+        local clients = vim.lsp.get_clients({
+          name = 'rust_analyzer',
+        })
+        for _, client in ipairs(clients) do
+          local params = vim.lsp.util.make_text_document_params()
+          client.notify('rust-analyzer/runFlycheck', params)
+        end
+      end
     '';
 
     # in case lualine is opaque again:
@@ -791,7 +809,7 @@
             };
             "<leader>do" = {
               action = "open_float";
-              desc = "[D]ebug [O]pen (Open Line Diagnostics)";
+              desc = "[D]iagnostics [O]pen (Open Line Diagnostics)";
             };
           };
           lspBuf = {
@@ -823,8 +841,12 @@
           # Rust
           rust_analyzer = {
             enable = true;
+            package = pkgs.rust-analyzer; #use rust-analyzer from main channel
             installRustc = false;
             installCargo = false;
+            settings = {
+              checkOnSave = true;
+            };
           };
           ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
@@ -919,6 +941,10 @@
 
     match.TODO = "TODO";
 
+    diagnostic.settings = {
+      update_in_insert = false;
+    };
+
     opts = {
       conceallevel = 1;
 
@@ -954,6 +980,28 @@
       {
         event = "InsertEnter";
         command = "norm zz";
+      }
+
+      {
+        event = ["InsertLeave" "TextChanged"];
+        pattern = ["*.rs"];
+        callback = {
+          __raw = ''
+            function()
+              vim.cmd.write {}
+
+              -- This should work, but for some reason we have to save the buffer first,
+              -- before we send the flycheck command the rust-analyzer.
+              --
+              -- https://neovim.io/doc/user/lsp.html#vim.lsp.util.make_text_document_params()
+              -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentIdentifier
+              -- https://users.rust-lang.org/t/rust-analyzer-run-clippy-on-demand/89293/2
+              -- https://www.reddit.com/r/neovim/comments/1bszd7s/how_to_configure_manual_checks_with_rustanalyzer/
+              --
+              -- ra_flycheck()
+            end
+          '';
+        };
       }
     ];
 
