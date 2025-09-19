@@ -823,8 +823,8 @@
           # Rust
           rust_analyzer = {
             enable = true;
-            installRustc = true;
-            installCargo = true;
+            installRustc = false;
+            installCargo = false;
           };
           ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
