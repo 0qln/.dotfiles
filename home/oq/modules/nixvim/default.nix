@@ -38,6 +38,7 @@
     statix
     yamllint
     alejandra
+    rustfmt
     # vale-ls
   ];
 
@@ -622,8 +623,7 @@
             "<C-e>" = "cmp.mapping.abort()";
             "<C-b>" = "cmp.mapping.scroll_docs(-4)";
             "<C-f>" = "cmp.mapping.scroll_docs(4)";
-            "<tab>" = "cmp.mapping.confirm({ select = false })";
-            "<S-enter>" = "cmp.mapping.confirm({ select = true })";
+            "<tab>" = "cmp.mapping.confirm({ select = true })";
           };
         };
         #TODO
@@ -722,6 +722,7 @@
               "shellharden"
               "shfmt"
             ];
+            rust = ["rustfmt"];
             cpp = ["clang_format"];
             nix = {
               __unkeyed-1 = "alejandra";
@@ -738,6 +739,11 @@
               "trim_whitespace"
               "trim_newlines"
             ];
+          };
+          formatters = {
+            rustfmt = {
+              command = lib.getExe pkgs.rustfmt;
+            };
           };
         };
       };
@@ -795,7 +801,7 @@
       };
       lsp = {
         enable = true;
-        inlayHints = true;
+        inlayHints = false;
         keymaps = {
           silent = true;
           diagnostic = {
@@ -990,15 +996,15 @@
             function()
               vim.cmd.write {}
 
-              -- This should work, but for some reason we have to save the buffer first,
-              -- before we send the flycheck command the rust-analyzer.
+              -- ra_flycheck should work on it's own, but for some reason we have
+              -- to save the buffer first, before we send the flycheck command the rust-analyzer.
               --
               -- https://neovim.io/doc/user/lsp.html#vim.lsp.util.make_text_document_params()
               -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentIdentifier
               -- https://users.rust-lang.org/t/rust-analyzer-run-clippy-on-demand/89293/2
               -- https://www.reddit.com/r/neovim/comments/1bszd7s/how_to_configure_manual_checks_with_rustanalyzer/
               --
-              -- ra_flycheck()
+              ra_flycheck()
             end
           '';
         };
