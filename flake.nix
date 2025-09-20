@@ -63,7 +63,7 @@
         config = {
           allowUnfreePredicate = pkg:
             builtins.elem (lib.getName pkg) [
-              "citrix_workspace_24_08_0"
+              "citrix-workspace"
             ];
           permittedInsecurePackages = [
             "libxml2-2.13.8"
