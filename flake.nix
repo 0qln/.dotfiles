@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
+    nixpkgs-citrix.url = "nixpkgs/12bd230118a1901a4a5d393f9f56b6ad7e571d01";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,6 +48,7 @@
     nixvim,
     self,
     nixpkgs,
+    nixpkgs-citrix,
     ...
   }: let
     inherit (nixpkgs) lib;
@@ -53,15 +56,32 @@
     # https://discourse.nixos.org/t/how-do-specialargs-work/50615/4
     # https://nixos-modules.nix.xn--q9jyb4c/lessons/function-arguments/lesson/
 
-    nixosConfigurations."lif" = lib.nixosSystem {
+    nixosConfigurations."lif" = let
       system = "x86_64-linux";
-      modules = [./hosts/lif];
-      specialArgs = {
-        inherit inputs;
-        flake = self;
-        host-name = "lif";
+      pkgs-citrix = import nixpkgs-citrix {
+        inherit system;
+        config = {
+          allowUnfreePredicate = pkg:
+            builtins.elem (lib.getName pkg) [
+              "citrix_workspace_24_08_0"
+            ];
+          permittedInsecurePackages = [
+            "libxml2-2.13.8"
+            "libsoup-2.74.3"
+          ];
+        };
       };
-    };
+    in
+      lib.nixosSystem {
+        inherit system;
+        modules = [./hosts/lif];
+        specialArgs = {
+          inherit inputs;
+          inherit pkgs-citrix;
+          flake = self;
+          host-name = "lif";
+        };
+      };
 
     nixosConfigurations."lifbrasir" = lib.nixosSystem {
       system = "x86_64-linux";
