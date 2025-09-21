@@ -623,7 +623,7 @@
             "<C-e>" = "cmp.mapping.abort()";
             "<C-b>" = "cmp.mapping.scroll_docs(-4)";
             "<C-f>" = "cmp.mapping.scroll_docs(4)";
-            "<tab>" = "cmp.mapping.confirm({ select = true })";
+            "<tab>" = "cmp.mapping.confirm({ select = false })";
           };
         };
         #TODO
