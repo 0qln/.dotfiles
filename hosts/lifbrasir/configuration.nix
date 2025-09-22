@@ -2,7 +2,12 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  fqdns = [
+    "0qln.duckdns.org"
+    "oq.404.mn"
+  ];
+in {
   imports = [
     ../_common/configuration.nix
 
@@ -34,19 +39,18 @@
       configFilePath = ./obsidian-livesync/secrets.couchdb.local-ini;
     })
 
-    # https://nextcloud.0qln.duckdns.org
-    (import ../../services/nextcloud {
-      dbpassFile = ./nextcloud/secrets.dbpassFile;
-      dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
-      adminpassFile = ./nextcloud/secrets.adminpassFile;
-      fqdn = "0qln.duckdns.org";
-      duckdnsTokenFile = ./duckdns/secrets.token;
+    ../../services/nextcloud
+
+    (import ../../services/nextcloud/calendar.owa-workaround.nix {
+      nextcloudEnvFile = ./nextcloud/secrets.owa-cal.env;
     })
 
-    (import ../../services/dynIp-updater-duckdns {
+    (import ../../services/dynIp-updater/duckdns.nix {
       tokenFile = ./duckdns/secrets.token;
       domains = ["0qln"];
     })
+
+    ../../services/dynIp-updater/afraid.nix
 
     (import ../../services/wireguard {
       privateKeyFile = ./wireguard/0qln/private.key.secrets;
@@ -74,6 +78,35 @@
     obsidian-livesync = {
       enable = true;
     };
+
+    dynIp-updater-afraid = {
+      enable = true;
+      credentialsFile = ./afraid/secrets.credentials.env;
+      domains = ["oq.404.mn"];
+    };
+
+    my-nextcloud = {
+      enable = true;
+      dbpassFile = ./nextcloud/secrets.dbpassFile;
+      dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
+      adminpassFile = ./nextcloud/secrets.adminpassFile;
+      storagePath = "/mnt/store-1/services/nextcloud";
+      primaryFqdn = "nextcloud.0qln.duckdns.org";
+      secondaryFqdns = [
+        "nextcloud.oq.404.mn"
+        "nextcloud.myaddr.dev"
+      ];
+      localFqdns = [
+        "lifbrasir"
+        "192.168.178.50"
+      ];
+    };
+  };
+
+  networking.hosts = {
+    # TODO: use dnsmasq with a local dns server instead
+    # of specifying every subdomain maunally
+    "127.0.0.1" = fqdns ++ map (x: "nextcloud.${x}") fqdns;
   };
 
   # This value determines the NixOS release from which the default

@@ -55,8 +55,8 @@ in {
     systemd.timers.${serviceName} = {
       wantedBy = ["timers.target"];
       timerConfig = {
-        OnBootSec = "2min";
-        OnUnitActiveSec = "2min";
+        OnBootSec = "10min";
+        OnUnitActiveSec = "10min";
       };
     };
   };

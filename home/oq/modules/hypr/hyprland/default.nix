@@ -53,26 +53,32 @@
     ];
 
     general = {
-      gaps_in = 10;
-      gaps_out = 20;
+      gaps_in = 5;
+      gaps_out = 15;
+
       border_size = 1;
-      "col.active_border" = "rgba(ffffffee) rgba(ff000099) 45deg";
-      "col.inactive_border" = "rgba(ff000099) rgba(ffffffee) 45deg";
+
+      "col.active_border" = "rgba(ff000099)";
+      "col.inactive_border" = "rgba(ff000099)";
+
       resize_on_border = true;
+
       allow_tearing = false;
+
       layout = "master";
     };
 
     decoration = {
-      rounding = 0;
+      rounding = 10;
       rounding_power = 2;
       active_opacity = 1.0;
       inactive_opacity = 1.0;
       shadow = {
-        enabled = false;
-        range = 4;
+        color = "rgba(ff8080ee)";
+        color_inactive = "rgba(ff808000)";
+        enabled = true;
+        range = 5;
         render_power = 3;
-        color = "rgba(1a1a1aee)";
       };
       blur = {
         enabled = true;
@@ -82,11 +88,19 @@
       };
     };
 
+    cursor = {
+      hide_on_key_press = true;
+      no_warps = true;
+    };
+
     animations = {
       enabled = true;
       bezier = [
+        # https://easings.net/
+        # https://www.cssportal.com/css-cubic-bezier-generator/
         "easeOutQuint,0.23,1,0.32,1"
         "easeInOutCubic,0.65,0.05,0.36,1"
+        "easeOutSine,0.61,1,0.88,1"
         "linear,0,0,1,1"
         "almostLinear,0.5,0.5,0.75,1.0"
         "quick,0.15,0,0.1,1"
@@ -99,6 +113,7 @@
         "windowsOut, 1, 1.49, linear, popin 87%"
         "fadeIn, 1, 1.73, almostLinear"
         "fadeOut, 1, 1.46, almostLinear"
+        "fadeShadow, 1, 2.00, easeOutSine"
         "fade, 1, 3.03, quick"
         "layers, 1, 3.81, easeOutQuint"
         "layersIn, 1, 4, easeOutQuint, fade"
@@ -123,7 +138,7 @@
     };
 
     misc = {
-      force_default_wallpaper = -1;
+      force_default_wallpaper = 0;
       disable_hyprland_logo = false;
     };
 

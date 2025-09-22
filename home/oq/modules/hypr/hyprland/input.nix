@@ -30,10 +30,6 @@ in {
       };
     };
 
-    gestures = {
-      workspace_swipe = false;
-    };
-
     bind = [
       # Application shortcuts
       "${mainMod}, Q, exec, ${terminal}"

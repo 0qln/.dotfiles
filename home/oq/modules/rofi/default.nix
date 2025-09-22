@@ -4,7 +4,7 @@
   ...
 }: {
   home.packages = with pkgs; [
-    rofi-wayland
+    rofi
   ];
 
   home.file.".config/rofi" = {

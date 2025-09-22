@@ -25,6 +25,7 @@
 
   imports = [
     inputs.nixvim.homeModules.nixvim
+    ./colors.nix
   ];
 
   home.packages = with pkgs; [
@@ -37,6 +38,7 @@
     statix
     yamllint
     alejandra
+    rustfmt
     # vale-ls
   ];
 
@@ -47,18 +49,6 @@
     vimAlias = true;
     vimdiffAlias = true;
     defaultEditor = true;
-
-    # colorschemes.everforest.enable = true;
-    # colorschemes.rose-pine.enable = true;
-    colorschemes.melange.enable = true;
-    # colorschemes.kanagawa.enable = true;
-    # colorschemes.kanagawa-paper.enable = true;
-
-    #TODO:
-    # https://github.com/ramojus/mellifluous.nvim
-    # https://github.com/dgox16/oldworld.nvim
-    # https://github.com/everviolet/nvim
-    # https://github.com/vague2k/vague.nvim
 
     globals = {
       mapleader = " ";
@@ -342,7 +332,7 @@
         };
       }
       {
-        key = "<leadr>dc";
+        key = "<leader>dc";
         action = "<cmd>DapContinue<CR>";
         options = {
           silent = true;
@@ -417,6 +407,21 @@
         '';
         options.silent = true;
       }
+      {
+        key = "j";
+        action = "gj";
+      }
+      {
+        key = "k";
+        action = "gk";
+      }
+      {
+        key = "<leader>dr";
+        action = "<cmd>lua ra_flycheck()<CR>";
+        options = {
+          desc = "[D]iagnostics [R]un (Run rust flycheck)";
+        };
+      }
     ];
 
     # transparent bufferline
@@ -463,6 +468,17 @@
           { name = 'cmdline' }
         }),
       })
+
+      -- rust_analyzer flycheck
+      function ra_flycheck()
+        local clients = vim.lsp.get_clients({
+          name = 'rust_analyzer',
+        })
+        for _, client in ipairs(clients) do
+          local params = vim.lsp.util.make_text_document_params()
+          client.notify('rust-analyzer/runFlycheck', params)
+        end
+      end
     '';
 
     # in case lualine is opaque again:
@@ -608,7 +624,6 @@
             "<C-b>" = "cmp.mapping.scroll_docs(-4)";
             "<C-f>" = "cmp.mapping.scroll_docs(4)";
             "<tab>" = "cmp.mapping.confirm({ select = false })";
-            "<S-enter>" = "cmp.mapping.confirm({ select = true })";
           };
         };
         #TODO
@@ -707,6 +722,7 @@
               "shellharden"
               "shfmt"
             ];
+            rust = ["rustfmt"];
             cpp = ["clang_format"];
             nix = {
               __unkeyed-1 = "alejandra";
@@ -723,6 +739,11 @@
               "trim_whitespace"
               "trim_newlines"
             ];
+          };
+          formatters = {
+            rustfmt = {
+              command = lib.getExe pkgs.rustfmt;
+            };
           };
         };
       };
@@ -780,7 +801,7 @@
       };
       lsp = {
         enable = true;
-        inlayHints = true;
+        inlayHints = false;
         keymaps = {
           silent = true;
           diagnostic = {
@@ -794,7 +815,7 @@
             };
             "<leader>do" = {
               action = "open_float";
-              desc = "[D]ebug [O]pen (Open Line Diagnostics)";
+              desc = "[D]iagnostics [O]pen (Open Line Diagnostics)";
             };
           };
           lspBuf = {
@@ -826,10 +847,14 @@
           # Rust
           rust_analyzer = {
             enable = true;
-            installRustc = true;
-            installCargo = true;
+            package = pkgs.rust-analyzer; #use rust-analyzer from main channel
+            installRustc = false;
+            installCargo = false;
+            settings = {
+              checkOnSave = true;
+            };
           };
-          # ts_ls.enable = true; # TS/JS
+          ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
           tailwindcss.enable = true; # TailwindCSS
           html.enable = true; # HTML
@@ -922,6 +947,10 @@
 
     match.TODO = "TODO";
 
+    diagnostic.settings = {
+      update_in_insert = false;
+    };
+
     opts = {
       conceallevel = 1;
 
@@ -943,8 +972,6 @@
 
       scrolloff = 8;
 
-      termguicolors = true;
-
       tabstop = 4;
       shiftwidth = 4;
       expandtab = true;
@@ -960,10 +987,36 @@
         event = "InsertEnter";
         command = "norm zz";
       }
+
       {
-        event = "VimEnter";
-        command = ":TransparentEnable";
+        event = ["InsertLeave" "TextChanged"];
+        pattern = ["*.rs"];
+        callback = {
+          __raw = ''
+            function()
+              vim.cmd.write {}
+
+              -- ra_flycheck should work on it's own, but for some reason we have
+              -- to save the buffer first, before we send the flycheck command the rust-analyzer.
+              --
+              -- https://neovim.io/doc/user/lsp.html#vim.lsp.util.make_text_document_params()
+              -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentIdentifier
+              -- https://users.rust-lang.org/t/rust-analyzer-run-clippy-on-demand/89293/2
+              -- https://www.reddit.com/r/neovim/comments/1bszd7s/how_to_configure_manual_checks_with_rustanalyzer/
+              --
+              ra_flycheck()
+            end
+          '';
+        };
       }
     ];
+
+    extraConfigVim = ''
+      augroup WrapLinePerFT
+          autocmd!
+          autocmd FileType tex setlocal wrap
+          autocmd FileType md setlocal wrap
+      augroup END
+    '';
   };
 }

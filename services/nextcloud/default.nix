@@ -1,25 +1,96 @@
 {
-  adminpassFile,
-  dbpassFile,
-  dbpassFileHashed,
-  fqdn,
-  duckdnsTokenFile,
-}: {
   config,
   pkgs,
   lib,
   ...
 }: let
-  systemUser = "nextcloud";
-  dbUser = "nextcloud";
-  serviceName = "nextcloud";
-  storagePath = "/mnt/store-1/services/nextcloud";
-  hostName = "nextcloud.${fqdn}";
+  serviceName = "my-nextcloud";
+  package = pkgs.nextcloud31;
+  packages = pkgs.nextcloud31Packages;
+  cfg = config.services.${serviceName};
 in {
   imports = [
     ../database
     ../acme
+    (import ./calendar.nix {inherit (packages) apps;})
   ];
+
+  options.services.${serviceName} = with lib; {
+    enable = mkEnableOption serviceName;
+
+    storagePath = mkOption {
+      type = types.str;
+      description = "The storage path for the home directory.";
+    };
+
+    serviceSystemUser = mkOption {
+      type = types.str;
+      default = "nextcloud";
+      description = "The user that this service will operate under.";
+    };
+
+    serviceSystemGroup = mkOption {
+      type = types.str;
+      default = "nextcloud";
+      description = "The group of the serviceUser.";
+    };
+
+    dbSystemUser = mkOption {
+      type = types.str;
+      default = "nextcloud";
+      description = "The user that this service will operate under.";
+    };
+
+    dbHost = mkOption {
+      type = types.str;
+      default = "localhost:3306";
+      description = "The database host.";
+    };
+
+    dbUser = mkOption {
+      type = types.str;
+      default = "nextcloud";
+      description = "The database user account for this service.";
+    };
+
+    dbName = mkOption {
+      type = types.str;
+      default = "nextcloud";
+      description = "The name of the database";
+    };
+
+    adminpassFile = mkOption {
+      type = types.path;
+      description = "The path to the encrypted admin pass file.";
+    };
+
+    dbpassFile = mkOption {
+      type = types.path;
+      description = "The path to the encrypted db password file.";
+    };
+
+    dbpassFileHashed = mkOption {
+      type = types.path;
+      description = "The path to the encrypted db pass user password file.";
+    };
+
+    primaryFqdn = mkOption {
+      type = types.str;
+      description = "The primary fqdn.";
+    };
+
+    secondaryFqdns = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "Secondary fsdns.";
+    };
+
+    localFqdns = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "Local fsdns.";
+    };
+  };
 
   config = {
     networking.firewall = {
@@ -34,73 +105,76 @@ in {
 
     sops.secrets = {
       "${serviceName}/dbpass" = {
-        sopsFile = dbpassFile;
-        owner = systemUser;
-        group = systemUser;
+        sopsFile = cfg.dbpassFile;
+        owner = cfg.serviceSystemUser;
+        group = cfg.serviceSystemUser;
         mode = "0400";
         format = "binary";
       };
 
       # setting user password: https://github.com/Mic92/sops-nix?tab=readme-ov-file#setting-a-users-password
       "${serviceName}/dbpassHashed" = {
-        sopsFile = dbpassFileHashed;
+        sopsFile = cfg.dbpassFileHashed;
         format = "binary";
         neededForUsers = true;
       };
 
       "${serviceName}/adminpass" = {
-        sopsFile = adminpassFile;
-        owner = systemUser;
-        group = systemUser;
+        sopsFile = cfg.adminpassFile;
+        owner = cfg.serviceSystemUser;
+        group = cfg.serviceSystemUser;
         mode = "0400";
         format = "binary";
       };
-
-      # "${serviceName}/duckdnsToken" = {
-      #   sopsFile = duckdnsTokenFile;
-      #   mode = "0400"; # TODO: set user:group and more restricted
-      #   format = "binary";
-      # };
     };
 
     services = {
-      # TODO:
-      # no idea why this does not work...
-      # error is something about not being able to reach duckdns with UDP...
-      # docs:
-      # - https://go-acme.github.io/lego/dns/#configuration-and-credentials
-      # - https://go-acme.github.io/lego/dns/duckdns/
-      # - https://www.duckdns.org/spec.jsp
-      #
-      # TODO: if you ever try this again: remember to update the target fqdn from ${fqdn} to ${hostName}
-      #
-      # security.acme = {
-      #   certs."0qln.duckdns.org" = {
-      #     dnsProvider = "duckdns";
-      #     environmentFile = "${pkgs.writeText "duckdns-creds" ''
-      #       DUCKDNS_TOKEN_FILE=${config.sops.secrets."${serviceName}/duckdnsToken".path}
-      #     ''}";
-      #   };
-      # };
-
-      nginx.virtualHosts.${hostName} = {
-        enableACME = true;
-        forceSSL = true;
-        # useACMEHost = "0qln.duckdns.org";
-      };
+      nginx.virtualHosts = let
+        allowedHostsRegex = with lib.strings;
+          concatStringsSep
+          "|"
+          (
+            map escapeRegex (cfg.secondaryFqdns ++ [cfg.primaryFqdn])
+          );
+      in
+        (
+          lib.foldl
+          (acc: hostName:
+            acc
+            // {
+              ${hostName} = {
+                enableACME = true;
+                forceSSL = true;
+                locations."/" = {
+                  proxyPass = "https://${cfg.primaryFqdn}";
+                  extraConfig = ''
+                    if ($http_origin ~* "^https?://(${allowedHostsRegex}|google\.com)$") {
+                        add_header Access-Control-Allow-Origin "$http_origin" always;
+                        add_header 'Access-Control-Allow-Credentials' 'true';
+                    }
+                  '';
+                };
+              };
+            })
+          {}
+          cfg.secondaryFqdns
+        )
+        // {
+          ${cfg.primaryFqdn} = {
+            enableACME = true;
+            forceSSL = true;
+          };
+        };
 
       nextcloud = {
         enable = true;
-        package = pkgs.nextcloud31;
-        inherit hostName;
-        home = storagePath;
+        inherit package;
+        hostName = cfg.primaryFqdn;
+        home = cfg.storagePath;
         database.createLocally = false;
         enableImagemagick = true;
         https = true;
         extraAppsEnable = true;
-        extraApps = {
-          # TODO
-        };
         appstoreEnable = true;
         autoUpdateApps = {
           enable = true;
@@ -108,40 +182,36 @@ in {
         };
         config = {
           dbtype = "mysql";
-          dbname = "nextcloud";
+          dbname = cfg.dbName;
 
-          dbuser = dbUser;
+          dbuser = cfg.dbUser;
           dbpassFile = "/run/secrets/${serviceName}/dbpass";
 
-          dbhost = "localhost:3306";
-          adminuser = "root";
+          dbhost = cfg.dbHost;
+          adminuser = "root"; #TODO: is this the right user?
           adminpassFile = "/run/secrets/${serviceName}/adminpass";
         };
-        settings = {
+        settings = rec {
           default_phone_region = "DE";
-          trusted_domains = [
-            "192.168.178.50"
-            "lifbrasir"
-            fqdn
-            hostName
-          ];
+          trusted_domains = [cfg.primaryFqdn] ++ cfg.secondaryFqdns ++ cfg.localFqdns;
+          trusted_proxies = ["127.0.0.1" "::1"] ++ trusted_domains;
         };
       };
 
       mysql = {
-        ensureDatabases = ["nextcloud"];
+        ensureDatabases = [cfg.dbName];
         ensureUsers = [
           {
-            name = dbUser;
+            name = cfg.dbUser;
             ensurePermissions = {
-              "nextcloud.*" = "ALL PRIVILEGES";
+              "${cfg.dbName}.*" = "ALL PRIVILEGES";
             };
           }
         ];
       };
     };
 
-    users.users.${dbUser} = {
+    users.users.${cfg.dbUser} = {
       hashedPasswordFile = "/run/secrets-for-users/${serviceName}/dbpassHashed";
     };
   };

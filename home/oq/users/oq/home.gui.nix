@@ -2,7 +2,11 @@
   home-manager.users.oq = {...}: {
     imports = [
       ./home._common.nix
-      ../../modules/browsers
+      ../../modules/browsers/firefox/firefox.nix
+      ../../modules/browsers/firefox/zen.nix
+      ../../modules/browsers/firefox/tor.nix
+      ../../modules/browsers/chrome/chrome.nix
+      ../../modules/browsers/chrome/work.nix
       ../../modules/citrix
       ../../modules/cursors
       ../../modules/discord
