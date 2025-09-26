@@ -94,7 +94,7 @@ in {
       primaryFqdn = "nextcloud.0qln.duckdns.org";
       secondaryFqdns = [
         "nextcloud.oq.404.mn"
-        "nextcloud.myaddr.dev"
+        # "nextcloud.myaddr.dev" TODO
       ];
       localFqdns = [
         "lifbrasir"
