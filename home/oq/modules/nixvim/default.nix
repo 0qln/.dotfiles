@@ -949,6 +949,7 @@
 
     diagnostic.settings = {
       update_in_insert = false;
+      signs = false;
     };
 
     opts = {
