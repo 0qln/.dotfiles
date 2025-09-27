@@ -44,16 +44,19 @@ in {
       "${mainMod}, E, exec, splatmoji --disable-emoji-db copy" # copypaste or type commands don't work; type bc ydotool is goofy and the prior idk why
       "${mainMod}, Z, exec, zen"
       "${mainMod}, B, exec, ${terminal} -e bluetoothctl"
-      "${mainMod}, T, exec, todoist-electron" # TODO: either replace with zen instance with todoist, or inject transparency css...
-      "CTRL, SPACE, exec, [float; center; size 600 100] ${pkgs.writeShellScript "todoist-quick-add-shortcut" ''
-        #!${pkgs.bash}/bin/bash
-        active_class=$(hyprctl activewindow -j | jq -r '.class')
-        if [[ "$active_class" == *"Minecraft"* ]]; then
-            exit 0
-        else
-            ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}
-        fi
-      ''}"
+      "${mainMod}, T, exec, [float; center; size 600 100] ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}"
+      #"CTRL, SPACE, exec, [float; center; size 600 100] ${pkgs.writeShellScript "todoist-quick-add-shortcut" ''
+      #  #!${pkgs.bash}/bin/bash
+      #  active_class=$(hyprctl activewindow -j | jq -r '.class')
+      #  if [[ "$active_class" == *"Minecraft"* ]]; then
+      #      # TODO: why does this not work? sending stuff like F2 works, but not ctrl+space...
+      #      # hyprctl dispatch sendshortcut CTRL, SPACE, class:^Minecraft.*$
+      #      # hyprctl dispatch sendshortcut ,SPACE, class:^Minecraft.*$
+      #      exit 0
+      #  else
+      #      ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}
+      #  fi
+      #''}"
 
       # using dispatchers here, since setting the window rules for zen does not work...
       # "${mainMod}, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"
@@ -84,7 +87,7 @@ in {
       "ALT SHIFT, J, movefocus, d"
       "ALT SHIFT, N, focuswindow, floating"
 
-      # Workspace navigation
+      # Workspace navigatio
       "ALT SHIFT, 1, workspace, 1"
       "ALT SHIFT, 2, workspace, 2"
       "ALT SHIFT, 3, workspace, 3"
