@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   monitors,
   ...
 }: let
@@ -44,7 +45,15 @@ in {
       "${mainMod}, Z, exec, zen"
       "${mainMod}, B, exec, ${terminal} -e bluetoothctl"
       "${mainMod}, T, exec, todoist-electron" # TODO: either replace with zen instance with todoist, or inject transparency css...
-      "CTRL, SPACE, exec, [float; center; size 600 100] ${terminal} -e ${todoist-quick-add}/bin/todoist-quick-add"
+      "CTRL, SPACE, exec, [float; center; size 600 100] ${pkgs.writeShellScript "todoist-quick-add-shortcut" ''
+        #!${pkgs.bash}/bin/bash
+        active_class=$(hyprctl activewindow -j | jq -r '.class')
+        if [[ "$active_class" == *"Minecraft"* ]]; then
+            exit 0
+        else
+            ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}
+        fi
+      ''}"
 
       # using dispatchers here, since setting the window rules for zen does not work...
       # "${mainMod}, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"
