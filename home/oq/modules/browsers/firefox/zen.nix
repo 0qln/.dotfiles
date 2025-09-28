@@ -16,6 +16,11 @@
     # ~~see `man home-configuration.nix`, search: profiles.\<name\>.settings~~
 
     # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.search.engines
+    # profiles."dev@my-internet" = {
+    #   extensions = [
+    #   ];
+    # };
+
     # profiles."oq@lif".search.engines = {
     #   # ...
 
@@ -38,14 +43,14 @@
     #     ];
 
     #     icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #     definedAliases = [ "@np" ];
+    #     definedAliases = ["@np"];
     #   };
 
     #   nixos-wiki = {
     #     name = "NixOS Wiki";
-    #     urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
+    #     urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
     #     iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
-    #     definedAliases = [ "@nw" ];
+    #     definedAliases = ["@nw"];
     #   };
 
     #   bing.metaData.hidden = true;
