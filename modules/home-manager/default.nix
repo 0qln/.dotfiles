@@ -6,6 +6,7 @@
   ...
 }: let
   utils = import ./utils;
+  backupExtension = "hm-bac";
 in {
   imports = [
     inputs.home-manager.nixosModules.home-manager
@@ -17,7 +18,8 @@ in {
     specialArgs
     // {
       inherit utils;
+      inherit backupExtension;
     }
     // extraArgs;
-  home-manager.backupFileExtension = "hm-bac";
+  home-manager.backupFileExtension = backupExtension;
 }
