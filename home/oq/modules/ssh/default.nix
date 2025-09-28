@@ -1,4 +1,9 @@
 {config, ...}: {
+  imports = [
+    # Import default values.
+    ./defaultConfig.nix
+  ];
+
   programs.ssh = {
     enable = true;
     extraConfig = ''
