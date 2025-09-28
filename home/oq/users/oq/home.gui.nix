@@ -33,6 +33,7 @@
       ../../modules/zathura
       ../../modules/xdg-utils
       ../../modules/minecraft/prismlauncher.nix
+      ../../modules/libreoffice
     ];
   };
 }
