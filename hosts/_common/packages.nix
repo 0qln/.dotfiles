@@ -3,6 +3,7 @@
     vim
     wget
     curl
+    dig
     age
     jq
   ];

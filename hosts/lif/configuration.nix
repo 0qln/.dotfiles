@@ -16,6 +16,7 @@
     ../../modules/hypr
     ../../modules/ydotool
     ../../modules/steam
+    ../../modules/doh
 
     (import ../../modules/home-manager {
       extraArgs = {
