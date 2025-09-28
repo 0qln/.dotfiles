@@ -13,6 +13,7 @@ in {
     ../database
     ../acme
     (import ./calendar.nix {inherit (packages) apps;})
+    (import ./tasks.nix {inherit (packages) apps;})
   ];
 
   options.services.${serviceName} = with lib; {
