@@ -4,8 +4,8 @@
   ];
 
   wayland.windowManager.hyprland.settings.bind = [
-    ", PRINT, exec, hyprshot -m output"
-    "SUPER, PRINT, exec, hyprshot -m window"
-    "SHIFT SUPER, PRINT, exec, hyprshot -m region"
+    ", PRINT, exec, hyprshot -z -m output"
+    "SUPER, PRINT, exec, hyprshot -z -m window"
+    "SHIFT SUPER, PRINT, exec, hyprshot -z -m region"
   ];
 }
