@@ -30,11 +30,12 @@ in {
       import configparser
       import os
       import os.path
+      import sys
 
       # exit if not profile config existed before the nix config was
       # generated.
-      if not os.path.isfile('${profilesIniOld}'):
-        exit
+      if not os.path.isfile('${profilesIniOld}') or not os.path.isfile('${profilesIni}'):
+        sys.exit()
 
       # https://docs.python.org/3/library/configparser.html
       config = configparser.ConfigParser()
