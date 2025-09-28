@@ -29,6 +29,9 @@
   ];
 
   home.packages = with pkgs; [
+    tree-sitter
+    zig
+    nodejs_24
     deadnix
     golangci-lint
     nodePackages.jsonlint
@@ -39,6 +42,8 @@
     yamllint
     alejandra
     rustfmt
+    shfmt
+    prettierd
     # vale-ls
   ];
 
@@ -719,7 +724,6 @@
           formatters_by_ft = {
             bash = [
               "shellcheck"
-              "shellharden"
               "shfmt"
             ];
             rust = ["rustfmt"];
@@ -729,7 +733,6 @@
             };
             javascript = {
               __unkeyed-1 = "prettierd";
-              __unkeyed-2 = "prettier";
               timeout_ms = 2000;
               stop_after_first = true;
             };
@@ -922,7 +925,7 @@
           clearOnCursorMove = false;
         };
       };
-      hmts.enable = true;
+      # hmts.enable = true; # tis shit is super buggy :(((((((
       trouble.enable = true;
       which-key.enable = true;
       #TODO: configure more dap
