@@ -2,19 +2,27 @@
   boot.loader = {
     efi = {
       canTouchEfiVariables = true;
-      # efiSysMountPoint = "/boot";
     };
 
-    systemd-boot = {
+    grub = {
       enable = true;
-      # extraEntries = {
-      #   "windows.conf" = ''
-      #     title Windows Boot Manager
-      #     efi EFI/Microsoft/Boot/bootmgfw.efi
-      #   '';
-      # };
+      device = "nodev";
+      efiSupport = true;
+      useOSProber = true;
+      timeoutStyle = "menu";
+      extraConfig = ''
+        GRUB_CMDLINE_LINUX="video=efifb fbcon=rotate:1"
+      '';
     };
 
-    timeout = 5;
+    # systemd-boot = {
+    #   enable = true;
+    #   # extraEntries = {
+    #   #   "windows.conf" = ''
+    #   #     title Windows Boot Manager
+    #   #     efi EFI/Microsoft/Boot/bootmgfw.efi
+    #   #   '';
+    #   # };
+    # };
   };
 }
