@@ -2,6 +2,7 @@
   imports = [
     ../_common/configuration.nix
 
+    ./hosts.nix
     ./bootloader.nix
     ./mount.nix
     ./bluetooth.nix
