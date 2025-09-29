@@ -2,6 +2,13 @@
   hosts = "gh/hosts.yml";
   home = config.home.homeDirectory;
 in {
+  programs.gh = {
+    enable = true;
+    gitCredentialHelper = {
+      enable = true;
+    };
+  };
+
   programs.gh-dash = {
     enable = true;
   };
