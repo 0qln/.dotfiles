@@ -7,6 +7,65 @@ args @ {
   ...
 }: let
   utils = args.utils args;
+  # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.search.engines
+  searchEngines = {
+    nix-packages = {
+      name = "Nix Packages";
+      urls = [
+        {
+          template = "https://search.nixos.org/packages";
+          params = [
+            {
+              name = "query";
+              value = "{searchTerms}";
+            }
+          ];
+        }
+      ];
+
+      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      definedAliases = ["@np"];
+    };
+
+    nix-options = {
+      name = "Nix Options";
+      urls = [
+        {
+          template = "https://search.nixos.org/options";
+          params = [
+            {
+              name = "type";
+              value = "options";
+            }
+            {
+              name = "query";
+              value = "{searchTerms}";
+            }
+          ];
+        }
+      ];
+
+      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      definedAliases = ["@no"];
+    };
+
+    home-manager-options = {
+      name = "Home Manager Options";
+      urls = [{template = "https://home-manager-options.extranix.com/?query={searchTerms}";}];
+      iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
+      definedAliases = ["@hmo"];
+    };
+
+    nixos-wiki = {
+      name = "NixOS Wiki";
+      urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
+      iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
+      definedAliases = ["@nw"];
+    };
+
+    bing.metaData.hidden = true;
+    google.metaData.alias = "@g"; # builtin engines only support specifying one additional alias
+  };
 in {
   imports = [
     inputs.zen-browser.homeModules.twilight
@@ -49,6 +108,7 @@ in {
       for sectionName in config.sections():
         if 'Default' in config[sectionName]:
           if default == None:
+            config[sectionName]['Default'] = '1'
             default = sectionName
           else:
             del config[sectionName]['Default']
@@ -78,133 +138,23 @@ in {
     # nah fuck this, that shit contains nothing...:
     # ~~see `man home-configuration.nix`, search: profiles.\<name\>.settings~~
 
-    # profiles."NIX-GEN_DEV_my-internet@zen" = {
-    #   id = 1;
-    #   extensions = [
-    #   ];
-    # };
+    profiles."NIX-GEN_DEV_my-internet@zen" = {
+      id = 1;
+      extensions = [
+      ];
+    };
 
-    # profiles."NIX-GEN_oq@zen" = {
-    #   id = 0;
-    #   isDefault = true;
-
-    #   # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.search.engines
-    #   search.engines = {
-    #     # ...
-
-    #     nix-packages = {
-    #       name = "Nix Packages";
-    #       urls = [
-    #         {
-    #           template = "https://search.nixos.org/packages";
-    #           params = [
-    #             {
-    #               name = "type";
-    #               value = "packages";
-    #             }
-    #             {
-    #               name = "query";
-    #               value = "{searchTerms}";
-    #             }
-    #           ];
-    #         }
-    #       ];
-
-    #       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #       definedAliases = ["@np"];
-    #     };
-
-    #     nixos-wiki = {
-    #       name = "NixOS Wiki";
-    #       urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
-    #       iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
-    #       definedAliases = ["@nw"];
-    #     };
-
-    #     nix-options = {
-    #       name = "Nix Options";
-    #       urls = [
-    #         {
-    #           template = "https://search.nixos.org/options";
-    #           params = [
-    #             {
-    #               name = "type";
-    #               value = "options";
-    #             }
-    #             {
-    #               name = "query";
-    #               value = "{searchTerms}";
-    #             }
-    #           ];
-    #         }
-    #       ];
-
-    #       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #       definedAliases = ["@no"];
-    #     };
-
-    #     bing.metaData.hidden = true;
-    #     google.metaData.alias = "@g"; # builtin engines only support specifying one additional alias
-    #   };
-    # };
+    profiles."NIX-GEN_oq@zen" = {
+      id = 0;
+      isDefault = true;
+      search.engines = searchEngines;
+    };
 
     # Notice: we can even extend imperatively created profiles :D
-    # profiles."Default (Windows)" = {
-    #   id = 2;
-    #   path = "89h16xs5.Default (alpha)";
-
-    #   # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.search.engines
-    #   search.engines = {
-    #     nix-packages = {
-    #       name = "Nix Packages";
-    #       urls = [
-    #         {
-    #           template = "https://search.nixos.org/packages";
-    #           params = [
-    #             {
-    #               name = "query";
-    #               value = "{searchTerms}";
-    #             }
-    #           ];
-    #         }
-    #       ];
-
-    #       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #       definedAliases = ["@np"];
-    #     };
-
-    #     nix-options = {
-    #       name = "Nix Options";
-    #       urls = [
-    #         {
-    #           template = "https://search.nixos.org/options";
-    #           params = [
-    #             {
-    #               name = "type";
-    #               value = "options";
-    #             }
-    #             {
-    #               name = "query";
-    #               value = "{searchTerms}";
-    #             }
-    #           ];
-    #         }
-    #       ];
-
-    #       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #       definedAliases = ["@no"];
-    #     };
-
-    #     nixos-wiki = {
-    #       name = "NixOS Wiki";
-    #       urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
-    #       iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
-    #       definedAliases = ["@nw"];
-    #     };
-
-    #     bing.metaData.hidden = true;
-    #     google.metaData.alias = "@g"; # builtin engines only support specifying one additional alias
-    #   };
-    # };
+    profiles."Default (Windows)" = {
+      id = 2;
+      path = "89h16xs5.Default (alpha)";
+      search.engines = searchEngines;
+    };
   };
 }
