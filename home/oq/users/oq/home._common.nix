@@ -23,6 +23,7 @@
     ../../modules/ssh
     ../../modules/tools
     ../../modules/zoxide
+    ../../modules/secrets
     # ../../modules/azure
     # ../../modules/agents
   ];

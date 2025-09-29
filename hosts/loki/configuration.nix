@@ -8,10 +8,6 @@
 
     ../../home/oq/users/oq/default.tui.nix
     ../../home/oq/users/root/default.tui.nix
-
-    (import ../../modules/home-manager {
-      extraArgs = {};
-    })
   ];
 
   # This value determines the NixOS release from which the default
