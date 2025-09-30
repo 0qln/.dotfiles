@@ -915,7 +915,7 @@
         folding = false;
         settings = {
           indent.enable = true;
-          # highlight.enable = true; #this caused random erros :(
+          highlight.enable = true;
         };
         grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
       };
