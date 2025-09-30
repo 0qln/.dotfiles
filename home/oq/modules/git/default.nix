@@ -8,6 +8,9 @@
     enable = true;
     userName = "0qln";
     userEmail = "linusnag@gmail.com";
+    extraConfig = {
+      pull.rebase = false;
+    };
   };
 
   programs.lazygit = {
