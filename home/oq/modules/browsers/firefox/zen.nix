@@ -1,5 +1,6 @@
 {
   inputs,
+  nur,
   lib,
   pkgs,
   config,
@@ -7,6 +8,7 @@
   ...
 }: let
   searchEngines = import ./search-engines pkgs;
+  extensions = import ./extensions/_common.nix nur;
 in {
   imports = [
     inputs.zen-browser.homeModules.twilight
@@ -81,10 +83,14 @@ in {
     # nah fuck this, that shit contains nothing...:
     # ~~see `man home-configuration.nix`, search: profiles.\<name\>.settings~~
 
+    # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.extensions.packages
     profiles."[DEV] my-internet@zen" = {
       id = 1;
-      extensions = [
-      ];
+      extensions.packages = extensions;
+      settings = {
+        # automatically enable extensions
+        "extensions.autoDisableScopes" = 0;
+      };
     };
 
     profiles."oq@zen" = {
