@@ -37,6 +37,7 @@
     nodePackages.jsonlint
     luaPackages.luacheck
     pylint
+    pyright
     shellcheck
     statix
     yamllint
