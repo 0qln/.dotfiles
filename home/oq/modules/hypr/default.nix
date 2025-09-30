@@ -5,5 +5,6 @@
     ./hyprpaper
     ./hyprshot.nix
     ./waybar.nix
+    ./wlsunset.nix
   ];
 }
