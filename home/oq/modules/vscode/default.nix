@@ -3,7 +3,8 @@
 in {
   imports = [
     ./profiles/default.nix
-    ./profiles/Worksimple.KimaiEfecteSyncPlugin.nix
+    ./profiles/kimai.nix
+    ./profiles/odoo.nix
   ];
 
   home.packages = with pkgs; [
