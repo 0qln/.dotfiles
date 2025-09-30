@@ -6,6 +6,8 @@
     defaultApplications = {
       # https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
 
+      #TODO: text and code files to kitty+nvim
+
       "image/png" = "qimgv.desktop";
       "video/webm" = "qimgv.desktop";
       "image/jpeg" = "qimgv.desktop";

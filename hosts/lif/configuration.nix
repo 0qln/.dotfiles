@@ -2,6 +2,7 @@
   imports = [
     ../_common/configuration.nix
 
+    ./hosts.nix
     ./bootloader.nix
     ./mount.nix
     ./bluetooth.nix
@@ -16,6 +17,7 @@
     ../../modules/hypr
     ../../modules/ydotool
     ../../modules/steam
+    ../../modules/doh
 
     (import ../../modules/home-manager {
       extraArgs = {
