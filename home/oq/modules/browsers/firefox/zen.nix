@@ -86,6 +86,7 @@ in {
     # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.extensions.packages
     profiles."[DEV] my-internet@zen" = {
       id = 1;
+      isDefault = false;
       extensions.packages = extensions;
       settings = {
         # automatically enable extensions
@@ -95,13 +96,14 @@ in {
 
     profiles."oq@zen" = {
       id = 0;
-      isDefault = true;
+      isDefault = false;
       search.engines = searchEngines;
     };
 
     # Notice: we can even extend imperatively created profiles :D
     profiles."Default (Windows)" = {
       id = 2;
+      isDefault = true;
       path = "89h16xs5.Default (alpha)";
       search.engines = searchEngines;
     };
