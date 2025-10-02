@@ -1,11 +1,79 @@
 {
   inputs,
+  nur,
+  lib,
   pkgs,
+  config,
+  backupExtension,
   ...
-}: {
+}: let
+  searchEngines = import ./search-engines pkgs;
+  extensions = import ./extensions/_common.nix nur;
+in {
   imports = [
     inputs.zen-browser.homeModules.twilight
   ];
+
+  home.activation.zen-profiles-cat =
+    lib.hm.dag.entryAfter ["writeBoundary"]
+    (let
+      # This is the new file that was created by home-manager.
+      profilesIni = "${config.home.homeDirectory}/.zen/profiles.ini";
+      # This is the file that (maybe) was changed imperatively and moved to the
+      # backup file by home-manager.
+      profilesIniOld = "${profilesIni}.${backupExtension}";
+    in "${pkgs.writeScript "zen-profiles-concat"
+      # python
+      ''
+        #! /usr/bin/env nix-shell
+        #! nix-shell -i python3 -p python3 python3Packages.configparser
+
+        # This script concats the new nix-generated config with existing
+        # imperatively generated configs.
+
+        import configparser
+        import os
+        import os.path
+        import sys
+
+        # exit if not profile config existed before the nix config was
+        # generated.
+        if not os.path.isfile('${profilesIniOld}') or not os.path.isfile('${profilesIni}'):
+          sys.exit()
+
+        # https://docs.python.org/3/library/configparser.html
+        config = configparser.ConfigParser()
+        config.optionxform = lambda option: option
+
+        # last ini file has priority
+        config.read(['${profilesIniOld}', '${profilesIni}'])
+
+        # ensure we only have one 'Default=1' section
+        default = None
+        for sectionName in config.sections():
+          if 'Default' in config[sectionName]:
+            if default == None:
+              config[sectionName]['Default'] = '1'
+              default = sectionName
+            else:
+              del config[sectionName]['Default']
+
+        # delete profiles.ini nix/store link such that we can write to the file
+        os.unlink('${profilesIni}')
+
+        # delete profiles.ini.${backupExtension} such that we don't get an error next time that home-
+        # manager tries to backup the profiles.ini to that location
+        os.unlink('${profilesIniOld}')
+
+        # write the combined config into profiles.ini
+        with open('${profilesIni}', 'w') as configfile:
+          config.write(configfile, space_around_delimiters=False)
+      ''}");
+
+  #TODO: everytime we restart zen, the search.json.mozlz4 link is replaced by
+  # what it's pointing to. As a consequence, home-manager complains when it cannot
+  # write a link to that location.
+  # Find a workaround for ts or else this is unusable.
 
   programs.zen-browser = {
     enable = true;
@@ -15,41 +83,27 @@
     # nah fuck this, that shit contains nothing...:
     # ~~see `man home-configuration.nix`, search: profiles.\<name\>.settings~~
 
-    # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.search.engines
-    # profiles."oq@lif".search.engines = {
-    #   # ...
+    # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.extensions.packages
+    profiles."[DEV] my-internet@zen" = {
+      id = 1;
+      extensions.packages = extensions;
+      settings = {
+        # automatically enable extensions
+        "extensions.autoDisableScopes" = 0;
+      };
+    };
 
-    #   nix-packages = {
-    #     name = "Nix Packages";
-    #     urls = [
-    #       {
-    #         template = "https://search.nixos.org/packages";
-    #         params = [
-    #           {
-    #             name = "type";
-    #             value = "packages";
-    #           }
-    #           {
-    #             name = "query";
-    #             value = "{searchTerms}";
-    #           }
-    #         ];
-    #       }
-    #     ];
+    profiles."oq@zen" = {
+      id = 0;
+      isDefault = true;
+      search.engines = searchEngines;
+    };
 
-    #     icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #     definedAliases = [ "@np" ];
-    #   };
-
-    #   nixos-wiki = {
-    #     name = "NixOS Wiki";
-    #     urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
-    #     iconMapObj."16" = "https://wiki.nixos.org/favicon.ico";
-    #     definedAliases = [ "@nw" ];
-    #   };
-
-    #   bing.metaData.hidden = true;
-    #   google.metaData.alias = "@g"; # builtin engines only support specifying one additional alias
-    # };
+    # Notice: we can even extend imperatively created profiles :D
+    profiles."Default (Windows)" = {
+      id = 2;
+      path = "89h16xs5.Default (alpha)";
+      search.engines = searchEngines;
+    };
   };
 }

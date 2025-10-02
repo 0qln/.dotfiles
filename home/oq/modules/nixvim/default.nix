@@ -29,16 +29,22 @@
   ];
 
   home.packages = with pkgs; [
+    tree-sitter
+    zig
+    nodejs_24
     deadnix
     golangci-lint
     nodePackages.jsonlint
     luaPackages.luacheck
     pylint
+    pyright
     shellcheck
     statix
     yamllint
     alejandra
     rustfmt
+    shfmt
+    prettierd
     # vale-ls
   ];
 
@@ -719,7 +725,6 @@
           formatters_by_ft = {
             bash = [
               "shellcheck"
-              "shellharden"
               "shfmt"
             ];
             rust = ["rustfmt"];
@@ -729,7 +734,6 @@
             };
             javascript = {
               __unkeyed-1 = "prettierd";
-              __unkeyed-2 = "prettier";
               timeout_ms = 2000;
               stop_after_first = true;
             };
@@ -911,7 +915,7 @@
         folding = false;
         settings = {
           indent.enable = true;
-          # highlight.enable = true; #this caused random erros :(
+          highlight.enable = true;
         };
         grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
       };
@@ -922,7 +926,7 @@
           clearOnCursorMove = false;
         };
       };
-      hmts.enable = true;
+      # hmts.enable = true; # tis shit is super buggy :(((((((
       trouble.enable = true;
       which-key.enable = true;
       #TODO: configure more dap
@@ -949,6 +953,7 @@
 
     diagnostic.settings = {
       update_in_insert = false;
+      signs = false;
     };
 
     opts = {

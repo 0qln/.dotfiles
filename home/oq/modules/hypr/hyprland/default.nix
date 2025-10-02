@@ -172,6 +172,11 @@
       "center, tag:dialog"
       "size 900 900, tag:dialog"
 
+      # zoom
+      "tag +zoom, class:zoom"
+      "float, tag:zoom"
+      "monitor ${monitors.left}, tag:zoom"
+
       # no animations
       "tag +no-anim, class:ueberzug.*"
       "noanim, tag:no-anim"

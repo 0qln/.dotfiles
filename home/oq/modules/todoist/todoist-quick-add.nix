@@ -19,4 +19,7 @@ in
       ]);
     buildInputs = [pkgs.makeWrapper];
     postBuild = "wrapProgram $out/bin/${name} --prefix PATH : $out/bin";
+    meta = {
+      mainProgram = name;
+    };
   }

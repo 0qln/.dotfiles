@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     git
-    gh
     delta
   ];
 
@@ -9,6 +8,9 @@
     enable = true;
     userName = "0qln";
     userEmail = "linusnag@gmail.com";
+    extraConfig = {
+      pull.rebase = false;
+    };
   };
 
   programs.lazygit = {

@@ -159,57 +159,60 @@
         win2xcur
         unzip
       ];
-      buildPhase = ''
-        unzip winPack.zip -d winPack
+      buildPhase =
+        # sh
+        ''
+          unzip winPack.zip -d winPack
 
-        iconsDir="$out/share/icons/${name}"
-        mkdir -p "$iconsDir/cursors"
+          iconsDir="$out/share/icons/${name}"
+          mkdir -p "$iconsDir/cursors"
 
-        (
-          # sometimes the files are at the zip root...
-          cd winPack
+          (
+            # sometimes the files are at the zip root...
+            cd winPack
 
-          # sometimes they are a level deeper...
-          if [ -d "${name}" ]; then
-            cd "${name}"
-          fi
-
-          # try unpacking >w< 🎁
-          win2xcur *.{ani,cur} -o "$iconsDir/cursors"
-        )
-
-        # name mapping
-        (
-          cd "$iconsDir/cursors"
-          ${lib.concatStringsSep "\n" (
-          lib.mapAttrsToList (k: v: ''
-            # either a perfect match
-            if [ -f "${k}" ]; then
-              ${lib.concatMapStringsSep "\n" (v: ''[ "$winFile" != "${v}" ] && cp "$winFile" "${v}"'') v}
+            # sometimes they are a level deeper...
+            if [ -d "${name}" ]; then
+              cd "${name}"
             fi
-            # or a partial match e.g. $file='neco-arc normal'
-            for file in * ; do
-              pat="${k}"
-              lowercase_pat="''${pat,,}"
-              lowercase_file="''${file,,}"
-              if [[ "$lowercase_file" =~ "$lowercase_pat" ]]; then
-                ${lib.concatMapStringsSep "\n" (v: ''[ "$file" != "${v}" ] && cp "$file" "${v}"'') v}
-              fi
-            done
-          '')
-          nameMap
-        )}
-        )
 
-        # index.theme
-        touch "$iconsDir/index.theme"
-        cat > "$iconsDir/index.theme" << EOF
-        [Icon Theme]
-        Name=${name}
-        Comment=Windows cursor theme converted for Linux
-        EOF
+            # try unpacking >w< 🎁
+            win2xcur *.{ani,cur} -o "$iconsDir/cursors"
+          )
 
-      '';
+          # name mapping
+          (
+            cd "$iconsDir/cursors"
+            ${lib.concatStringsSep "\n" (
+            lib.mapAttrsToList (k: v:
+              # sh
+              ''
+                # either a perfect match
+                if [ -f "${k}" ]; then
+                  ${lib.concatMapStringsSep "\n" (v: ''[ "$winFile" != "${v}" ] && cp "$winFile" "${v}"'') v}
+                fi
+                # or a partial match e.g. $file='neco-arc normal'
+                for file in * ; do
+                  pat="${k}"
+                  lowercase_pat="''${pat,,}"
+                  lowercase_file="''${file,,}"
+                  if [[ "$lowercase_file" =~ "$lowercase_pat" ]]; then
+                    ${lib.concatMapStringsSep "\n" (v: ''[ "$file" != "${v}" ] && cp "$file" "${v}"'') v}
+                  fi
+                done
+              '')
+            nameMap
+          )}
+          )
+
+          # index.theme
+          touch "$iconsDir/index.theme"
+          cat > "$iconsDir/index.theme" << EOF
+          [Icon Theme]
+          Name=${name}
+          Comment=Windows cursor theme converted for Linux
+          EOF
+        '';
       installPhase = ":";
     };
   in {
@@ -270,7 +273,9 @@
     destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
     deps ? ["writeBoundary"],
   }:
-    lib.hm.dag.entryAfter deps ''
+    lib.hm.dag.entryAfter deps
+    # sh
+    ''
       #!${pkgs.bash}/bin/bash
       dst="${destPath}"
       src="$XDG_RUNTIME_DIR/secrets/${secret}"
@@ -291,7 +296,9 @@
     newMode ? "700",
     deps ? ["writeBoundary"],
   }:
-    lib.hm.dag.entryAfter deps ''
+    lib.hm.dag.entryAfter deps
+    #sh
+    ''
       #!${pkgs.bash}/bin/bash
       dst="${destPath}"
       src="${source}"

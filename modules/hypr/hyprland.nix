@@ -28,6 +28,7 @@
     wl-clipboard-rs
     inputs.hyprpaper.packages.${pkgs.system}.hyprpaper
     mako
+    libnotify
   ];
   programs.hyprland = {
     enable = true;
