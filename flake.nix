@@ -85,6 +85,7 @@
           inherit pkgs-citrix;
           flake = self;
           host-name = "lif";
+          vars = import ./variables;
         };
       };
 

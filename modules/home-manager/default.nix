@@ -2,6 +2,7 @@
   specialArgs,
   inputs,
   pkgs,
+  vars,
   ...
 }: let
   utils = import ./utils;
