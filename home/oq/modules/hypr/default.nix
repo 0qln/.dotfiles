@@ -6,5 +6,6 @@
     ./hyprshot.nix
     ./waybar.nix
     ./wlsunset.nix
+    ./bongocat.nix
   ];
 }

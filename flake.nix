@@ -35,6 +35,9 @@
       url = "github:hyprwm/hyprpaper";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    bongocat = {
+      url = "github:0qln/wayland-bongocat";
+    };
 
     # nixvim, does not follow global nixpkgs.
     # Or does it? https://nix-community.github.io/nixvim/user-guide/install.html is
