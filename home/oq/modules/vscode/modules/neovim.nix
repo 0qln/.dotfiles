@@ -8,6 +8,7 @@ profile: {pkgs, ...}: {
       "extensions.experimental.affinity" = {
         "asvetliakov.vscode-neovim" = 1;
       };
+      "editor.lineNumbers" = "relative";
     };
   };
 }
