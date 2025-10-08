@@ -5,6 +5,7 @@ in {
     ./profiles/default.nix
     ./profiles/kimai.nix
     ./profiles/odoo.nix
+    ./profiles/odoo.kanagawa.nix
   ];
 
   home.packages = with pkgs; [
