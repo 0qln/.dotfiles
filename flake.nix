@@ -40,10 +40,7 @@
     };
 
     # nixvim, does not follow global nixpkgs.
-    # Or does it? https://nix-community.github.io/nixvim/user-guide/install.html is
-    # unclear about this
-    # on unstable luajit tests are failing, so lets pin to stable 🐛
-    nixvim.url = "github:nix-community/nixvim/nixos-25.05";
+    nixvim.url = "github:nix-community/nixvim";
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
