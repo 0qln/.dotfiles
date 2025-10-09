@@ -118,5 +118,15 @@
         host-name = "loki.lif";
       };
     };
+
+    nixosConfigurations."loki.gylfi" = lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [./hosts/loki.gylfi];
+      specialArgs = {
+        inherit inputs;
+        flake = self;
+        host-name = "loki.gylfi";
+      };
+    };
   };
 }
