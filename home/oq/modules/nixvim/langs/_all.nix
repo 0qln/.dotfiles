@@ -1,10 +1,11 @@
 _: {
-  imports = let
-    paths = builtins.readDir ./.;
-    langs = builtins.filter (n: isLng n && isMod n) (builtins.attrNames paths);
+  imports = with builtins; let
+    ident = baseNameOf __curPos.file;
+    names = attrNames paths;
+    paths = readDir ./.;
+    langs = filter (n: n != ident && isMod n != null) names;
+    isMod = match ".*\\.nix$";
     store = map (l: ./${l}) langs;
-    isMod = name: builtins.match ".*\\.nix$" name != null;
-    isLng = name: name != "_all.nix";
   in
     store;
 }

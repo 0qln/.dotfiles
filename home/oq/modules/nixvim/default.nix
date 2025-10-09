@@ -36,6 +36,7 @@ in {
     ./appearance/icons.nix
     ./appearance/no-diagnostic-next-to-line-numbers.nix
     ./appearance/line-wrap.nix
+    ./appearance/misc.nix
   ];
 
   options = with lib; {
