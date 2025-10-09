@@ -4,30 +4,23 @@
   lib,
   ...
 }: let
-  mkAgeIdentity = name: file: rec {
-    root = "/root/.config/sops/age/";
-    path = "${root}/${name}";
+  mkIdentity = name: file: {
     inherit name;
     inherit file;
   };
 
-  mkYubiIdentity = name:
-    mkAgeIdentity
-    name
-    ../../yubis/${name};
+  mkYubiIdentity = name: (mkIdentity name ../../yubis/${name});
 
   yubiIdentities = {
     yubi-1 = mkYubiIdentity "yubi-1/age-yubikey-identity-ca0b293d.txt";
     yubi-2 = mkYubiIdentity "yubi-2/age-yubikey-identity-7432b76e.txt";
   };
 
-  ageIdentities =
-    yubiIdentities
-    // {
-      age-keys = mkAgeIdentity "oq.age" "/home/oq/.config/sops/age/keys.txt";
-    };
+  ageIdentities = {
+    age-keys = mkIdentity "oq.age" "/home/oq/.config/sops/age/keys.txt";
+  };
 
-  ageIdentitiesSecrets = "sops/age/__all-keys.g.txt";
+  ageIdentitiesSecrets = "sops/age/all-keys.g.txt";
   ageIdentitiesFile = "/run/secrets/${ageIdentitiesSecrets}";
 in {
   imports = [
@@ -50,13 +43,15 @@ in {
     # Copy the age identities to somewhere outside of the nix store, since sops
     # does not allow paths to the nix store.
     identitiesScript = let
-      identities = lib.strings.concatStrings (lib.attrsets.mapAttrsToList
-        (name: identity:
-          with identity; ''
-            # === ${name} ===
-            ${builtins.readFile file}
-          '')
-        ageIdentities);
+      identities = lib.strings.concatStrings (
+        lib.attrsets.mapAttrsToList (
+          name: identity:
+            with identity; ''
+              # === ${name} ===
+              ${builtins.readFile file}
+            ''
+        ) (ageIdentities // yubiIdentities)
+      );
     in {
       name = "setupIdentitiesFile";
       exec = ''
@@ -86,7 +81,7 @@ in {
           # service module of nixpkgs in herer idkkkkkk
 
           echo "waiting for dependencies..."
-          for i in {1..20}
+          for i in {1..10}
           do
            echo "Loop spin:" $i
             sleep 1
