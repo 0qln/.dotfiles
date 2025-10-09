@@ -18,6 +18,7 @@
     ../../modules/ydotool
     ../../modules/steam
     ../../modules/doh
+    ../../modules/sops
 
     (import ../../modules/home-manager {
       extraArgs = {
@@ -32,8 +33,6 @@
 
     (import ../../services/nixos-garbage-disposal {
       })
-
-    ./sops.nix
 
     (import ../../modules/wireguard/unicorns {
       configFile = ./wireguard/unicorns/secrets.unicorns;

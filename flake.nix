@@ -125,7 +125,7 @@
       specialArgs = {
         inherit inputs;
         flake = self;
-        host-name = "loki.gylfi";
+        host-name = "loki-gylfi";
       };
     };
   };

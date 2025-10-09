@@ -6,6 +6,8 @@
       defaultUser = "oq";
     })
 
+    ../../modules/sops
+
     ../../home/oq/users/oq/default.tui.nix
     ../../home/oq/users/root/default.tui.nix
   ];

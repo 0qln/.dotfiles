@@ -24,7 +24,7 @@
   ageIdentities =
     yubiIdentities
     // {
-      # age-keys = mkAgeIdentity "oq.age" "/home/oq/.config/sops/age/keys.txt";
+      age-keys = mkAgeIdentity "oq.age" "/home/oq/.config/sops/age/keys.txt";
     };
 
   ageIdentitiesSecrets = "sops/age/__all-keys.g.txt";

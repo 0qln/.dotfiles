@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  theme = import ../../variables/colors/presets/0815-blue;
+  # theme = import ../../variables/colors/presets/0815-blue;
 in {
   imports = [
     (import ../../modules/home-manager {
@@ -8,5 +8,5 @@ in {
     })
   ];
 
-  config.variables = import ../../variables/colors/presets/0815-blue.nix;
+  # config.variables = import ../../variables/colors/presets/0815-blue.nix;
 }
