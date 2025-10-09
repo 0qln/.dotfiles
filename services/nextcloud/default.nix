@@ -132,34 +132,28 @@ in {
     services = {
       nginx.virtualHosts = let
         allowedHostsRegex = with lib.strings;
-          concatStringsSep
-          "|"
-          (
-            map escapeRegex (cfg.secondaryFqdns ++ [cfg.primaryFqdn])
-          );
+          concatStringsSep "|" (map escapeRegex (cfg.secondaryFqdns ++ [cfg.primaryFqdn]));
       in
-        (
-          lib.foldl
-          (acc: hostName:
-            acc
-            // {
-              ${hostName} = {
-                enableACME = true;
-                forceSSL = true;
-                locations."/" = {
-                  proxyPass = "https://${cfg.primaryFqdn}";
-                  extraConfig = ''
-                    if ($http_origin ~* "^https?://(${allowedHostsRegex}|google\.com)$") {
-                        add_header Access-Control-Allow-Origin "$http_origin" always;
-                        add_header 'Access-Control-Allow-Credentials' 'true';
-                    }
-                  '';
+        (lib.foldl (
+            acc: hostName:
+              acc
+              // {
+                ${hostName} = {
+                  enableACME = true;
+                  forceSSL = true;
+                  locations."/" = {
+                    proxyPass = "https://${cfg.primaryFqdn}";
+                    extraConfig = ''
+                      if ($http_origin ~* "^https?://(${allowedHostsRegex}|google\.com)$") {
+                          add_header Access-Control-Allow-Origin "$http_origin" always;
+                          add_header 'Access-Control-Allow-Credentials' 'true';
+                      }
+                    '';
+                  };
                 };
-              };
-            })
-          {}
-          cfg.secondaryFqdns
-        )
+              }
+          ) {}
+          cfg.secondaryFqdns)
         // {
           ${cfg.primaryFqdn} = {
             enableACME = true;
@@ -189,13 +183,18 @@ in {
           dbpassFile = "/run/secrets/${serviceName}/dbpass";
 
           dbhost = cfg.dbHost;
-          adminuser = "root"; #TODO: is this the right user?
+          adminuser = "root"; # TODO: is this the right user?
           adminpassFile = "/run/secrets/${serviceName}/adminpass";
         };
         settings = rec {
           default_phone_region = "DE";
           trusted_domains = [cfg.primaryFqdn] ++ cfg.secondaryFqdns ++ cfg.localFqdns;
-          trusted_proxies = ["127.0.0.1" "::1"] ++ trusted_domains;
+          trusted_proxies =
+            [
+              "127.0.0.1"
+              "::1"
+            ]
+            ++ trusted_domains;
         };
       };
 
