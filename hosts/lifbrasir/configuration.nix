@@ -17,7 +17,7 @@ in {
     ./bootloader.nix
     ./bat.nix
     ./lid.nix
-    ./sops.nix
+    ../../modules/sops
 
     ../../home/oq/users/root/default.tui.nix
 
@@ -41,10 +41,6 @@ in {
 
     ../../services/nextcloud
 
-    (import ../../services/nextcloud/calendar.owa-workaround.nix {
-      nextcloudEnvFile = ./nextcloud/secrets.owa-cal.env;
-    })
-
     (import ../../services/dynIp-updater/duckdns.nix {
       tokenFile = ./duckdns/secrets.token;
       domains = ["0qln"];
@@ -65,6 +61,24 @@ in {
     # (import ../../services/nixos-garbage-disposal {
     # })
   ];
+
+  sops = {
+    enable = true;
+    identities = [
+      rec {
+        name = "yubi-2/age-yubikey-identity-7432b76e.txt";
+        file = ../../yubis/${name};
+      }
+      rec {
+        name = "yubi-1/age-yubikey-identity-ca0b293d.txt";
+        file = ../../yubis/${name};
+      }
+      # {
+      #   name = "lifbrasir.age";
+      #   file = "/root/.config/sops/age/keys.txt";
+      # }
+    ];
+  };
 
   services = {
     todoist-backup = {
