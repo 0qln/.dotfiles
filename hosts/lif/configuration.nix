@@ -51,18 +51,22 @@
 
   sops = {
     enable = true;
+    # TODO: improve yubi key integration and use it.
+    enableYubikeyIntegration = false;
     identities = [
-      rec {
-        name = "yubi-2/age-yubikey-identity-7432b76e.txt";
-        file = ../../yubis/${name};
+      {
+        name = "oq.age";
+        file = "/home/oq/.config/sops/age/keys.txt";
       }
+    ];
+    yubiIdentities = [
       rec {
         name = "yubi-1/age-yubikey-identity-ca0b293d.txt";
         file = ../../yubis/${name};
       }
-      {
-        name = "oq.age";
-        file = "/home/oq/.config/sops/age/keys.txt";
+      rec {
+        name = "yubi-2/age-yubikey-identity-7432b76e.txt";
+        file = ../../yubis/${name};
       }
     ];
   };

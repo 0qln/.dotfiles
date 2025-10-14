@@ -64,19 +64,22 @@ in {
 
   sops = {
     enable = true;
+    enableYubikeyIntegration = false;
     identities = [
-      rec {
-        name = "yubi-2/age-yubikey-identity-7432b76e.txt";
-        file = ../../yubis/${name};
+      {
+        name = "lifbrasir.age";
+        file = "/root/.config/sops/age/keys.txt";
       }
+    ];
+    yubiIdentities = [
       rec {
         name = "yubi-1/age-yubikey-identity-ca0b293d.txt";
         file = ../../yubis/${name};
       }
-      # {
-      #   name = "lifbrasir.age";
-      #   file = "/root/.config/sops/age/keys.txt";
-      # }
+      rec {
+        name = "yubi-2/age-yubikey-identity-7432b76e.txt";
+        file = ../../yubis/${name};
+      }
     ];
   };
 
