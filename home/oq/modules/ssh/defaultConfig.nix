@@ -5,7 +5,7 @@ _: {
 
     # These are the old default values.
     matchBlocks."*" = {
-      forwardAgent = false;
+      forwardAgent = true;
       addKeysToAgent = "no";
       compression = false;
       serverAliveInterval = 0;
