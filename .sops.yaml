@@ -4,6 +4,13 @@ keys:
   - &oq-yubi1 age1yubikey1qdwv0ypklgx0pqk25345hdnmdplgqhfnxwjpulxc9dqzve2q2vcjz7rlheu
   - &oq-yubi2 age1yubikey1qt6apkfjlfpun32ppk4zxrj9jh7dyrcfwr59trl2des3r7pmfxdu5jst7yf
 creation_rules:
+  - path_regex: ^home/oq/users/root/.*secrets.*$
+    key_groups:
+      - age:
+          - *lifbrasir
+          - *oq
+          - *oq-yubi1
+          - *oq-yubi2
   - path_regex: ^home/oq/.*secrets.*$
     key_groups:
       - age:
