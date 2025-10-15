@@ -27,6 +27,7 @@
     # ../../modules/azure
     # ../../modules/agents
     ../../modules/yubi
+    ../../modules/repos
   ];
 
   my-nixvim = {
