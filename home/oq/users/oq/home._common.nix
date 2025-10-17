@@ -27,6 +27,7 @@
     # ../../modules/azure
     # ../../modules/agents
     ../../modules/yubi
+    ../../modules/proton/vpn.nix
   ];
 
   my-nixvim = {
