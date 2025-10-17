@@ -13,6 +13,7 @@
     mpv
     imagemagick
     qimgv
+    vlc
 
     # networking
     iperf3
