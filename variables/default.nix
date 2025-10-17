@@ -9,5 +9,7 @@ rec {
     screenshots = {
       dir = "${pictures.dir}/screenshots";
     };
+    editor = "nvim";
+    sysfetcher = "fastfetch";
   };
 }
