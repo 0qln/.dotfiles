@@ -11,7 +11,6 @@ in {
   imports = [
     ../_common/configuration.nix
 
-    ./packages.nix
     ./mount.nix
     ./keys.nix
     ./bootloader.nix

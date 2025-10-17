@@ -183,7 +183,7 @@ in {
           dbpassFile = "/run/secrets/${serviceName}/dbpass";
 
           dbhost = cfg.dbHost;
-          adminuser = "root"; # TODO: is this the right user?
+          adminuser = "root";
           adminpassFile = "/run/secrets/${serviceName}/adminpass";
         };
         settings = rec {
