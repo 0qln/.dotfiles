@@ -28,6 +28,7 @@
     # ../../modules/agents
     ../../modules/yubi
     ../../modules/proton/vpn.nix
+    ../../modules/repos
   ];
 
   my-nixvim = {

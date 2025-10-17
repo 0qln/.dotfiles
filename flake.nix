@@ -115,7 +115,7 @@
       specialArgs = {
         inherit inputs;
         flake = self;
-        host-name = "loki.lif";
+        host-name = "loki-lif";
       };
     };
 

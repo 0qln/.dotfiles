@@ -23,7 +23,6 @@
       ../../modules/starship
       ../../modules/theme
       ../../modules/vscode
-      ../../modules/repos
       ../../modules/splatmoji
       ../../modules/teams
       ../../modules/wallpaper-engine
