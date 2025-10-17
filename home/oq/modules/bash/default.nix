@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  variables,
   ...
 }: {
   programs.direnv = {
@@ -27,6 +28,7 @@
       alias lg='lazygit'
       alias lf='lf-ueberzug'
       alias nivm='nvim'
+      alias clearfetch='clear && ${variables.sysfetcher} && read _'
     '';
     bashrcExtra = ''
       eval "$(direnv hook bash)"
