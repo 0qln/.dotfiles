@@ -10,6 +10,8 @@
     userEmail = "linusnag@gmail.com";
     extraConfig = {
       pull.rebase = false;
+      safe.directory = ["*"];
+      init.defaultBranch = "master";
     };
   };
 
