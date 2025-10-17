@@ -1,8 +1,31 @@
-{...}: {
+{
+  pkgs,
+  vars,
+  ...
+}: {
+  # does not work idk why
   programs.nixvim = {
+    extraLuaPackages = ps: [ps.magick];
+    extraPackages = with pkgs; [
+      # install only what we need
+      imagemagick
+      curl
+      ueberzugpp
+    ];
     plugins = {
-      #TODO: intgrate with ueberzugpp (already installed bc of ../../modules/lf)
-      image.enable = true;
+      image = {
+        enable = true;
+        settings = {
+          backend =
+            if
+              # TODO: if tui
+              false
+            then "sixel"
+            else if vars.terminal == "kitty"
+            then "kitty"
+            else "ueberzug";
+        };
+      };
     };
   };
 }

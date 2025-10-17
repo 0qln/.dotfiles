@@ -19,6 +19,10 @@
       set -as terminal-features 'xterm*:extkeys'
       set-option -g allow-passthrough on
       # all the above does not fucking work. https://github.com/tmux/tmux/wiki/Modifier-Keys#extended-keys
+
+      # nvim image plugin
+      set -gq allow-passthrough on
+      set -g visual-activity off
     '';
 
     keyMode = "vi";

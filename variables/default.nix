@@ -12,4 +12,5 @@ rec {
   };
   editor = "nvim";
   sysfetcher = "fastfetch";
+  terminal = "kitty";
 }
