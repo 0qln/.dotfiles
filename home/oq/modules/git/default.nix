@@ -12,6 +12,8 @@
       pull.rebase = false;
       safe.directory = ["*"];
       init.defaultBranch = "master";
+      mergetool.prompt = false;
+      mergetool.keepBackup = false;
     };
   };
 

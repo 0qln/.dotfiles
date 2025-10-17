@@ -1,4 +1,10 @@
 {...}: {
+  programs.git = {
+    extraConfig = {
+      merge.tool = "nvimdiff";
+    };
+  };
+
   programs.nixvim = {
     globals = {
       mapleader = " ";
