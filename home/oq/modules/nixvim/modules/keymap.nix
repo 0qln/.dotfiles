@@ -1,4 +1,6 @@
-{...}: {
+{config, ...}: let
+  cfg = config.my-nixvim;
+in {
   programs.nixvim = {
     plugins = {
       # key = "ysawb"
@@ -49,7 +51,7 @@
       }
       # Code format
       {
-        action = "<cmd>lua vim.lsp.buf.format()<CR>";
+        action = "<cmd>lua ${cfg.formatBufLua}<CR>";
         key = "<leader>cf";
         mode = [
           "n"
