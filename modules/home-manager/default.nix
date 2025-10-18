@@ -2,6 +2,7 @@
   specialArgs,
   inputs,
   pkgs,
+  flake,
   vars,
   ...
 }: {
@@ -16,13 +17,11 @@
     settings = {
       uiEnv = "gui";
     };
-    modules = {
-      firefox.enable = false;
-    };
   };
 
   home-manager.users.root = _: {
     settings = {
+      uiEnv = "gui";
     };
   };
 
@@ -30,8 +29,10 @@
     useGlobalPkgs = false;
     useUserPackages = true;
     extraSpecialArgs =
-      specialArgs
-      // {
+      {
+        nixosArgs = specialArgs;
+        inherit flake;
+        inherit vars;
         inherit (pkgs) nur;
       }
       // extraArgs;

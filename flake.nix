@@ -9,27 +9,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs-citrix.url = "nixpkgs/12bd230118a1901a4a5d393f9f56b6ad7e571d01";
-
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    home = {
-      url = "git+ssh://git@github.com/0qln/.home.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
 
     hyprland = {
@@ -40,25 +27,27 @@
       url = "github:hyprwm/hyprpaper";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    bongocat = {
-      url = "github:0qln/wayland-bongocat";
-    };
-
-    # nixvim, does not follow global nixpkgs.
-    nixvim.url = "github:nix-community/nixvim";
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
     };
+
+    home = {
+      url = "git+ssh://git@github.com/0qln/.home.git";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nur.follows = "nur";
+        sops-nix.follows = "sops-nix";
+        hyprland.follows = "hyprland";
+        hyprpaper.follows = "hyprpaper";
+        home-manager.follows = "home-manager";
+      };
+    };
   };
 
   outputs = inputs @ {
-    home-manager,
-    sops-nix,
-    nixvim,
     self,
     nixpkgs,
-    nixpkgs-citrix,
     ...
   }: let
     inherit (nixpkgs) lib;
@@ -68,26 +57,12 @@
 
     nixosConfigurations."lif" = let
       system = "x86_64-linux";
-      pkgs-citrix = import nixpkgs-citrix {
-        inherit system;
-        config = {
-          allowUnfreePredicate = pkg:
-            builtins.elem (lib.getName pkg) [
-              "citrix-workspace"
-            ];
-          permittedInsecurePackages = [
-            "libxml2-2.13.8"
-            "libsoup-2.74.3"
-          ];
-        };
-      };
     in
       lib.nixosSystem {
         inherit system;
         modules = [./hosts/lif];
         specialArgs = {
           inherit inputs;
-          inherit pkgs-citrix;
           flake = self;
           host-name = "lif";
           vars = import ./variables;
