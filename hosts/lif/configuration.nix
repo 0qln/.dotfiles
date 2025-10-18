@@ -11,9 +11,6 @@
     ./nvidia.nix
     ./intel.nix
 
-    ../../home/oq/users/oq/default.gui.nix
-    ../../home/oq/users/root/default.tui.nix
-
     ../../modules/hypr
     ../../modules/ydotool
     ../../modules/steam

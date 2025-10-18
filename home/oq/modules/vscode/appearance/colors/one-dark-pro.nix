@@ -1,1 +1,0 @@
-#"oneDarkPro.vivid": true,

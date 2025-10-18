@@ -11,6 +11,7 @@ in {
   imports = with inputs; [
     home-manager.nixosModules.home-manager
     nur.modules.nixos.default
+    home.nixosModules."oq.gui"
   ];
 
   home-manager = {
