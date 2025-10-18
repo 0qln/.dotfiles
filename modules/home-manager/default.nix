@@ -4,15 +4,27 @@
   pkgs,
   vars,
   ...
-}: let
-  utils = import ./utils;
-  backupExtension = "hm-bac";
-in {
+}: {
   imports = with inputs; [
+    home.nixosModules."oq"
+    home.nixosModules."root"
     home-manager.nixosModules.home-manager
     nur.modules.nixos.default
-    home.nixosModules."oq.gui"
   ];
+
+  home-manager.users.oq = {...}: {
+    settings = {
+      uiEnv = "gui";
+    };
+    modules = {
+      firefox.enable = false;
+    };
+  };
+
+  home-manager.users.root = _: {
+    settings = {
+    };
+  };
 
   home-manager = {
     useGlobalPkgs = false;
@@ -21,10 +33,7 @@ in {
       specialArgs
       // {
         inherit (pkgs) nur;
-        inherit utils;
-        inherit backupExtension;
       }
       // extraArgs;
-    backupFileExtension = backupExtension;
   };
 }
