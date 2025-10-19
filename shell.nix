@@ -13,10 +13,12 @@ with import <nixpkgs> {};
       alias update-sops-keys="fd -t f -H . | grep .*secrets.* | xargs sops updatekeys -y"
 
       dots() {
+        action="$1"
+        output="$2"
         cd ~/.dotfiles
         nix flake update home
         git add .
-        nixos-rebuild $1 --flake ~/.dotfiles?submodules=1#$2 --impure --show-trace --sudo
+        nixos-rebuild "$action" --flake ~/.dotfiles?submodules=1#$output --impure --show-trace --sudo
       }
 
       # check if the ssh-agent wasn't spawned when .envrc was executed by direnv.
