@@ -18,10 +18,7 @@
     ../../modules/sops
 
     (import ../../modules/home-manager {
-      extraArgs = {
-        monitors = import ./monitors.nix {};
-      };
-    })
+      })
 
     (import ../../services/flake-upgrader {
       flakeDir = "/home/oq/.dotfiles";

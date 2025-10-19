@@ -10,7 +10,4 @@ rec {
       dir = "${pictures.dir}/screenshots";
     };
   };
-  editor = "nvim";
-  sysfetcher = "fastfetch";
-  terminal = "kitty";
 }

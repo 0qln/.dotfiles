@@ -1,4 +1,4 @@
-{extraArgs}: {
+{extraArgs ? {}}: {
   specialArgs,
   inputs,
   pkgs,
@@ -13,19 +13,21 @@
     nur.modules.nixos.default
   ];
 
-  home-manager.users.oq = {...}: {
-    settings = {
-      uiEnv = "gui";
-    };
-  };
-
-  home-manager.users.root = _: {
-    settings = {
-      uiEnv = "gui";
-    };
-  };
-
   home-manager = {
+    users.oq = _: {
+      imports = [../../hosts/lif/variables.nix];
+      settings = {
+        uiEnv = "gui";
+        # theme.name = "wlop-1_chinese-festival";
+      };
+    };
+
+    users.root = _: {
+      settings = {
+        uiEnv = "gui";
+      };
+    };
+
     useGlobalPkgs = false;
     useUserPackages = true;
     extraSpecialArgs =
