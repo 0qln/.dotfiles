@@ -31,18 +31,6 @@
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
     };
-
-    home = {
-      url = "git+ssh://git@github.com/0qln/.home.git";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nur.follows = "nur";
-        sops-nix.follows = "sops-nix";
-        hyprland.follows = "hyprland";
-        hyprpaper.follows = "hyprpaper";
-        home-manager.follows = "home-manager";
-      };
-    };
   };
 
   outputs = inputs @ {
