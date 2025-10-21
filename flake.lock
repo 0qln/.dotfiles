@@ -211,11 +211,11 @@
         "zen-browser": "zen-browser"
       },
       "locked": {
-        "lastModified": 1761083312,
-        "narHash": "sha256-oVcIOTjwH9Gu3/QvsXCzTFyGhT4Sa3DqU8qo4UL9KX8=",
+        "lastModified": 1761089098,
+        "narHash": "sha256-V8cV8687Ko2+IyMzyW5QYiEQVcBKAqxzLqSzZBIE9gc=",
         "ref": "refs/heads/master",
-        "rev": "ae15746ffef9d8f248642b4781ccb5b4a1b18b45",
-        "revCount": 127,
+        "rev": "02e99230674f9fc969b3883ecfb5bae409a86394",
+        "revCount": 139,
         "type": "git",
         "url": "ssh://git@github.com/0qln/.home.git"
       },
