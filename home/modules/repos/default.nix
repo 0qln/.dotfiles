@@ -1,0 +1,26 @@
+{pkgs, ...}: {
+  home.file."repos/work.devops/.envrc".text = ''
+
+
+    # We create the ssh-agent in the .envrc, because when entering the directory with direnv,
+    # the ssh-agent breaks when we exit the shellHook and only export the env-vars. Running
+    # the ssh-agent in the shellHook binds the ssh-agent to the subshell, and since the
+    # env vars are exported and the subshell is closed later, the ssh-agent dies.
+    #
+    # ... atleast that's what i think is going on (゜-゜) ...
+    #
+    # Also, we can't also run the ssh-add command here. Then we would have to enter the
+    # credentials twice...
+    #
+    if [ -z ''${SSH_AGENT_PID+x} ]; then
+      eval $(ssh-agent)
+    fi
+
+    use nix
+
+  '';
+
+  home.file."repos/work.devops/shell.nix" = {
+    source = ./work.devops/shell.nix;
+  };
+}

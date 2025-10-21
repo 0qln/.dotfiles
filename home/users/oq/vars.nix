@@ -1,0 +1,5 @@
+{
+  home = {
+    directory = "/home/oq/";
+  };
+}
