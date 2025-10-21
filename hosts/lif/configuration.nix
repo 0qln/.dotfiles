@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   imports = [
     ../_common/configuration.nix
 
@@ -63,6 +63,40 @@
         file = ../../yubis/${name};
       }
     ];
+  };
+
+  home-manager = {
+    users.oq = _: {
+      imports = [./variables.nix];
+      settings = {
+        uiEnv = "gui";
+        enableWorkSimple = true;
+        # theme.name = "wlop-1_chinese-festival";
+      };
+      modules = {
+        cursor.cursor = "frieren";
+        browser = {
+          firefox = {
+            tor.enable = true;
+            zen.enable = true;
+          };
+        };
+        zoom.enable = true;
+        kooha.enable = true;
+        jetbrains.tools = with pkgs.jetbrains; [
+          rider
+        ];
+        minecraft = {
+          prismlauncher.enable = true;
+        };
+      };
+    };
+
+    users.root = _: {
+      settings = {
+        uiEnv = "gui";
+      };
+    };
   };
 
   # This value determines the NixOS release from which the default

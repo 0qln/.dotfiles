@@ -14,20 +14,6 @@
   ];
 
   home-manager = {
-    users.oq = _: {
-      imports = [../../hosts/lif/variables.nix];
-      settings = {
-        uiEnv = "gui";
-        # theme.name = "wlop-1_chinese-festival";
-      };
-    };
-
-    users.root = _: {
-      settings = {
-        uiEnv = "gui";
-      };
-    };
-
     useGlobalPkgs = false;
     useUserPackages = true;
     extraSpecialArgs =
