@@ -84,15 +84,11 @@
         extraSpecialArgs = {
           inherit backupExtension;
           inherit inputs;
+          inherit nur;
           pkgs-citrix = pkgs-citrix system;
         };
         backupFileExtension = backupExtension;
       };
-
-      imports = [
-        ./home/utils
-        nur.modules.homeManager.default
-      ];
 
       users = builtins.attrNames (builtins.readDir ./home/users);
 
@@ -103,10 +99,6 @@
         "gui"
       ];
     };
-
-    # hosts = builtins.attrNames (
-    #   lib.attrsets.filterAttrs (x: isDir x && !isHidden x) (builtins.readDir ./home/themes)
-    # );
 
     eachX = with lib;
       xs: fns:
@@ -145,24 +137,22 @@
                           inherit inputs;
                           inherit (pkgs) nur;
                         };
-                      modules =
-                        hm.imports
-                        ++ [
-                          (import ./home/users/${user}/home.nix)
-                          (_: {
-                            settings = {
-                              enable = pkgs.lib.mkDefault true;
-                              uiEnv = pkgs.lib.mkDefault env;
-                            };
-                          })
-                          (_: {
-                            # Let Home Manager install and manage itself.
-                            programs.home-manager.enable = true;
+                      modules = [
+                        (import ./home/users/${user}/home.nix)
+                        (_: {
+                          settings = {
+                            enable = pkgs.lib.mkDefault true;
+                            uiEnv = pkgs.lib.mkDefault env;
+                          };
+                        })
+                        (_: {
+                          # Let Home Manager install and manage itself.
+                          programs.home-manager.enable = true;
 
-                            home.username = user;
-                            home.homeDirectory = vars.home.directory;
-                          })
-                        ];
+                          home.username = user;
+                          home.homeDirectory = vars.home.directory;
+                        })
+                      ];
                     };
                 }
               )
@@ -171,55 +161,12 @@
         )
       );
 
-    nixosConfigurations = builtins.listToAttrs (
-      lib.lists.flatten (
-        eachX hosts (host: {
-          name = host;
-          value = lib.nixosSystem rec {
-            system = "x86_64-linux";
-            modules = [
-              ./hosts/lif
-              (_: {
-                home-manager =
-                  (hm.config system)
-                  // {
-                    users = builtins.listToAttrs (
-                      eachX hm.users (user: {
-                        name = user;
-                        value = _: {inherit (hm) imports;};
-                      })
-                    );
-                  };
-              })
-            ];
-            specialArgs = {
-              inherit inputs;
-              flake = self;
-              host-name = "lif";
-              vars = import ./variables;
-            };
-          };
-        })
-      )
-    );
-
     _nixosConfigurations = {
       "lif" = lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
           ./hosts/lif
-          (_: {
-            home-manager =
-              (hm.config system)
-              // {
-                users = builtins.listToAttrs (
-                  eachX hm.users (user: {
-                    name = user;
-                    value = _: {inherit (hm) imports;};
-                  })
-                );
-              };
-          })
+          (_: {home-manager = hm.config system;})
         ];
         specialArgs = {
           inherit inputs;

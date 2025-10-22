@@ -28,6 +28,12 @@ in
           enable = mkDefault true;
           theme = mkDefault ./rofi;
         };
+        ytm = {
+          stylesheetPath = mkDefault ./ytm/stylesheet.css;
+        };
+        zathura = {
+          zathurarcFile = mkDefault ./zathura/zathurarc;
+        };
       };
       theme = {
         wallpapers = rec {

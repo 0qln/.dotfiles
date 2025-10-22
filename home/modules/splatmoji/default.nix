@@ -1,8 +1,12 @@
 {
   pkgs,
+  utils,
+  config,
   lib,
   ...
-}: let
+}:
+with lib; let
+  cfg = config.module.splatmoji;
   splatmoji = pkgs.stdenv.mkDerivation rec {
     pname = "splatmoji";
 
@@ -25,24 +29,26 @@
     '';
   };
 in {
-  imports = [
-    ../rofi
-  ];
+  options.modules.splatmoji = {
+    enable = utils.mkEnableOption "splatmoji" config.modules.rofi.enable;
+  };
 
-  home.packages = with pkgs;
-    [
-      xsel
-      jq
-    ]
-    ++ [
-      splatmoji
-    ];
+  config = mkIf cfg.enable {
+    home.packages = with pkgs;
+      [
+        xsel
+        jq
+      ]
+      ++ [
+        splatmoji
+      ];
 
-  home.file.".config/splatmoji/splatmoji.config" = {
-    text = ''
-      xsel_command=wl-copy
-      paste_command=wl-paste
-      xdotool_command=YDOTOOL_SOCKET=/run/ydotoold/socket ydotool type
-    '';
+    home.file.".config/splatmoji/splatmoji.config" = {
+      text = ''
+        xsel_command=wl-copy
+        paste_command=wl-paste
+        xdotool_command=YDOTOOL_SOCKET=/run/ydotoold/socket ydotool type
+      '';
+    };
   };
 }

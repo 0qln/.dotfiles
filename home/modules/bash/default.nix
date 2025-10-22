@@ -36,6 +36,7 @@ in
           alias lf='lf-ueberzug'
           alias nivm='nvim'
           alias clearfetch='clear && ${vars.sysfetcher} && read _'
+
           alias "-"="cd -"
 
           ${

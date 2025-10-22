@@ -11,8 +11,8 @@
   cfg = config.modules.browser.firefox.zen;
 in
   with lib; {
-    imports = [
-      inputs.zen-browser.homeModules.twilight
+    imports = with inputs; [
+      zen-browser.homeModules.twilight
     ];
 
     options.modules.browser.firefox.zen = {

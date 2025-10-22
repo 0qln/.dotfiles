@@ -1,6 +1,6 @@
 {extraArgs ? {}}: {
   inputs,
-  vars,
+  vars, # NOTICE: if this is
   ...
 }: {
   imports = with inputs; [

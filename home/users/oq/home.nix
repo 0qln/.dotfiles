@@ -21,6 +21,9 @@ in
 
     imports =
       [
+        ../../modules/utils
+      ]
+      ++ [
         #TODO: move these imports somewhere else
         ../../themes/wlop-1_chinese-festival
         ../../themes/opts.nix
@@ -68,17 +71,17 @@ in
         ../../modules/terminal
         ../../modules/obsidian
         ../../modules/rofi
+        ../../modules/vscode
+        ../../modules/youtube-music
+        ../../modules/theme
+        ../../modules/secrets
+        ../../modules/todoist
+        ../../modules/splatmoji
+        ../../modules/starship
+        ../../modules/zathura
       ]
       ++ [
         # todo: write modules and move these down into gui only section
-        ../../modules/secrets
-        ../../modules/todoist
-        ../../modules/youtube-music
-        ../../modules/starship
-        ../../modules/theme
-        ../../modules/vscode
-        ../../modules/splatmoji
-        ../../modules/zathura
         ../../modules/xdg-utils
       ];
 
@@ -106,6 +109,7 @@ in
           bash.enable = mkDefault true;
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;
+          secrets.ssh.enable = mkDefault true;
         }
 
         # gui-only modules
@@ -121,6 +125,15 @@ in
           fonts.enable = mkDefault true;
           obsidian.enable = mkDefault true;
           rofi.enable = mkDefault true;
+          vscode.enable = mkDefault true;
+          ytm.enable = mkDefault true;
+          todoist = {
+            enable = mkDefault true;
+            cliProgram.enable = mkDefault true;
+            quickAdd.enable = mkDefault true;
+          };
+          starship.enable = mkDefault true;
+          zathura.enable = mkDefault true;
         })
 
         # tui-only modules

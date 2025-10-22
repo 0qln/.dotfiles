@@ -1,14 +1,34 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    zathura
-  ];
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.zathura;
+in {
+  options.modules.zathura = {
+    enable = mkEnableOption "zathura";
+    zathurarc = mkOption {
+      type = types.nullOr types.lines;
+      default = null;
+      description = "The zathurarc";
+    };
+    zathurarcFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "A path to the zathurarc";
+    };
+  };
 
-  home.file.".config/zathura/zathurarc" = {
-    text = ''
-      set recolor "true"
-      set default-bg rgba(0,0,0,0.7)
-      set recolor-lightcolor rgba(0,0,0,0)
-      set adjust-open "width"
-    '';
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      zathura
+    ];
+
+    home.file.".config/zathura/zathurarc" = {
+      text = mkIf (cfg.zathurarc != null) cfg.zathurarc;
+      source = mkIf (cfg.zathurarcFile != null) cfg.zathurarcFile;
+    };
   };
 }

@@ -93,6 +93,26 @@
         minecraft = {
           prismlauncher.enable = true;
         };
+        secrets.ssh = {
+          #TODO: move these secrets into a private flake.
+          keyPairs = {
+            # "server" = {
+            #   private = ./secrets/ssh/server/id_ed25519;
+            #   public = ./secrets/ssh/server/id_ed25519.pub;
+            #   type = "ed25519";
+            # };
+            # "work" = {
+            #   private = ./secrets/ssh/work/id_ed25519;
+            #   public = ./secrets/ssh/work/id_ed25519.pub;
+            #   type = "ed25519";
+            # };
+            # "work.devops" = {
+            #   private = ./secrets/ssh/work.devops/id_rsa;
+            #   public = ./secrets/ssh/work.devops/id_rsa.pub;
+            #   type = "rsa";
+            # };
+          };
+        };
       };
     };
 
