@@ -1,6 +1,6 @@
 {
   pkgs,
-  vars,
+  config,
   ...
 }: {
   # does not work idk why
@@ -21,7 +21,7 @@
               # TODO: if tui
               false
             then "sixel"
-            else if vars.terminal == "kitty"
+            else if config.vars.terminal == "kitty"
             then "kitty"
             else "ueberzug";
         };
