@@ -49,9 +49,6 @@ in
                 ) (lib.lists.range 2 5)
               )
           }
-          alias ".."="cd ../"
-          alias "..."="cd ../../"
-          alias "...."="cd ../../../"
         '';
         bashrcExtra = ''
           eval "$(direnv hook bash)"
