@@ -7,7 +7,7 @@
 in
   with lib; {
     options.settings = {
-      enable = mkEnableOption "settings";
+      enable = config.utils.mkEnableOption "settings" true;
       uiEnv = mkOption {
         type = types.enum [
           "tui"
