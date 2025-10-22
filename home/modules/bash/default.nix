@@ -39,12 +39,12 @@ in
           alias "-"="cd -"
 
           ${
-            with lib;
-              strings.concatLines (
+            with lib.strings;
+              concatLines (
                 map (
                   x: let
-                    key = strings.fixedWidthString x "." "";
-                    value = strings.fixedWidthString (x - 1) "../";
+                    key = fixedWidthString x "." "";
+                    value = fixedWidthString (x - 1) "../";
                   in ''alias "${key}"="cd ${value}"''
                 ) (lib.lists.range 2 5)
               )
