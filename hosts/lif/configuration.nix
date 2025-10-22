@@ -17,6 +17,9 @@
     ../../modules/doh
     ../../modules/sops
 
+    ../../home/users/oq
+    ../../home/users/root
+
     (import ../../modules/home-manager {
       })
 
@@ -69,6 +72,7 @@
     users.oq = _: {
       imports = [./variables.nix];
       settings = {
+        enable = true;
         uiEnv = "gui";
         enableWorkSimple = true;
         # theme.name = "wlop-1_chinese-festival";
@@ -94,6 +98,7 @@
 
     users.root = _: {
       settings = {
+        enable = true;
         uiEnv = "gui";
       };
     };

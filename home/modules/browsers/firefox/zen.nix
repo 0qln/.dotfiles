@@ -1,6 +1,5 @@
 {
   inputs,
-  nur,
   lib,
   pkgs,
   config,
@@ -8,7 +7,7 @@
   ...
 }: let
   searchEngines = import ./search-engines pkgs;
-  extensions = import ./extensions/_common.nix nur;
+  extensions = import ./extensions/_common.nix pkgs.nur;
   cfg = config.modules.browser.firefox.zen;
 in
   with lib; {
