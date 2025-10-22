@@ -74,6 +74,9 @@
         };
       };
 
+    isHidden = file: _type: builtins.match "_.*" file;
+    isDir = _file: type: type == "directory";
+
     hm = rec {
       backupExtension = "hm-bac";
 
@@ -93,15 +96,17 @@
 
       users = builtins.attrNames (builtins.readDir ./home/users);
 
-      themes = builtins.filter (x: x == "directory") (
-        builtins.attrNames (builtins.readDir ./home/themes)
-      );
+      themes = builtins.attrNames (lib.attrsets.filterAttrs isDir (builtins.readDir ./home/themes));
 
       envs = [
         "tui"
         "gui"
       ];
     };
+
+    # hosts = builtins.attrNames (
+    #   lib.attrsets.filterAttrs (x: isDir x && !isHidden x) (builtins.readDir ./home/themes)
+    # );
 
     eachX = with lib;
       xs: fns:
@@ -121,6 +126,7 @@
     in
       builtins.listToAttrs (
         pkgs.lib.lists.flatten (
+          # todo: add hosts (e.g. lif.cachyos)
           eachX hm.users (
             eachX hm.envs (
               eachX hm.themes (
@@ -165,10 +171,39 @@
         )
       );
 
-    nixosConfigurations = {
-      # https://discourse.nixos.org/t/how-do-specialargs-work/50615/4
-      # https://nixos-modules.nix.xn--q9jyb4c/lessons/function-arguments/lesson/
+    nixosConfigurations = builtins.listToAttrs (
+      lib.lists.flatten (
+        eachX hosts (host: {
+          name = host;
+          value = lib.nixosSystem rec {
+            system = "x86_64-linux";
+            modules = [
+              ./hosts/lif
+              (_: {
+                home-manager =
+                  (hm.config system)
+                  // {
+                    users = builtins.listToAttrs (
+                      eachX hm.users (user: {
+                        name = user;
+                        value = _: {inherit (hm) imports;};
+                      })
+                    );
+                  };
+              })
+            ];
+            specialArgs = {
+              inherit inputs;
+              flake = self;
+              host-name = "lif";
+              vars = import ./variables;
+            };
+          };
+        })
+      )
+    );
 
+    _nixosConfigurations = {
       "lif" = lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
