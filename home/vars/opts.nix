@@ -9,6 +9,19 @@ in
     options.vars = let
       programType = types.strMatching "[a-zA-Z0-9_-]+";
     in {
+      user = lib.mkOption {
+        type = lib.types.submodule {
+          options = {
+            uid = lib.mkOption {
+              type = lib.types.int;
+              description = "User id";
+            };
+          };
+        };
+        default = {};
+        description = "System User configuration";
+      };
+
       root = lib.mkOption {
         type = lib.types.str;
         description = "Home directory path";

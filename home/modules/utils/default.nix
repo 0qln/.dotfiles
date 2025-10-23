@@ -3,7 +3,6 @@
   lib,
   pkgs,
   config,
-  osConfig,
   flake,
   ...
 }: {
@@ -331,7 +330,7 @@
         chmod ${newMode} $dst
       '';
 
-    userRuntimeDir = "/run/user/${toString osConfig.users.users.${config.home.username}.uid}";
+    userRuntimeDir = "/run/user/${toString config.vars.user.uid}";
 
     #TODO: use this and don't hardcode the root path: https://github.com/srid/flake-root
     #TODO: not sure this still works as inteded after refactoring
