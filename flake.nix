@@ -79,22 +79,8 @@
 
     isHidden = file: builtins.match "_.*" file != null;
     isDir = type: type == "directory";
-
-    hm = {
-      users = builtins.attrNames (builtins.readDir ./home/users);
-
-      themes = builtins.attrNames (lib.attrsets.filterAttrs isDir (builtins.readDir ./home/themes));
-
-      envs = [
-        "tui"
-        "gui"
-      ];
-    };
-
-    hosts = builtins.attrNames (
-      lib.attrsets.filterAttrs (f: t: (isDir t) && !(isHidden f)) (builtins.readDir ./hosts)
-    );
-
+    isX = f: t: (isDir t) && !(isHidden f);
+    collectXs = xDir: builtins.attrNames (lib.attrsets.filterAttrs isX (builtins.readDir xDir));
     eachX = with lib;
       xs: fns:
         map (i: i.fn i.x) (
@@ -104,10 +90,21 @@
           }
         );
 
-    flake = self;
+    hm = {
+      users = collectXs ./home/users;
+
+      themes = collectXs ./home/themes;
+
+      envs = [
+        "tui"
+        "gui"
+      ];
+    };
+
+    hosts = collectXs ./hosts;
   in {
     nixosConfigurations = builtins.listToAttrs (
-      map (
+      eachX hosts (
         host: let
           systemPath = ./hosts/${host}/system.nix;
           system =
@@ -129,124 +126,68 @@
           };
         }
       )
-      hosts
     );
 
-    # homeConfigurations = builtins.listToAttrs
-    #     (eachX hm.users (
-    #     user: { name = "user"; }
-    #   ));
-
-    #     _homeConfigurations = let
-    #       system = "x86_64-linux";
-    #       pkgs = import nixpkgs {
-    #         inherit system;
-    #         overlays = [nur.overlays.default];
-    #       };
-    #       config = import ./variables {inherit (config) config;};
-    #       hm.config = import ./modules/home-manager/config.nix {
-    #         inherit inputs;
-    #         inherit config;
-    #         pkgs-citrix = pkgs-citrix system;
-    #       };
-    #     in
-    #       builtins.listToAttrs (
-    #         pkgs.lib.lists.flatten (
-    #           # todo: add hosts (e.g. lif.cachyos)
-    #           eachX hm.users (
-    #             eachX hm.envs (
-    #               eachX hm.themes (
-    #                 theme: env: user: let
-    #                   # vars = import ./home/users/${user}/vars.nix;
-    #                 in {
-    #                   name = "${user}-${env}-${theme}";
-    #                   value = {};
-    #                   # value = home-manager.lib.homeManagerConfiguration (
-    #                   #   hm.config
-    #                   #   // {
-    #                   #     inherit pkgs;
-    #                   #     extraSpecialArgs =
-    #                   #       config.extraSpecialArgs
-    #                   #       // {
-    #                   #         inherit flake;
-    #                   #         inherit inputs;
-    #                   #         inherit (pkgs) nur;
-    #                   #       };
-    #                   #     modules = [
-    #                   #       (import ./home/users/${user}/home.nix)
-    #                   #       (_: {
-    #                   #         settings = {
-    #                   #           enable = pkgs.lib.mkDefault true;
-    #                   #           uiEnv = pkgs.lib.mkDefault env;
-    #                   #         };
-    #                   #       })
-    #                   #       (_: {
-    #                   #         # Let Home Manager install and manage itself.
-    #                   #         programs.home-manager.enable = true;
-
-    #                   #         home.username = user;
-    #                   #         home.homeDirectory = vars.home.directory;
-    #                   #       })
-    #                   #     ];
-    #                   #   }
-    #                   # );
-    #                 }
-    #               )
-    #             )
-    #           )
-    #         )
-    #       );
-
-    _nixosConfigurations = {
-      "lif" = lib.nixosSystem rec {
-        system = "x86_64-linux";
-        modules = [./hosts/lif];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "lif";
-        };
+    homeConfigurations = let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [nur.overlays.default];
       };
-
-      "lifbrasir" = lib.nixosSystem rec {
-        system = "x86_64-linux";
-        modules = [./hosts/lifbrasir];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "lifbrasir";
-        };
+      vars = import ./variables {
+        inherit (vars) config;
+        inherit (pkgs) lib;
       };
+    in
+      builtins.listToAttrs (
+        pkgs.lib.lists.flatten (
+          # todo: add hosts (e.g. lif.cachyos)
+          eachX hm.users (
+            eachX hm.envs (
+              eachX hm.themes (
+                theme: env: user: let
+                  hm.config = import ./modules/home-manager/config.nix {
+                    inherit inputs;
+                    inherit (pkgs) nur;
+                    pkgs-citrix = pkgs-citrix system;
+                    config = vars;
+                  };
+                  hm.vars = import ./home/users/${user}/vars.nix {inherit (hm.vars) config;};
+                in {
+                  name = "${user}-${env}-${theme}";
+                  value = home-manager.lib.homeManagerConfiguration (
+                    hm.config
+                    // {
+                      inherit pkgs;
+                      extraSpecialArgs = {
+                        flake = self;
+                        inherit inputs;
+                        inherit (pkgs) nur;
+                      };
+                      modules = [
+                        hm.vars
+                        (import ./home/users/${user}/home.nix)
+                        (_: {
+                          settings = {
+                            enable = pkgs.lib.mkDefault true;
+                            uiEnv = pkgs.lib.mkDefault env;
+                          };
+                        })
+                        (_: {
+                          # Let Home Manager install and manage itself.
+                          programs.home-manager.enable = true;
 
-      "loki" = lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [./hosts/loki];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "loki";
-        };
-      };
-
-      "loki.lif" = lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [./hosts/loki.lif];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "loki-lif";
-        };
-      };
-
-      "loki.gylfi" = lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [./hosts/loki.gylfi];
-        specialArgs = {
-          inherit inputs;
-          flake = self;
-          host-name = "loki-gylfi";
-        };
-      };
-    };
+                          home.username = user;
+                          home.homeDirectory = hm.vars.root;
+                        })
+                      ];
+                    }
+                  );
+                }
+              )
+            )
+          )
+        )
+      );
   };
 }

@@ -11,11 +11,19 @@
 
   home-manager = let
     configuration = import ./config.nix {
-      backupExtension = config.vars.home.config.backup.extension;
       inherit (pkgs) nur;
       inherit pkgs-citrix;
       inherit inputs;
+      inherit config;
     };
   in
-    configuration;
+    configuration
+    // {
+      useGlobalPkgs = false;
+      useUserPackages = true;
+    }
+    // {
+      # TODO: remove when pr is merged (see comment in ./config.nix)
+      backupFileExtension = config.vars.home.config.backup.extension;
+    };
 }
