@@ -1,12 +1,11 @@
 {
   pkgs,
-  utils,
   config,
   lib,
   ...
 }:
 with lib; let
-  cfg = config.module.splatmoji;
+  cfg = config.modules.splatmoji;
   splatmoji = pkgs.stdenv.mkDerivation rec {
     pname = "splatmoji";
 
@@ -30,7 +29,7 @@ with lib; let
   };
 in {
   options.modules.splatmoji = {
-    enable = utils.mkEnableOption "splatmoji" config.modules.rofi.enable;
+    enable = config.utils.mkEnableOption "splatmoji" config.modules.rofi.enable;
   };
 
   config = mkIf cfg.enable {

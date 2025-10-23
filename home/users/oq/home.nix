@@ -21,6 +21,9 @@ in
 
     imports =
       [
+        ./vars.nix
+      ]
+      ++ [
         ../../modules/utils
       ]
       ++ [
@@ -52,7 +55,8 @@ in
         ../../modules/tmux
         ../../modules/browsers
         ../../modules/bash
-        ../../modules/hypr
+        ../../modules/hypr/_opt.nix
+        ../../modules/hypr/_all.nix
         ../../modules/citrix
         ../../modules/git
         ../../modules/discord/vesktop.nix

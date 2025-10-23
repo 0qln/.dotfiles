@@ -1,13 +1,5 @@
-rec {
-  home = home: rec {
-    cloud = {
-      dir = "${home}/nextcloud";
-    };
-    pictures = {
-      dir = "${cloud.dir}/pictures";
-    };
-    screenshots = {
-      dir = "${pictures.dir}/screenshots";
-    };
+{config, ...}: {
+  config.vars = {
+    home.config.backup.extension = "hm-bac";
   };
 }

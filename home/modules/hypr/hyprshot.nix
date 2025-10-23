@@ -1,6 +1,5 @@
 {
   pkgs,
-  vars,
   config,
   lib,
   ...
@@ -9,12 +8,7 @@
 in
   with lib; {
     options.modules.hypr.shot = {
-      enable = mkOption {
-        default = config.modules.hypr.enable;
-        example = false;
-        description = "Whether to enable ${"hypr.shot"}.";
-        type = lib.types.bool;
-      };
+      enable = config.utils.mkEnableOption "hypr.shot" config.modules.hypr.enable;
     };
 
     config = mkIf cfg.enable {
@@ -23,8 +17,7 @@ in
       ];
 
       wayland.windowManager.hyprland.settings.bind = let
-        home = vars.home config.home.homeDirectory;
-        hyprShotDir = home.screenshots.dir;
+        hyprShotDir = config.vars.screenshots.dir;
         hyprshotExe = with pkgs; lib.getExe hyprshot;
         hyprshotCmd = ''HYPRSHOT_DIR="${hyprShotDir}" ${hyprshotExe} -z '';
       in [

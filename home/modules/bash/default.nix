@@ -45,7 +45,7 @@ in
                 map (
                   x: let
                     key = fixedWidthString x "." "";
-                    value = fixedWidthString (x - 1) "../";
+                    value = fixedWidthString ((x - 1) * 3) "../" "";
                   in ''alias "${key}"="cd ${value}"''
                 ) (lib.lists.range 2 5)
               )

@@ -1,10 +1,4 @@
-{lib, ...}:
-with lib; {
-  options = {
-    modules.hypr = {
-      enable = mkEnableOption "hypr";
-    };
-  };
+_: {
   imports = [
     ./hyprpicker.nix
     ./hyprland

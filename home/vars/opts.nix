@@ -9,6 +9,50 @@ in
     options.vars = let
       programType = types.strMatching "[a-zA-Z0-9_-]+";
     in {
+      root = lib.mkOption {
+        type = lib.types.str;
+        description = "Home directory path";
+      };
+
+      cloud = lib.mkOption {
+        type = lib.types.submodule {
+          options = {
+            dir = lib.mkOption {
+              type = lib.types.str;
+              description = "Nextcloud directory path";
+            };
+          };
+        };
+        default = {};
+        description = "Nextcloud configuration";
+      };
+
+      pictures = lib.mkOption {
+        type = lib.types.submodule {
+          options = {
+            dir = lib.mkOption {
+              type = lib.types.str;
+              description = "Pictures directory path";
+            };
+          };
+        };
+        default = {};
+        description = "Pictures configuration";
+      };
+
+      screenshots = lib.mkOption {
+        type = lib.types.submodule {
+          options = {
+            dir = lib.mkOption {
+              type = lib.types.str;
+              description = "Screenshots directory path";
+            };
+          };
+        };
+        default = {};
+        description = "Screenshots configuration";
+      };
+
       editor = mkOption {
         type = programType;
         default = "nvim";

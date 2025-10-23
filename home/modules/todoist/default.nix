@@ -31,9 +31,11 @@ in {
       };
 
       # Todoist cli cant handle links
-      home.activation.todoist-token = mkIf config.utils.mkForceCopySecret {
-        secret = "todoist-token";
-        destPath = "${config.xdg.configHome}/todoist/config.json";
-      };
+      home.activation.todoist-token = mkIf cli (
+        config.utils.mkForceCopySecret {
+          secret = "todoist-token";
+          destPath = "${config.xdg.configHome}/todoist/config.json";
+        }
+      );
     };
 }

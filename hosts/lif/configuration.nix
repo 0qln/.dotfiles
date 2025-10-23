@@ -20,8 +20,7 @@
     ../../home/users/oq
     ../../home/users/root
 
-    (import ../../modules/home-manager {
-      })
+    ../../modules/home-manager
 
     (import ../../services/flake-upgrader {
       flakeDir = "/home/oq/.dotfiles";

@@ -19,6 +19,8 @@ in
     };
 
     imports = [
+      ../../modules/hypr/_opt.nix
+      ../../modules/utils
       ../../modules/bash
       ../../modules/btop
       ../../modules/direnv

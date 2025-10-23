@@ -29,7 +29,7 @@ in
           theme = mkDefault ./rofi;
         };
         ytm = {
-          stylesheetPath = mkDefault ./ytm/stylesheet.css;
+          stylesheetFile = mkDefault ./ytm/stylesheet.css;
         };
         zathura = {
           zathurarcFile = mkDefault ./zathura/zathurarc;

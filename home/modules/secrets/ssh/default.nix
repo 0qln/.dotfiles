@@ -9,7 +9,6 @@
 {
   config,
   lib,
-  utils,
   ...
 }:
 with lib; let
@@ -27,7 +26,7 @@ in {
     enable = mkEnableOption "ssh secrets";
 
     #TODO: shell aliases as a seperate module and then this is not just bash specific.
-    genBashAliases = utils.mkEnableOption "bash ssh-... aliases" config.modules.bash.enable;
+    genBashAliases = config.utils.mkEnableOption "bash ssh-... aliases" config.modules.bash.enable;
 
     keyPairs = mkOption {
       type = types.attrs; # TODO: submodule
@@ -62,11 +61,9 @@ in {
     );
 
     # Link /run/secrets to ~/.ssh
-    systemd.user.tmpfiles.rules =
-      lists.flatten attrsets.mapAttrsToList (
-        name: pair: (linkPair name "id_${pair.type}")
-      )
-      cfg.keyPairs;
+    systemd.user.tmpfiles.rules = lists.flatten (
+      attrsets.mapAttrsToList (name: pair: (linkPair name "id_${pair.type}")) cfg.keyPairs
+    );
 
     # Create shell aliases for ease of use
     programs.bash.initExtra = strings.concatLines (

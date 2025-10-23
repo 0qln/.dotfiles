@@ -16,9 +16,7 @@ in {
 
     ../../home/users/root/default.nix
 
-    (import ../../modules/home-manager {
-      extraArgs = {};
-    })
+    ../../modules/home-manager
 
     ../../services/ssh
     ../../services/dashboard
