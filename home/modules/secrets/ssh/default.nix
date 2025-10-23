@@ -30,7 +30,7 @@ in {
 
     keyPairs = mkOption {
       type = types.attrs; # TODO: submodule
-      default = [];
+      default = {};
       description = "List of private/public key pairs";
       example = {
         "server" = {

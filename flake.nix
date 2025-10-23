@@ -152,7 +152,7 @@
                     pkgs-citrix = pkgs-citrix system;
                     config = vars;
                   };
-                  hm.vars = import ./home/users/${user}/vars.nix {inherit (hm.vars) config;};
+                  hm.vars = import ./home/users/${user}/vars.nix {inherit (hm.vars) config; inherit (pkgs) lib;};
                 in {
                   name = "${user}-${env}-${theme}";
                   value = home-manager.lib.homeManagerConfiguration (
@@ -178,7 +178,7 @@
                           programs.home-manager.enable = true;
 
                           home.username = user;
-                          home.homeDirectory = hm.vars.root;
+                          home.homeDirectory = hm.vars.config.vars.root;
                         })
                       ];
                     }
