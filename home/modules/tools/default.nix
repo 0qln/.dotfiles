@@ -8,6 +8,7 @@ with lib; let
   cfg = config.modules.tools;
 in {
   options.modules.tools = {
+    enable = mkEnableOption "tools";
     qimgv = {
       setDefault = mkOption {
         type = types.listOf types.str;
@@ -16,7 +17,8 @@ in {
       };
     };
   };
-  config = {
+
+  config = mkIf cfg.enable {
     home.packages = with pkgs; [
       # files
       fzf
@@ -35,6 +37,7 @@ in {
 
       # networking
       iperf3
+      nethogs
 
       # super important
       fastfetch

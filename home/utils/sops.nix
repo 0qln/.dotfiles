@@ -1,3 +1,4 @@
+# configuration for sops-nix utility
 {
   config,
   pkgs,

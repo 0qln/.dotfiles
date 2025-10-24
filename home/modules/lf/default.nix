@@ -1,190 +1,204 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.lf;
   previewer = import ./previewer.nix {inherit pkgs;};
   cleaner = import ./cleaner.nix {inherit pkgs;};
   lf-ueberzug = import ./lf-ueberzug.nix {inherit pkgs;};
 in {
-  home.packages = with pkgs; [
-    # TODO:
-    # `Gtk-Message: 20:24:39.360: Failed to load module "colorreload-gtk-module"`
-    # even though gtk 3 is installed and in the path
-    dragon-drop
+  options.modules.lf = {
+    enable = mkEnableOption "lf fileexplorer";
+  };
 
-    unzip
-    mescc-tools-extra # untar
-    gnutar
-    unrar-wrapper
-    p7zip
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      # TODO:
+      # `Gtk-Message: 20:24:39.360: Failed to load module "colorreload-gtk-module"`
+      # even though gtk 3 is installed and in the path
+      dragon-drop
 
-    ueberzugpp
+      unzip
+      mescc-tools-extra # untar
+      gnutar
+      unrar-wrapper
+      p7zip
 
-    fzf
+      ueberzugpp
 
-    file
+      fzf
 
-    xdg-utils
+      file
 
-    poppler-utils # pdftotext
+      xdg-utils
 
-    highlight
+      poppler-utils # pdftotext
 
-    chafa
+      highlight
 
-    lf-ueberzug
-  ];
+      chafa
 
-  imports = [
-    ../zoxide
-    ../trashy
-  ];
+      lf-ueberzug
 
-  # https://home-manager-options.extranix.com/?query=lf&release=release-25.05
+      trashy
+    ];
 
-  programs.lf = {
-    enable = true;
+    imports = [
+      ../zoxide
+    ];
 
-    settings = {
-      hidden = true;
-      ignorecase = true;
-      icons = true;
-      scrolloff = 3;
-      truncatechar = "⋯";
-    };
+    # https://home-manager-options.extranix.com/?query=lf&release=release-25.05
 
-    extraConfig = ''
-      set previewer ${previewer}/bin/previewer
-      set cleaner ${cleaner}/bin/cleaner
-    '';
+    programs.lf = {
+      enable = true;
 
-    commands = {
-      dragon-out = ''%${pkgs.xdragon}/bin/xdragon -a -x "$fx"'';
+      settings = {
+        hidden = true;
+        ignorecase = true;
+        icons = true;
+        scrolloff = 3;
+        truncatechar = "⋯";
+      };
 
-      open = ''
-        &{{
-          case $(file --mime-type -Lb $f) in
-            text/*) lf -remote "send $id \$nvim \$fx";;
-            *) xdg-open "$f"
-          esac
-        }}
+      extraConfig = ''
+        set previewer ${previewer}/bin/previewer
+        set cleaner ${cleaner}/bin/cleaner
       '';
 
-      mkdir = ''
-        ''${{
-          printf "Directory Name: "
-          read DIR
-          mkdir $DIR
-        }}
-      '';
+      commands = {
+        dragon-out = ''%${pkgs.xdragon}/bin/xdragon -a -x "$fx"'';
 
-      mkfile = ''
-        ''${{
-          printf "File Name: "
-          read FILE
-          $EDITOR $FILE
-        }}
-      '';
+        open = ''
+          &{{
+            case $(file --mime-type -Lb $f) in
+              text/*) lf -remote "send $id \$nvim \$fx";;
+              *) xdg-open "$f"
+            esac
+          }}
+        '';
 
-      fzf_jump = ''
-        ''${{
-          res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location')"
-          if [ -n "$res" ]; then
-              if [ -d "$res" ]; then
-                  cmd="cd"
-              else
-                  cmd="select"
-              fi
-              res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
-              lf -remote "send $id $cmd \"$res\""
-          fi
-        }}
-      '';
+        mkdir = ''
+          ''${{
+            printf "Directory Name: "
+            read DIR
+            mkdir $DIR
+          }}
+        '';
 
-      fzf_search = ''
-        ''${{
-          RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
-          res="$(
-            FZF_DEFAULT_COMMAND="$RG_PREFIX '''" \
-              fzf --bind "change:reload:$RG_PREFIX {q} || true" \
-              --ansi --layout=reverse --header 'Search in files' \
-              | cut -d':' -f1 | sed 's/\\/\\\\/g;s/"/\\"/g'
-          )"
-          [ -n "$res" ] && lf -remote "send $id select \"$res\""
-        }}
-      '';
+        mkfile = ''
+          ''${{
+            printf "File Name: "
+            read FILE
+            $EDITOR $FILE
+          }}
+        '';
 
-      z-jump = ''
-        ''${{
-          ZLUA_SCRIPT="$ZDOTDIR/plugins/z.lua/z.lua"
-          lf -remote "send ''${id} cd \"$($ZLUA_SCRIPT -e $@ | sed 's/\\/\\\\/g;s/"/\\"/g')\""
-        }}
-      '';
-
-      unarchive = ''
-        ''${{
-          case "$f" in
-              *.zip) unzip "$f" ;;
-              *.rar) unrar x "$f" ;;
-              *.tar.gz) tar -xzvf "$f" ;;
-              *.tar.bz2) tar -xjvf "$f" ;;
-              *.tar) tar -xvf "$f" ;;
-              *.7z) 7z e "$f" ;;
-              *) echo "Unsupported format" ;;
-          esac
-        }}
-      '';
-
-      trash = ''
-        ''${{
-          files=$(printf "$fx" | tr '\n' ';')
-          while [ "$files" ]; do
-            file=''${files%%;*}
-
-            trash put "$(basename "$file")"
-            if [ "$files" = "$file" ]; then
-              files='''
-            else
-              files="''${files#*;}"
+        fzf_jump = ''
+          ''${{
+            res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location')"
+            if [ -n "$res" ]; then
+                if [ -d "$res" ]; then
+                    cmd="cd"
+                else
+                    cmd="select"
+                fi
+                res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
+                lf -remote "send $id $cmd \"$res\""
             fi
-          done
-        }}
-      '';
+          }}
+        '';
 
-      copy-name = ''$basename "$f" | wl-copy'';
-      copy-path = ''$echo "$f" | wl-copy'';
-    };
+        fzf_search = ''
+          ''${{
+            RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+            res="$(
+              FZF_DEFAULT_COMMAND="$RG_PREFIX '''" \
+                fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+                --ansi --layout=reverse --header 'Search in files' \
+                | cut -d':' -f1 | sed 's/\\/\\\\/g;s/"/\\"/g'
+            )"
+            [ -n "$res" ] && lf -remote "send $id select \"$res\""
+          }}
+        '';
 
-    keybindings = {
-      "c" = null;
-      "d" = null;
+        z-jump = ''
+          ''${{
+            ZLUA_SCRIPT="$ZDOTDIR/plugins/z.lua/z.lua"
+            lf -remote "send ''${id} cd \"$($ZLUA_SCRIPT -e $@ | sed 's/\\/\\\\/g;s/"/\\"/g')\""
+          }}
+        '';
 
-      "Z" = "push :z-jump<space>-I<space>";
-      "zb" = "push :z-jump<space>-b<space>";
-      "zz" = "push :z-jump<space>";
+        unarchive = ''
+          ''${{
+            case "$f" in
+                *.zip) unzip "$f" ;;
+                *.rar) unrar x "$f" ;;
+                *.tar.gz) tar -xzvf "$f" ;;
+                *.tar.bz2) tar -xjvf "$f" ;;
+                *.tar) tar -xvf "$f" ;;
+                *.7z) 7z e "$f" ;;
+                *) echo "Unsupported format" ;;
+            esac
+          }}
+        '';
 
-      "f" = null;
-      "ff" = "fzf_jump";
-      "f/" = "fzf_search";
+        trash = ''
+          ''${{
+            files=$(printf "$fx" | tr '\n' ';')
+            while [ "$files" ]; do
+              file=''${files%%;*}
 
-      "." = "set hidden!";
+              trash put "$(basename "$file")"
+              if [ "$files" = "$file" ]; then
+                files='''
+              else
+                files="''${files#*;}"
+              fi
+            done
+          }}
+        '';
 
-      "dd" = "trash";
-      "u" = "$trash restore -r 0";
+        copy-name = ''$basename "$f" | wl-copy'';
+        copy-path = ''$echo "$f" | wl-copy'';
+      };
 
-      "p" = "paste";
-      "x" = "cut";
-      "y" = "copy";
-      "Y" = "copy-name";
-      "<C-y>" = "copy-path";
-      "o" = "dragon-out";
+      keybindings = {
+        "c" = null;
+        "d" = null;
 
-      "<enter>" = "open";
+        "Z" = "push :z-jump<space>-I<space>";
+        "zb" = "push :z-jump<space>-b<space>";
+        "zz" = "push :z-jump<space>";
 
-      "R" = "reload";
+        "f" = null;
+        "ff" = "fzf_jump";
+        "f/" = "fzf_search";
 
-      "m" = null;
-      "mf" = "mkfile";
-      "md" = "mkdir";
+        "." = "set hidden!";
 
-      "au" = "unarchive";
+        "dd" = "trash";
+        "u" = "$trash restore -r 0";
+
+        "p" = "paste";
+        "x" = "cut";
+        "y" = "copy";
+        "Y" = "copy-name";
+        "<C-y>" = "copy-path";
+        "o" = "dragon-out";
+
+        "<enter>" = "open";
+
+        "R" = "reload";
+
+        "m" = null;
+        "mf" = "mkfile";
+        "md" = "mkdir";
+
+        "au" = "unarchive";
+      };
     };
   };
 }

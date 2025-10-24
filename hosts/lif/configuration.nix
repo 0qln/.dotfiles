@@ -93,12 +93,16 @@
         };
         zoom.enable = true;
         kooha.enable = true;
-        jetbrains.tools = with pkgs.jetbrains; [
-          rider
-        ];
+        jetbrains = {
+          enable = true;
+          tools = with pkgs.jetbrains; [
+            rider
+          ];
+        };
         minecraft = {
           prismlauncher.enable = true;
         };
+        shotcut.enable = true;
       };
       private = {
         secrets.ssh = {

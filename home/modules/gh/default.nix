@@ -1,28 +1,44 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.gh;
   hosts = "gh/hosts.yml";
   home = config.home.homeDirectory;
 in {
-  programs.gh = {
-    enable = true;
-    gitCredentialHelper = {
+  options.modules.gh = {
+    enable = mkEnableOption "github cli";
+    hostsYmlFile = mkOption {
+      type = types.nullOr types.path;
+      description = "hosts.yml config file path";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    programs.gh = {
+      enable = true;
+      gitCredentialHelper = {
+        enable = true;
+      };
+    };
+
+    programs.gh-dash = {
       enable = true;
     };
-  };
 
-  programs.gh-dash = {
-    enable = true;
-  };
-
-  sops.secrets = {
-    ${hosts} = {
-      format = "yaml";
-      sopsFile = ./secrets/hosts.yml;
-      mode = "0600";
-      key = "";
+    sops.secrets = mkIf (cfg.hostsYmlFile != null) {
+      ${hosts} = {
+        format = "yaml";
+        sopsFile = hostsYmlFile;
+        mode = "0600";
+        key = "";
+      };
     };
-  };
 
-  systemd.user.tmpfiles.rules = [
-    "L ${home}/.config/gh/hosts.yml - - - - ${config.sops.secrets.${hosts}.path}"
-  ];
+    systemd.user.tmpfiles.rules = mkIf (cfg.hostsYmlFile != null) [
+      "L ${home}/.config/gh/hosts.yml - - - - ${config.sops.secrets.${hosts}.path}"
+    ];
+  };
 }

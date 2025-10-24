@@ -6,6 +6,10 @@
   flake,
   ...
 }: {
+  imports = [
+    ./sops.nix
+  ];
+
   options.utils = with lib;
     mkOption {
       type = types.attrs;

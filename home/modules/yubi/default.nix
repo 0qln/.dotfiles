@@ -1,11 +1,24 @@
-{ pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    yubikey-manager
-    age-plugin-yubikey
-  ];
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.yubi;
+in {
+  options.modules.yubi = {
+    enable = mkEnableOption "yubikey tooling";
+  };
 
-  services.yubikey-agent = {
-    enable = true;
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      yubikey-manager
+      age-plugin-yubikey
+    ];
+
+    services.yubikey-agent = {
+      enable = true;
+    };
   };
 }

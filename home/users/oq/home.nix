@@ -25,10 +25,9 @@ in
         inputs.private.homeModules."oq"
       ]
       ++ [
-        ./vars.nix
-      ]
-      ++ [
-        ../../modules/utils
+        ../../utils
+        ../../modules
+        ../../vars
       ]
       ++ [
         #TODO: move these imports somewhere else
@@ -42,13 +41,11 @@ in
         ../../modules/gh
         ../../modules/lf
         ../../modules/nixvim
-        ../../modules/sops
         ../../modules/ssh
         ../../modules/tools
         ../../modules/zoxide
         ../../modules/secrets
-        # ../../modules/azure
-        # ../../modules/agents
+        ../../modules/azure
         ../../modules/yubi
         ../../modules/proton/vpn.nix
         ../../modules/repos
@@ -114,6 +111,16 @@ in
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;
           secrets.ssh.enable = mkDefault true;
+          btop.enable = mkDefault true;
+          direnv.enable = mkDefault true;
+          gh.enable = mkDefault true;
+          private.secrets.gh.hostsYml = mkDefault true;
+          lf.enable = mkDefault true;
+          proton.vpn.enable = mkDefault true;
+          repos.enable = mkDefault true;
+          xdg-utils.enable = mkDefault true;
+          yubi.enable = mkDefault true;
+          tools.enable = mkDefault true;
         }
 
         # gui-only modules
@@ -127,7 +134,6 @@ in
           discord.vesktop.enable = mkDefault true;
           discord.vesktop.theme = mkDefault "system24";
           libreoffice.enable = mkDefault true;
-          jetbrains.enable = mkDefault true;
           nextcloud.enable = mkDefault true;
           cursor.enable = mkDefault true;
           fonts.enable = mkDefault true;
