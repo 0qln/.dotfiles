@@ -8,12 +8,7 @@
 in
   with lib; {
     options.modules.hypr.picker = {
-      enable = mkOption {
-        default = config.modules.hypr.enable;
-        example = false;
-        description = "Whether to enable ${"hypr.picker"}.";
-        type = lib.types.bool;
-      };
+      enable = config.utils.mkEnableOption "hypr.picker" config.modules.hypr.enable;
     };
 
     config = mkIf cfg.enable {

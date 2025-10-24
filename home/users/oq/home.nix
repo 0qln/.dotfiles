@@ -25,6 +25,9 @@ in
         inputs.private.homeModules."oq"
       ]
       ++ [
+        ./vars.nix
+      ]
+      ++ [
         ../../utils
         ../../modules
         ../../vars
@@ -33,57 +36,6 @@ in
         #TODO: move these imports somewhere else
         ../../themes/wlop-1_chinese-festival
         ../../themes/opts.nix
-        ../../vars/opts.nix
-      ]
-      ++ [
-        ../../modules/btop
-        ../../modules/direnv
-        ../../modules/gh
-        ../../modules/lf
-        ../../modules/nixvim
-        ../../modules/ssh
-        ../../modules/tools
-        ../../modules/zoxide
-        ../../modules/secrets
-        ../../modules/azure
-        ../../modules/yubi
-        ../../modules/proton/vpn.nix
-        ../../modules/repos
-        ../../modules/tmux
-        ../../modules/browsers
-        ../../modules/bash
-        ../../modules/hypr/_opt.nix
-        ../../modules/hypr/_all.nix
-        ../../modules/citrix
-        ../../modules/git
-        ../../modules/discord/vesktop.nix
-        ../../modules/zoom
-        ../../modules/libreoffice
-        ../../modules/kooha
-        ../../modules/shotcut
-        ../../modules/jetbrains
-        ../../modules/minecraft/prismlauncher.nix
-        ../../modules/msteams
-        ../../modules/nextcloud
-        ../../modules/postman
-        ../../modules/wallpaper-engine
-        ../../modules/cursors
-        ../../modules/fonts
-        ../../modules/terminal
-        ../../modules/obsidian
-        ../../modules/rofi
-        ../../modules/vscode
-        ../../modules/youtube-music
-        ../../modules/theme
-        ../../modules/secrets
-        ../../modules/todoist
-        ../../modules/splatmoji
-        ../../modules/starship
-        ../../modules/zathura
-      ]
-      ++ [
-        # todo: write modules and move these down into gui only section
-        ../../modules/xdg-utils
       ];
 
     config = mkIf cfg.enable {
@@ -104,6 +56,10 @@ in
 
       theme."enable_${config.vars.theme.name}" = mkDefault true;
 
+      private = {
+        secrets.gh.hostsYml = mkDefault true;
+      };
+
       modules = mkMerge [
         {
           nixvim.enable = mkDefault true;
@@ -114,7 +70,6 @@ in
           btop.enable = mkDefault true;
           direnv.enable = mkDefault true;
           gh.enable = mkDefault true;
-          private.secrets.gh.hostsYml = mkDefault true;
           lf.enable = mkDefault true;
           proton.vpn.enable = mkDefault true;
           repos.enable = mkDefault true;

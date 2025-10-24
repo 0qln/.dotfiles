@@ -12,12 +12,7 @@ in
     ];
 
     options.modules.hypr.bongocat = {
-      enable = mkOption {
-        default = config.modules.hypr.enable;
-        example = false;
-        description = "Whether to enable ${"hypr.bongocat"}.";
-        type = lib.types.bool;
-      };
+      enable = config.utils.mkEnableOption "hypr.bongocat" config.modules.hypr.enable;
     };
 
     config = mkIf cfg.enable {

@@ -7,12 +7,7 @@
 in
   with lib; {
     options.modules.hypr.paper = {
-      enable = mkOption {
-        default = config.modules.hypr.enable;
-        example = false;
-        description = "Whether to enable ${"hypr.paper"}.";
-        type = lib.types.bool;
-      };
+      enable = config.utils.mkEnableOption "hypr.paper" config.modules.hypr.enable;
     };
 
     config = mkIf cfg.enable {

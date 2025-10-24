@@ -63,10 +63,15 @@ in {
 
       systemd.user.services."reload-cursor" = reload-service cursor.name cfg.size;
 
-      home =
-        if isCustom
-        then {pointerCursor = cursor;}
-        else {file.".icons/default".source = "${cursor.package}/share/icons/${cursor.name}";};
+      home = let
+        customDef = {
+          pointerCursor = cursor;
+        };
+        packagDef = {
+          file.".icons/default".source = "${cursor.package}/share/icons/${cursor.name}";
+        };
+      in
+        config.utils.mkIfElse isCustom customDef packagDef;
     }
   );
 }

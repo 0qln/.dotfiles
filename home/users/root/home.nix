@@ -19,18 +19,9 @@ in
     };
 
     imports = [
-      ../../modules/hypr/_opt.nix
-      ../../modules/utils
-      ../../modules/bash
-      ../../modules/btop
-      ../../modules/direnv
-      ../../modules/git
-      ../../modules/tmux
-      ../../modules/lf
-      ../../modules/nixvim
-      ../../modules/sops
-      ../../modules/tools
-      ../../modules/zoxide
+      ../../utils
+      ../../vars
+      ../../modules
     ];
 
     config = mkIf cfg.enable {
@@ -52,6 +43,14 @@ in
       modules = mkMerge [
         {
           nixvim.enable = mkDefault true;
+          lf.enable = mkDefault true;
+          bash.enable = mkDefault true;
+          btop.enable = mkDefault true;
+          direnv.enable = mkDefault true;
+          git.enable = mkDefault true;
+          tmux.enable = mkDefault true;
+          tools.enable = mkDefault true;
+          zoxide.enable = mkDefault true;
         }
         (mkIf (cfg.uiEnv == "gui") {
           # gui-only modules

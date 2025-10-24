@@ -14,6 +14,11 @@ in {
     enable = mkEnableOption "lf fileexplorer";
   };
 
+  imports = [
+    #TODO: feature gate for zoxide shortcuts or enable in this config idk
+    ../zoxide
+  ];
+
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       # TODO:
@@ -44,10 +49,6 @@ in {
       lf-ueberzug
 
       trashy
-    ];
-
-    imports = [
-      ../zoxide
     ];
 
     # https://home-manager-options.extranix.com/?query=lf&release=release-25.05

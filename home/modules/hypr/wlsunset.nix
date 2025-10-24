@@ -7,13 +7,9 @@
 in
   with lib; {
     options.modules.hypr.sunset = {
-      enable = mkOption {
-        default = config.modules.hypr.enable;
-        example = false;
-        description = "Whether to enable ${"hypr.sunset"}.";
-        type = lib.types.bool;
-      };
+      enable = config.utils.mkEnableOption "hypr.sunset" config.modules.hypr.enable;
     };
+
     config = mkIf cfg.enable {
       services.wlsunset = {
         enable = true;

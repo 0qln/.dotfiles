@@ -16,6 +16,13 @@
     };
 
   config.utils = rec {
+    mkIfElse = with lib;
+      condition: yes: no:
+        mkMerge [
+          (mkIf condition yes)
+          (mkIf (!condition) no)
+        ];
+
     mkEnableOption = name: default:
       lib.mkOption {
         type = lib.types.bool;

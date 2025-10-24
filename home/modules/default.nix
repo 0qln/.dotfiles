@@ -1,9 +1,11 @@
 # This imports all the modules
-_: {
+{lib, ...}: {
   imports = with builtins; let
     isDir = type: type == "directory";
     isMod = _f: t: (isDir t);
-    modules = filter isMod (readDir ./.);
+    modul = lib.attrsets.filterAttrs isMod (readDir ./.);
+    names = attrNames modul;
+    paths = map (n: ./${n}) names;
   in
-    modules;
+    paths;
 }

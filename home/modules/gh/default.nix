@@ -31,7 +31,7 @@ in {
     sops.secrets = mkIf (cfg.hostsYmlFile != null) {
       ${hosts} = {
         format = "yaml";
-        sopsFile = hostsYmlFile;
+        sopsFile = cfg.hostsYmlFile;
         mode = "0600";
         key = "";
       };

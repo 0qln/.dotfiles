@@ -9,12 +9,7 @@
 in
   with lib; {
     options.modules.hypr.land = {
-      enable = mkOption {
-        default = config.modules.hypr.enable;
-        example = false;
-        description = "Whether to enable ${"hypr.land"}.";
-        type = lib.types.bool;
-      };
+      enable = config.utils.mkEnableOption "hypr.land" config.modules.hypr.enable;
     };
 
     imports = [
