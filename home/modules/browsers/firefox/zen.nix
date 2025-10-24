@@ -17,9 +17,12 @@ in
 
     options.modules.browser.firefox.zen = {
       enable = mkEnableOption "zen";
+      setDefault = mkEnableOption "set default browser";
     };
 
     config = mkIf cfg.enable {
+      modules.browser._xdgDefault = mkDefault "zen-twilight.desktop";
+
       home.activation.zen-profiles-cat = lib.hm.dag.entryAfter ["writeBoundary"] (
         let
           # This is the new file that was created by home-manager.

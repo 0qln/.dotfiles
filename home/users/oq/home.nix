@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }: let
   cfg = config.settings;
@@ -36,7 +37,6 @@ in
         ../../vars/opts.nix
       ]
       ++ [
-        # commons for gui and tui
         ../../modules/btop
         ../../modules/direnv
         ../../modules/gh
@@ -52,9 +52,6 @@ in
         ../../modules/yubi
         ../../modules/proton/vpn.nix
         ../../modules/repos
-      ]
-      ++ [
-        # modules
         ../../modules/tmux
         ../../modules/browsers
         ../../modules/bash
@@ -121,7 +118,15 @@ in
 
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
-          browser.firefox.firefox.enable = mkDefault true;
+          browser.firefox = {
+            firefox = {
+              enable = mkDefault true;
+            };
+            zen = {
+              enable = mkDefault true;
+              setDefault = mkDefault true;
+            };
+          };
           hypr.enable = mkDefault true;
           discord.vesktop.enable = mkDefault true;
           discord.vesktop.theme = mkDefault "system24";
@@ -140,7 +145,20 @@ in
             quickAdd.enable = mkDefault true;
           };
           starship.enable = mkDefault true;
-          zathura.enable = mkDefault true;
+          zathura = {
+            setDefault = mkDefault ["application/pdf"];
+            enable = mkDefault true;
+          };
+          tools = {
+            qimgv.setDefault = mkDefault [
+              "image/png"
+              "video/webm"
+              "image/jpeg"
+              "image/gif"
+              "image/bmp"
+              "image/webp"
+            ];
+          };
         })
 
         # tui-only modules

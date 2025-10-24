@@ -19,6 +19,12 @@ in {
       default = null;
       description = "A path to the zathurarc";
     };
+    setDefault = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      example = ["application/pdf"];
+      description = "Set as default app for these";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -30,5 +36,13 @@ in {
       text = mkIf (cfg.zathurarc != null) cfg.zathurarc;
       source = mkIf (cfg.zathurarcFile != null) cfg.zathurarcFile;
     };
+
+    xdg.mimeApps.defaultApplications = builtins.listToAttrs (
+      map (type: {
+        name = type;
+        value = "org.pwmt.zathura-pdf-mupdf.desktop";
+      })
+      cfg.setDefault
+    );
   };
 }
