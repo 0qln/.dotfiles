@@ -85,7 +85,10 @@
         browser = {
           firefox = {
             tor.enable = true;
-            zen.enable = true;
+            zen = {
+              enable = true;
+              setDefault = true;
+            };
           };
         };
         zoom.enable = true;

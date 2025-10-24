@@ -122,10 +122,6 @@ in
             firefox = {
               enable = mkDefault true;
             };
-            zen = {
-              enable = mkDefault true;
-              setDefault = mkDefault true;
-            };
           };
           hypr.enable = mkDefault true;
           discord.vesktop.enable = mkDefault true;
