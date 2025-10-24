@@ -37,8 +37,6 @@ in
           alias nivm='nvim'
           alias clearfetch='clear && ${vars.sysfetcher} && read _'
 
-          alias "-"="cd -"
-
           ${
             with lib.strings;
               concatLines (
