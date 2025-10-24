@@ -1,10 +1,15 @@
 {
   pkgs,
+  config,
   lib,
   ...
-}: {
+}:
+with lib; let
+  cfg = config.modules.nixvim.formatting;
+in {
   options = with lib; {
-    modules.nixvim = {
+    modules.nixvim.formatting = {
+      enable = mkEnableOption "nixvim.formatting";
       formatBufLua = mkOption {
         type = types.str;
         default =
@@ -14,10 +19,12 @@
       };
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     programs.nixvim = {
       plugins = {
-        lsp-format.enable = true;
+        # Causes jumping of the cursor on file-save-formatting when
+        # combined with conform-nvim
+        lsp-format.enable = mkForce false;
         indent-blankline = {
           enable = true;
           settings = {};

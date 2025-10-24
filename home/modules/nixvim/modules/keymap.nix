@@ -51,7 +51,7 @@ in {
       }
       # Code format
       {
-        action = "<cmd>lua ${cfg.formatBufLua}<CR>";
+        action = "<cmd>lua ${cfg.formatting.formatBufLua}<CR>";
         key = "<leader>cf";
         mode = [
           "n"

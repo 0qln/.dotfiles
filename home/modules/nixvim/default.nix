@@ -4,7 +4,8 @@
   config,
   inputs,
   ...
-}: let
+}:
+with lib; let
   cfg = config.modules.nixvim;
 in {
   imports = [
@@ -73,6 +74,8 @@ in {
     home.packages = with pkgs; [
       nodejs_24 # not sure anymore what depends on nodejs, could be treesitter but idk
     ];
+
+    modules.nixvim.formatting.enable = mkDefault true;
 
     programs.nixvim = {
       enable = true;
