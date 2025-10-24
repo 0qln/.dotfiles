@@ -56,11 +56,7 @@ with import <nixpkgs> {};
       export lifbrasir="0qln.duckdns.org"
       dots-lifbrasir() {
         action="$1"
-        dots-remote \
-          "root@$lifbrasir" \
-          "$HOME/.ssh/server/id_ed25519" \
-          "$action" \
-          "lifbrasir"
+        dots-remote "root@$lifbrasir" "$HOME/.ssh/server/id_ed25519" "$action" "lifbrasir"
       }
 
       # check if the ssh-agent wasn't spawned when .envrc was executed by direnv.
