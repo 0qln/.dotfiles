@@ -29,18 +29,21 @@ in {
       ];
     };
     _xdgDefault = mkOption {
-      type = types.str;
+      type = types.nullOr types.str;
+      default = null;
       internal = true;
     };
   };
 
   config = {
-    xdg.mimeApps.defaultApplications = builtins.listToAttrs (
-      map (type: {
-        name = type;
-        value = cfg._xdgDefault;
-      })
-      cfg._xdgMimeTypes
+    xdg.mimeApps.defaultApplications = mkIf (cfg._xdgDefault != null) (
+      builtins.listToAttrs (
+        map (type: {
+          name = type;
+          value = cfg._xdgDefault;
+        })
+        cfg._xdgMimeTypes
+      )
     );
   };
 }
