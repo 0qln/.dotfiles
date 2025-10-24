@@ -61,7 +61,6 @@
     nixpkgs-citrix,
     nur,
     home-manager,
-    nixvim,
     ...
   }: let
     inherit (nixpkgs) lib;
@@ -108,7 +107,7 @@
     };
 
     hosts = collectXs ./hosts;
-  in {
+
     nixosConfigurations = builtins.listToAttrs (
       eachX hosts (
         host: let
@@ -147,7 +146,7 @@
     in
       builtins.listToAttrs (
         pkgs.lib.lists.flatten (
-          # todo: add hosts (e.g. lif.cachyos)
+          # todo: add hosts info (e.g. lif.cachyos)
           eachX hm.users (
             user:
               eachX (hm.envs user) (
@@ -199,5 +198,27 @@
           )
         )
       );
+  in {
+    meta = {
+      inherit hosts;
+      hm = rec {
+        inherit (hm) users themes;
+        envs = builtins.listToAttrs (
+          map (u: {
+            name = u;
+            value = hm.envs u;
+          })
+          users
+        );
+      };
+
+      outputs = {
+        nixosConfigurations = builtins.attrNames nixosConfigurations;
+        homeConfigurations = builtins.attrNames homeConfigurations;
+      };
+    };
+
+    inherit nixosConfigurations;
+    inherit homeConfigurations;
   };
 }
