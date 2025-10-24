@@ -11,7 +11,7 @@ in
       setDefault = mkEnableOption "set default browser";
     };
     config = mkIf cfg.enable {
-      modules.browser._xdgDefault = mkDefault "firefox.desktop";
+      modules.browser._xdgDefault = mkIf cfg.setDefault (mkDefault "firefox.desktop");
 
       programs.firefox = {
         enable = true;

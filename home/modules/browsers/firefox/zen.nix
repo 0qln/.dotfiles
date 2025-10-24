@@ -21,7 +21,7 @@ in
     };
 
     config = mkIf cfg.enable {
-      modules.browser._xdgDefault = mkDefault "zen-twilight.desktop";
+      modules.browser._xdgDefault = mkIf cfg.setDefault (mkDefault "zen-twilight.desktop");
 
       home.activation.zen-profiles-cat = lib.hm.dag.entryAfter ["writeBoundary"] (
         let
