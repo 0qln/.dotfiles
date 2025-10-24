@@ -18,7 +18,7 @@ with import <nixpkgs> {};
         cd ~/.dotfiles
         nix flake update private
         git add .
-        nixos-rebuild "$action" --flake ~/.dotfiles?submodules=1#$output --impure --show-trace --sudo
+        nixos-rebuild $action --flake ~/.dotfiles?submodules=1#$output --impure --show-trace --sudo
       }
 
       # check if the ssh-agent wasn't spawned when .envrc was executed by direnv.

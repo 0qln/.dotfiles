@@ -7,7 +7,7 @@
   programs.ssh = {
     enable = true;
     extraConfig = ''
-      Host lifbrasir
+      Host 0qln.duckdns.org
         IdentityFile ${config.home.homeDirectory}/.ssh/server/id_ed25519
         User root
         IdentitiesOnly yes

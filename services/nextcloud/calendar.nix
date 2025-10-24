@@ -1,9 +1,9 @@
-{apps}: {pkgs, ...}: {
+{config, ...}: {
   services = {
     nextcloud = {
       extraAppsEnable = true;
       extraApps = {
-        inherit (apps) calendar;
+        inherit (config.services.my-nextcloud._apps) calendar;
       };
     };
   };
