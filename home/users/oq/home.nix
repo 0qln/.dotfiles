@@ -10,10 +10,7 @@ in
     options.settings = {
       enable = config.utils.mkEnableOption "settings" true;
       uiEnv = mkOption {
-        type = types.enum [
-          "tui"
-          "gui"
-        ];
+        type = types.enum (import ./envs.nix);
         default = "tui";
         description = "Directs what stuff is installed. (e.g. firefox browser for gui enviromnets)";
       };

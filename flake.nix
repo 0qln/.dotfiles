@@ -104,10 +104,7 @@
 
       themes = collectXs ./home/themes;
 
-      envs = [
-        "tui"
-        "gui"
-      ];
+      envs = user: (import ./home/users/${user}/envs.nix);
     };
 
     hosts = collectXs ./hosts;
@@ -152,52 +149,53 @@
         pkgs.lib.lists.flatten (
           # todo: add hosts (e.g. lif.cachyos)
           eachX hm.users (
-            eachX hm.envs (
-              eachX hm.themes (
-                theme: env: user: let
-                  hm.config = import ./modules/home-manager/config.nix {
-                    inherit inputs;
-                    inherit (pkgs) nur;
-                    pkgs-citrix = pkgs-citrix system;
-                    config = vars;
-                  };
-                  hm.vars = import ./home/users/${user}/vars.nix {
-                    inherit (hm.vars) config;
-                    inherit (pkgs) lib;
-                  };
-                in {
-                  name = "${user}-${env}-${theme}";
-                  value = home-manager.lib.homeManagerConfiguration (
-                    hm.config
-                    // {
-                      inherit pkgs;
-                      extraSpecialArgs = {
-                        flake = self;
-                        inherit inputs;
-                        inherit (pkgs) nur;
-                      };
-                      modules = [
-                        hm.vars
-                        (import ./home/users/${user}/home.nix)
-                        (_: {
-                          settings = {
-                            enable = pkgs.lib.mkDefault true;
-                            uiEnv = pkgs.lib.mkDefault env;
-                          };
-                        })
-                        (_: {
-                          # Let Home Manager install and manage itself.
-                          programs.home-manager.enable = true;
+            user:
+              eachX (hm.envs user) (
+                eachX hm.themes (
+                  theme: env: let
+                    hm.config = import ./modules/home-manager/config.nix {
+                      inherit inputs;
+                      inherit (pkgs) nur;
+                      pkgs-citrix = pkgs-citrix system;
+                      config = vars;
+                    };
+                    hm.vars = import ./home/users/${user}/vars.nix {
+                      inherit (hm.vars) config;
+                      inherit (pkgs) lib;
+                    };
+                  in {
+                    name = "${user}-${env}-${theme}";
+                    value = home-manager.lib.homeManagerConfiguration (
+                      hm.config
+                      // {
+                        inherit pkgs;
+                        extraSpecialArgs = {
+                          flake = self;
+                          inherit inputs;
+                          inherit (pkgs) nur;
+                        };
+                        modules = [
+                          hm.vars
+                          (import ./home/users/${user}/home.nix)
+                          (_: {
+                            settings = {
+                              enable = pkgs.lib.mkDefault true;
+                              uiEnv = pkgs.lib.mkDefault env;
+                            };
+                          })
+                          (_: {
+                            # Let Home Manager install and manage itself.
+                            programs.home-manager.enable = true;
 
-                          home.username = user;
-                          home.homeDirectory = hm.vars.config.vars.root;
-                        })
-                      ];
-                    }
-                  );
-                }
+                            home.username = user;
+                            home.homeDirectory = hm.vars.config.vars.root;
+                          })
+                        ];
+                      }
+                    );
+                  }
+                )
               )
-            )
           )
         )
       );

@@ -9,10 +9,7 @@ in
     options.settings = {
       enable = config.utils.mkEnableOption "settings" true;
       uiEnv = mkOption {
-        type = types.enum [
-          "tui"
-          "gui"
-        ];
+        type = types.enum (import ./envs.nix);
         default = "tui";
         description = "Directs what stuff is installed. (e.g. firefox browser for gui enviromnets)";
       };
@@ -52,9 +49,6 @@ in
           tools.enable = mkDefault true;
           zoxide.enable = mkDefault true;
         }
-        (mkIf (cfg.uiEnv == "gui") {
-          # gui-only modules
-        })
         (mkIf (cfg.uiEnv == "tui") {
           # tui-only modules
         })
