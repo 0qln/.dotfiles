@@ -21,6 +21,9 @@ in
 
     imports =
       [
+        inputs.private.homeModules."oq"
+      ]
+      ++ [
         ./vars.nix
       ]
       ++ [

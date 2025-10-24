@@ -16,6 +16,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    private = {
+      url = "git+ssh://git@github.com/0qln/.private.git";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+        sops-nix.follows = "sops-nix";
+      };
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -152,7 +161,10 @@
                     pkgs-citrix = pkgs-citrix system;
                     config = vars;
                   };
-                  hm.vars = import ./home/users/${user}/vars.nix {inherit (hm.vars) config; inherit (pkgs) lib;};
+                  hm.vars = import ./home/users/${user}/vars.nix {
+                    inherit (hm.vars) config;
+                    inherit (pkgs) lib;
+                  };
                 in {
                   name = "${user}-${env}-${theme}";
                   value = home-manager.lib.homeManagerConfiguration (

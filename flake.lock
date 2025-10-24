@@ -812,6 +812,32 @@
         "type": "github"
       }
     },
+    "private": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "sops-nix": [
+          "sops-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1761316724,
+        "narHash": "sha256-Bh59Nqw4Ro3B4za/uaKyAXzBRny1THoWPp1uwbsD41I=",
+        "ref": "refs/heads/master",
+        "rev": "5522f187749f0ba37a207ef4e90e84f6c911a0d3",
+        "revCount": 4,
+        "type": "git",
+        "url": "ssh://git@github.com/0qln/.private.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/0qln/.private.git"
+      }
+    },
     "root": {
       "inputs": {
         "bongocat": "bongocat",
@@ -823,6 +849,7 @@
         "nixpkgs-citrix": "nixpkgs-citrix",
         "nixvim": "nixvim",
         "nur": "nur",
+        "private": "private",
         "sops-nix": "sops-nix",
         "zen-browser": "zen-browser"
       }

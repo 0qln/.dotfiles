@@ -16,6 +16,7 @@ with import <nixpkgs> {};
         action="$1"
         output="$2"
         cd ~/.dotfiles
+        nix flake update private
         git add .
         nixos-rebuild "$action" --flake ~/.dotfiles?submodules=1#$output --impure --show-trace --sudo
       }
