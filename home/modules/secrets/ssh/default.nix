@@ -21,6 +21,24 @@ with lib; let
     "L ${home}/.ssh/${name}/${method} - - - - ${secrets."sshKeys/${name}".path}"
     "L ${home}/.ssh/${name}/${method}.pub - - - - ${secrets."sshKeys/${name}.pub".path}"
   ];
+
+  keyPairType = types.submodule {
+    options = {
+      private = mkOption {
+        type = types.path;
+        description = "Path to the encrypted private key file";
+      };
+      public = mkOption {
+        type = types.path;
+        description = "Path to the encrypted public key file";
+      };
+      type = mkOption {
+        type = types.str;
+        description = "SSH key type (e.g., ed25519, rsa, ecdsa)";
+        example = "ed25519";
+      };
+    };
+  };
 in {
   options.modules.secrets.ssh = {
     enable = mkEnableOption "ssh secrets";
@@ -29,7 +47,7 @@ in {
     genBashAliases = config.utils.mkEnableOption "bash ssh-... aliases" config.modules.bash.enable;
 
     keyPairs = mkOption {
-      type = types.attrs; # TODO: submodule
+      type = types.attrsOf keyPairType;
       default = {};
       description = "List of private/public key pairs";
       example = {
