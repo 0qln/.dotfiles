@@ -4,6 +4,8 @@
   ...
 }: {
   imports = [
+    inputs.private.nixosModules."lif"
+
     ../_common/configuration.nix
 
     ./hosts.nix
@@ -34,9 +36,7 @@
     (import ../../services/nixos-garbage-disposal {
       })
 
-    (import ../../modules/wireguard/unicorns {
-      configFile = ./wireguard/unicorns/secrets.unicorns;
-    })
+    ../../modules/wireguard/unicorns
 
     # (import ../../modules/wireguard/0qln {
     #   ip = "10.100.0.2/32";
@@ -118,6 +118,13 @@
         enable = true;
         uiEnv = "gui";
       };
+    };
+  };
+
+  private = {
+    wireguard = {
+      enable = true;
+      unicorns = true;
     };
   };
 
