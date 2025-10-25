@@ -69,6 +69,7 @@ in
           xdg-utils.enable = mkDefault true;
           yubi.enable = mkDefault true;
           tools.enable = mkDefault true;
+          zoxide.enable = mkDefault true;
         }
 
         # gui-only modules
