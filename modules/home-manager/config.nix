@@ -3,6 +3,7 @@
   nur,
   pkgs-citrix,
   config,
+  utilz,
   ...
 }: let
   backupExtension = config.vars.home.config.backup.extension;
@@ -12,6 +13,7 @@ in {
     inherit nur;
     inherit pkgs-citrix;
     inherit backupExtension;
+    inherit utilz;
   };
   # this is not currently available for standalone home-manager configurations:
   # https://github.com/nix-community/home-manager/pull/7153

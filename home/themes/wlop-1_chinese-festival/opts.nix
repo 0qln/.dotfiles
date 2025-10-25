@@ -1,9 +1,8 @@
-{lib, ...}: let
-  name = builtins.dirOf __curPos.file;
+{lib, ...}:
+with lib; let
+  name = import ./name.nix;
 in {
-  options = with lib; {
-    theme = {
-      "enable_${name}" = mkEnableOption name;
-    };
+  options.themes.${name} = {
+    enable = mkEnableOption name;
   };
 }

@@ -1,6 +1,6 @@
-{defaultUser}: {...}: {
+{defaultUser}: {inputs, ...}: {
   imports = [
-    nixos-wsl.nixosModules.default
+    inputs.nixos-wsl.nixosModules.default
   ];
 
   wsl = {

@@ -64,6 +64,7 @@
     ...
   }: let
     inherit (nixpkgs) lib;
+    utilz = import ./utils/pure.nix {inherit lib;};
 
     # todo: we are currently importing these inputs for all outputs, even though
     # not all of them need e.g. the citrix pinned pkgs. does this impact build times?
@@ -85,51 +86,38 @@
 
     sanitizeHostName = name: builtins.replaceStrings ["."] ["-"] (lib.strings.sanitizeDerivationName name);
 
-    isHidden = file: builtins.match "_.*" file != null;
-    isDir = type: type == "directory";
-    isX = f: t: (isDir t) && !(isHidden f);
-    collectXs = xDir: builtins.attrNames (lib.attrsets.filterAttrs isX (builtins.readDir xDir));
-    eachX = with lib;
-      xs: fns:
-        map (i: i.fn i.x) (
-          attrsets.cartesianProduct {
-            x = xs;
-            fn = lists.flatten [fns];
-          }
-        );
-
     hm = {
-      users = collectXs ./home/users;
-
-      themes = collectXs ./home/themes;
-
+      users = utilz.mods.collectMods ./home/users;
+      themes = utilz.mods.collectMods ./home/themes;
       envs = user: (import ./home/users/${user}/envs.nix);
     };
-
-    hosts = collectXs ./hosts;
+    hosts = utilz.mods.collectMods ./hosts;
 
     nixosConfigurations = builtins.listToAttrs (
-      eachX hosts (
-        host: let
-          systemPath = ./hosts/${host}/system.nix;
-          system =
-            if builtins.pathExists systemPath
-            then (import systemPath)
-            else "x86_64-linux";
-        in {
-          name = host;
-          value = lib.nixosSystem rec {
-            inherit system;
-            modules = [./hosts/${host}];
-            specialArgs = {
-              inherit inputs;
-              #TODO: how to not import pkgs-citrix for outputs that don't need this input?
-              pkgs-citrix = pkgs-citrix system;
-              flake = self;
-              host-name = sanitizeHostName host;
+      utilz.mods.eachX hosts (
+        utilz.mods.eachX hm.themes (
+          theme: host: let
+            systemPath = ./hosts/${host}/system.nix;
+            system =
+              if builtins.pathExists systemPath
+              then (import systemPath)
+              else "x86_64-linux";
+          in {
+            name = host;
+            value = lib.nixosSystem rec {
+              inherit system;
+              modules = [./hosts/${host}];
+              specialArgs = {
+                inherit utilz;
+                inherit inputs;
+                #TODO: how to not import pkgs-citrix for outputs that don't need this input?
+                pkgs-citrix = pkgs-citrix system;
+                flake = self;
+                host-name = sanitizeHostName host;
+              };
             };
-          };
-        }
+          }
+        )
       )
     );
 
@@ -147,12 +135,13 @@
       builtins.listToAttrs (
         pkgs.lib.lists.flatten (
           # todo: add hosts info (e.g. lif.cachyos)
-          eachX hm.users (
+          utilz.mods.eachX hm.users (
             user:
-              eachX (hm.envs user) (
-                eachX hm.themes (
+              utilz.mods.eachX (hm.envs user) (
+                utilz.mods.eachX hm.themes (
                   theme: env: let
                     hm.config = import ./modules/home-manager/config.nix {
+                      inherit utilz;
                       inherit inputs;
                       inherit (pkgs) nur;
                       pkgs-citrix = pkgs-citrix system;
@@ -176,6 +165,7 @@
                         modules = [
                           hm.vars
                           (import ./home/users/${user}/home.nix)
+                          (import ./home/themes/${theme}/default.nix)
                           (_: {
                             settings = {
                               enable = pkgs.lib.mkDefault true;

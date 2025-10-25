@@ -28,11 +28,7 @@ in
         ../../utils
         ../../modules
         ../../vars
-      ]
-      ++ [
-        #TODO: move these imports somewhere else
-        ../../themes/wlop-1_chinese-festival
-        ../../themes/opts.nix
+        ../../themes
       ];
 
     config = mkIf cfg.enable {
@@ -51,7 +47,7 @@ in
       # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
       home.stateVersion = "25.05"; # Did you read the comment?
 
-      theme."enable_${config.vars.theme.name}" = mkDefault true;
+      themes.wlop-1_chinese-festival.enable = mkDefault true;
 
       private = {
         secrets.gh.hostsYml = mkDefault true;

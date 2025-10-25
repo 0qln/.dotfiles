@@ -3,6 +3,7 @@
   pkgs-citrix,
   config,
   inputs,
+  utilz,
   ...
 }: {
   imports = with inputs; [
@@ -15,6 +16,7 @@
       inherit pkgs-citrix;
       inherit inputs;
       inherit config;
+      inherit utilz;
     };
   in
     configuration
