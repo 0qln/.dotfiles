@@ -12,6 +12,8 @@ in {
   };
 
   config.utils = {
+    sanitizeHostName = name: builtins.replaceStrings ["."] ["-"] (lib.strings.sanitizeDerivationName name);
+
     mods = {
       # Wether a file is hidden or not.
       isHidden = file: builtins.match "_.*" file != null;

@@ -4,31 +4,40 @@
   pkgs,
   config,
   ...
-}: {
+}:
+with lib; {
   imports = [
     ./sops.nix
     ./cursors.nix
   ];
 
-  options.utils = with lib;
-    mkOption {
-      type = types.attrs;
-    };
+  options.utils = mkOption {
+    type = types.attrs;
+  };
 
   config.utils = rec {
-    mkIfElse = with lib;
-      condition: yes: no:
-        mkMerge [
-          (mkIf condition yes)
-          (mkIf (!condition) no)
-        ];
+    mkIfElse = condition: yes: no:
+      mkMerge [
+        (mkIf condition yes)
+        (mkIf (!condition) no)
+      ];
 
     mkEnableOption = name: default:
-      lib.mkOption {
-        type = lib.types.bool;
+      mkOption {
+        type = types.bool;
         inherit default;
         description = "Whether to enable ${name}.";
         example = false;
+      };
+
+    mkColorOption = name: default: let
+      colorType = types.str;
+    in
+      mkOption {
+        type = colorType;
+        inherit default;
+        description = "The color of ${name}";
+        example = "#F7768EFF";
       };
 
     mkForceCopySecret = {
@@ -36,7 +45,7 @@
       destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
       deps ? ["writeBoundary"],
     }:
-      lib.hm.dag.entryAfter deps
+      hm.dag.entryAfter deps
       # sh
       ''
         #!${pkgs.bash}/bin/bash
@@ -59,7 +68,7 @@
       newMode ? "700",
       deps ? ["writeBoundary"],
     }:
-      lib.hm.dag.entryAfter deps
+      hm.dag.entryAfter deps
       #sh
       ''
         #!${pkgs.bash}/bin/bash

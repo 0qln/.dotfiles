@@ -84,8 +84,6 @@
         };
       };
 
-    sanitizeHostName = name: builtins.replaceStrings ["."] ["-"] (lib.strings.sanitizeDerivationName name);
-
     hm = {
       users = utilz.mods.collectMods ./home/users;
       themes = utilz.mods.collectMods ./home/themes;
@@ -113,7 +111,7 @@
                 #TODO: how to not import pkgs-citrix for outputs that don't need this input?
                 pkgs-citrix = pkgs-citrix system;
                 flake = self;
-                host-name = sanitizeHostName host;
+                host-name = utilz.sanitizeHostName host;
               };
             };
           }

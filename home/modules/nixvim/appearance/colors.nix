@@ -16,7 +16,16 @@
     colorschemes."kanagawa".enable = true;
 
     opts = {
+      # required by:
+      # - colorizer
       termguicolors = true;
+    };
+
+    plugins.colorizer = {
+      enable = true;
+      settings = {
+        user_default_options = {RRGGBBAA = true;};
+      };
     };
 
     match.TODO = "TODO";

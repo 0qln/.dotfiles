@@ -1,4 +1,8 @@
-{lib, ...}:
+{
+  lib,
+  config,
+  ...
+}:
 with lib; let
   wallpaperType = types.either types.path types.str;
 in {
@@ -29,6 +33,15 @@ in {
           horz1 = "/path/to/horizontal1.jpg";
         };
       };
+    };
+
+    colors = {
+      background = config.utils.mkColorOption "background" null;
+      background-alt = config.utils.mkColorOption "alternative background" null;
+      foreground = config.utils.mkColorOption "foreground" null;
+      selected = config.utils.mkColorOption "selected elements" null;
+      active = config.utils.mkColorOption "active elements" null;
+      urgent = config.utils.mkColorOption "urgent things" null;
     };
   };
 }

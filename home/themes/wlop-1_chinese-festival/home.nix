@@ -26,7 +26,7 @@ in {
       };
       rofi = {
         enable = mkDefault true;
-        theme = mkDefault ./rofi;
+        theme = mkDefault (pkgs.writeText "rofi theme config" (import ./rofi/theme.nix config.theme.colors));
       };
       ytm = {
         stylesheetFile = mkDefault ./ytm/stylesheet.css;
@@ -34,8 +34,19 @@ in {
       zathura = {
         zathurarcFile = mkDefault ./zathura/zathurarc;
       };
+      nixvim = {
+        transparency.enable = mkDefault true;
+      };
     };
     theme = {
+      colors = {
+        background = mkDefault "#15161EFF";
+        background-alt = mkDefault "#1A1B26FF";
+        foreground = mkDefault "#C0CAF5FF";
+        selected = mkDefault "#33467CFF";
+        active = mkDefault "#414868FF";
+        urgent = mkDefault "#F7768EFF";
+      };
       wallpapers = rec {
         arrangements = with images; {
           "|-|" = {
