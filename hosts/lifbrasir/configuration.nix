@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{...}: let
   fqdns = [
     "0qln.duckdns.org"
     "oq.404.mn"
@@ -18,11 +14,9 @@ in {
     ./lid.nix
     ../../modules/sops
 
-    ../../home/oq/users/root/default.tui.nix
+    ../../home/users/root/default.nix
 
-    (import ../../modules/home-manager {
-      extraArgs = {};
-    })
+    ../../modules/home-manager
 
     ../../services/ssh
     ../../services/dashboard

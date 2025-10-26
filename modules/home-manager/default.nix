@@ -1,28 +1,31 @@
-{extraArgs ? {}}: {
-  specialArgs,
-  inputs,
+{
   pkgs,
-  flake,
-  vars,
+  pkgs-citrix,
+  config,
+  inputs,
+  utilz,
   ...
 }: {
   imports = with inputs; [
-    home.nixosModules."oq"
-    home.nixosModules."root"
     home-manager.nixosModules.home-manager
-    nur.modules.nixos.default
   ];
 
-  home-manager = {
-    useGlobalPkgs = false;
-    useUserPackages = true;
-    extraSpecialArgs =
-      {
-        nixosArgs = specialArgs;
-        inherit flake;
-        inherit vars;
-        inherit (pkgs) nur;
-      }
-      // extraArgs;
-  };
+  home-manager = let
+    configuration = import ./config.nix {
+      inherit (pkgs) nur;
+      inherit pkgs-citrix;
+      inherit inputs;
+      inherit config;
+      inherit utilz;
+    };
+  in
+    configuration
+    // {
+      useGlobalPkgs = false;
+      useUserPackages = true;
+    }
+    // {
+      # TODO: remove when pr is merged (see comment in ./config.nix)
+      backupFileExtension = config.vars.home.config.backup.extension;
+    };
 }

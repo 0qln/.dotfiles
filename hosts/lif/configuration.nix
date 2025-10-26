@@ -1,5 +1,11 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
+    inputs.private.nixosModules."lif"
+
     ../_common/configuration.nix
 
     ./hosts.nix
@@ -17,8 +23,10 @@
     ../../modules/doh
     ../../modules/sops
 
-    (import ../../modules/home-manager {
-      })
+    ../../home/users/oq
+    ../../home/users/root
+
+    ../../modules/home-manager
 
     (import ../../services/flake-upgrader {
       flakeDir = "/home/oq/.dotfiles";
@@ -28,9 +36,7 @@
     (import ../../services/nixos-garbage-disposal {
       })
 
-    (import ../../modules/wireguard/unicorns {
-      configFile = ./wireguard/unicorns/secrets.unicorns;
-    })
+    ../../modules/wireguard/unicorns
 
     # (import ../../modules/wireguard/0qln {
     #   ip = "10.100.0.2/32";
@@ -69,6 +75,7 @@
     users.oq = _: {
       imports = [./variables.nix];
       settings = {
+        enable = true;
         uiEnv = "gui";
         enableWorkSimple = true;
         # theme.name = "wlop-1_chinese-festival";
@@ -78,24 +85,46 @@
         browser = {
           firefox = {
             tor.enable = true;
-            zen.enable = true;
+            zen = {
+              enable = true;
+              setDefault = true;
+            };
           };
         };
         zoom.enable = true;
         kooha.enable = true;
-        jetbrains.tools = with pkgs.jetbrains; [
-          rider
-        ];
+        jetbrains = {
+          enable = true;
+          tools = with pkgs.jetbrains; [
+            rider
+          ];
+        };
         minecraft = {
           prismlauncher.enable = true;
+        };
+        shotcut.enable = true;
+      };
+      private = {
+        secrets.ssh = {
+          server = true;
+          work = true;
+          work-devops = true;
         };
       };
     };
 
     users.root = _: {
       settings = {
+        enable = true;
         uiEnv = "gui";
       };
+    };
+  };
+
+  private = {
+    wireguard = {
+      enable = true;
+      unicorns = true;
     };
   };
 

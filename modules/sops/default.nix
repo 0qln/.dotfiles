@@ -4,13 +4,29 @@
   inputs,
   lib,
   ...
-}: let
+}:
+with lib; let
   cfg = config.sops;
   # store the secret copies in a path managed by sops nix (/run/secrets/)
   # sops will remove the automatically after since they are not specified
   # in sops.secrets
   identitiesSecrets = "sops/all-keys.g.txt";
-  identitiesFile = "/root/${identitiesSecrets}";
+  identitiesFile = "/run/secrets/${identitiesSecrets}";
+
+  identityType = types.submodule {
+    options = {
+      name = mkOption {
+        type = types.str;
+        description = "Name/identifier for this identity";
+        example = "main-age-key";
+      };
+      file = mkOption {
+        type = types.path;
+        description = "Path to the age identity file";
+        example = "./secrets/age-key.txt";
+      };
+    };
+  };
 in {
   imports = [
     inputs.sops-nix.nixosModules.sops
@@ -26,12 +42,12 @@ in {
       description = "Whether to enable yubi key integration.";
     };
     identities = mkOption {
-      type = types.listOf types.attrs; # TODO: specify that we need name and file with submodules.
+      type = types.listOf identityType;
       default = [];
       description = "e.g. age key identities";
     };
     yubiIdentities = mkOption {
-      type = types.listOf types.attrs; # TODO: specify that we need name and file with submodules.
+      type = types.listOf identityType;
       default = [];
       description = "yubi key identities";
     };

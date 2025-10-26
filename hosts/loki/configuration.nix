@@ -7,9 +7,10 @@
     })
 
     ../../modules/sops
+    ../../modules/home-manager
 
-    ../../home/oq/users/oq/default.tui.nix
-    ../../home/oq/users/root/default.tui.nix
+    ../../home/users/oq
+    ../../home/users/root
   ];
 
   sops = {

@@ -12,8 +12,8 @@ in {
   imports = [
     ../database
     ../acme
-    (import ./calendar.nix {inherit (packages) apps;})
-    (import ./tasks.nix {inherit (packages) apps;})
+    ./calendar.nix
+    ./tasks.nix
   ];
 
   options.services.${serviceName} = with lib; {
@@ -91,9 +91,17 @@ in {
       default = [];
       description = "Local fsdns.";
     };
+
+    _apps = mkOption {
+      type = types.attrs;
+      description = "The apps.";
+      internal = true;
+    };
   };
 
   config = {
+    services.my-nextcloud._apps = packages.apps;
+
     networking.firewall = {
       allowedTCPPorts = [
         443
