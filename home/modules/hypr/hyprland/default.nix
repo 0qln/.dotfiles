@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  variables = import ../variables.nix;
+  variables = import ../vars.nix;
   monitors = config.vars.monitors;
   cfg = config.modules.hypr.land;
 in

@@ -8,6 +8,6 @@
     ./printing.nix
     ./nix-config.nix
     ./packages.nix
-    ./variables.nix
+    ./vars.nix
   ];
 }

@@ -38,6 +38,7 @@
 
     ../../modules/wireguard/unicorns
 
+    #todo: fix wireguard vpn
     # (import ../../modules/wireguard/0qln {
     #   ip = "10.100.0.2/32";
     #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
@@ -73,12 +74,11 @@
 
   home-manager = {
     users.oq = _: {
-      imports = [./variables.nix];
+      imports = [./vars.nix];
       settings = {
         enable = true;
         uiEnv = "gui";
         enableWorkSimple = true;
-        # theme.name = "wlop-1_chinese-festival";
       };
       modules = {
         cursor.cursor = "frieren";

@@ -1,10 +1,9 @@
-{config, ...}: {
-  config = {
-    vars = {
-      editor = "nvim";
-      sysfetcher = "fastfetch";
-      terminal = "kitty";
-      theme.name = import ./name.nix;
-    };
+# preferred variables for this theme.
+{lib, ...}:
+with lib; {
+  config.vars = {
+    editor = mkDefault "nvim";
+    sysfetcher = mkDefault "fastfetch";
+    terminal = mkDefault "kitty";
   };
 }

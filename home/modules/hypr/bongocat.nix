@@ -17,7 +17,7 @@ in
 
     config = mkIf cfg.enable {
       programs.wayland-bongocat = let
-        vars = import ./variables.nix;
+        vars = import ./vars.nix;
         pawRatio = 1.0 / 3.1;
         catRatio = 1.0 - pawRatio;
         catHeight = totalHeight * catRatio;

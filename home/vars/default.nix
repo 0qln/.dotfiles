@@ -94,12 +94,6 @@ in
         example = "kitty";
       };
 
-      theme.name = mkOption {
-        type = types.str;
-        default = "default";
-        description = "the name of the current theme";
-      };
-
       monitors = let
         deviceType = types.submodule {
           options = {

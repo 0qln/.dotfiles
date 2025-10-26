@@ -127,7 +127,7 @@
         inherit system;
         overlays = [nur.overlays.default];
       };
-      vars = import ./variables {
+      vars = import ./vars {
         inherit (vars) config;
         inherit (pkgs) lib;
       };
