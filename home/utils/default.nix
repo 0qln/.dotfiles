@@ -76,7 +76,7 @@
       name = config.home.username;
     in
       if (name == "root")
-      then "/run/"
-      else "/run/user/${toString config.vars.user.uid}/";
+      then "/run"
+      else "/run/user/${toString config.vars.user.uid}";
   };
 }
