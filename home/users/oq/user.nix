@@ -10,8 +10,8 @@
   users.users.oq = {
     isNormalUser = true;
     # this is set explicitly such that things like:
-    # userRuntimeDir = "/run/user/${toString sysConfig.users.users.${config.home.username}.uid}";
-    # can use the uid... otherwise it's empty for some reason :(
+    # userRuntimeDir = "/run/user/${toString config.vars.user.uid}/";
+    # can use the uid...
     uid = import ./uuid.nix;
     extraGroups = [
       "networkmanager"
