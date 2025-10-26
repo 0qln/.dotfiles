@@ -15,11 +15,16 @@ in
       };
     };
 
-    imports = [
-      ../../utils
-      ../../vars
-      ../../modules
-    ];
+    imports =
+      [
+        ./vars.nix
+      ]
+      ++ [
+        ../../utils
+        ../../vars
+        ../../modules
+        ../../themes
+      ];
 
     config = mkIf cfg.enable {
       # docs:

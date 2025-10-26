@@ -19,14 +19,11 @@ in {
       terminal = {
         emulator = mkDefault "kitty";
         font = mkDefault "CartographCF Nerd Font";
-        backgroundOpacity = mkDefault 0.7;
-        kitty = {
-          themeFile = mkDefault "IR_Black";
-        };
+        backgroundOpacity = mkDefault 0.9;
       };
       rofi = {
         enable = mkDefault true;
-        theme = mkDefault (pkgs.writeText "rofi theme config" (import ./rofi/theme.nix config.theme.colors));
+        themeFile = mkDefault (pkgs.writeText "theme.rasi" (import ./rofi/theme.nix config.theme.launcher));
       };
       ytm = {
         stylesheetFile = mkDefault ./ytm/stylesheet.css;
@@ -36,16 +33,74 @@ in {
       };
       nixvim = {
         transparency.enable = mkDefault true;
+        colors.theme = "kanagawa";
       };
     };
     theme = {
-      colors = {
-        background = mkDefault "#15161EFF";
-        background-alt = mkDefault "#1A1B26FF";
-        foreground = mkDefault "#C0CAF5FF";
-        selected = mkDefault "#33467CFF";
-        active = mkDefault "#414868FF";
-        urgent = mkDefault "#F7768EFF";
+      launcher = {
+        # https://github.com/rebelot/kanagawa.nvim/blob/aef7f5cec0a40dbe7f3304214850c472e2264b10/lua/kanagawa/colors.lua
+        background = mkDefault "#223249";
+        border = mkDefault "#ff8080ee";
+        background-alt = mkDefault "#2D4F67";
+        foreground = mkDefault "#DCD7BA";
+        selected = mkDefault "#7E9CD8";
+        active = mkDefault "#98BB6C";
+        urgent = mkDefault "#E46876";
+      };
+      win = {
+        border = {
+          active = "#ff000099";
+          inactive = "#ff000099";
+          size = 1;
+        };
+        shadow = {
+          active = "#ff8080ee";
+          inactive = "#ff808000";
+          range = 5;
+          render_power = 3;
+        };
+        opacity = {
+          active = 1.0;
+          inactive = 1.0;
+        };
+        corners = {
+          rounding = 0;
+          rounding_power = 2;
+        };
+        blur = {
+          size = 10;
+          passes = 2;
+          vibrancy = 0.5696;
+        };
+        layout = {
+          gaps_in = 5;
+          gaps_out = 15;
+        };
+      };
+      term = {
+        # https://github.com/dexpota/kitty-themes/blob/master/themes/IR_Black.conf
+        # https://github.com/kovidgoyal/kitty-themes/blob/master/themes/kanagawa.conf
+        cursor = "#7f7f7f";
+        background = "#1f1f28";
+        foreground = "#dcd7ba";
+        selection_background = "#b4d5ff";
+        selection_foreground = "#000000";
+        color0 = "#4f4f4f";
+        color8 = "#7b7b7b";
+        color1 = "#fa6c5f";
+        color9 = "#fcb6af";
+        color2 = "#a8fe60";
+        color10 = "#ceffab";
+        color3 = "#fffeb6";
+        color11 = "#fffecc";
+        color4 = "#96cafd";
+        color12 = "#b5dcfe";
+        color5 = "#fa72fc";
+        color13 = "#fb9bfe";
+        color6 = "#c6c4fd";
+        color14 = "#dfdffd";
+        color7 = "#eeedee";
+        color15 = "#fefffe";
       };
       wallpapers = rec {
         arrangements = with images; {

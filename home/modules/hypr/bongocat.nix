@@ -17,11 +17,10 @@ in
 
     config = mkIf cfg.enable {
       programs.wayland-bongocat = let
-        vars = import ./vars.nix;
         pawRatio = 1.0 / 3.1;
         catRatio = 1.0 - pawRatio;
         catHeight = totalHeight * catRatio;
-        pawHeight = vars.margin_out;
+        pawHeight = config.theme.win.layout.margin_out;
         totalHeight = pawHeight / pawRatio;
       in {
         enable = true;
@@ -33,7 +32,7 @@ in
         overlayPosition = "bottom";
         catHeight = builtins.floor catHeight;
         catAlign = "right";
-        catXOffset = 10 + vars.margin_out;
+        catXOffset = 10 + config.theme.win.layout.margin_out;
         catYOffset = 0;
       };
     };

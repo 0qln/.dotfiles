@@ -3,9 +3,9 @@
   lib,
   ...
 }: let
-  variables = import ../vars.nix;
   monitors = config.vars.monitors;
   cfg = config.modules.hypr.land;
+  fmtColor = config.utils.fmtColor_rgbaFn;
 in
   with lib; {
     options.modules.hypr.land = {
@@ -68,16 +68,17 @@ in
           "9, layoutopt:orientation:bottom"
         ];
 
-        general = {
+        general = with config.theme.win; {
           inherit
-            (variables)
+            (layout)
             gaps_in
             gaps_out
-            border_size
             ;
 
-          "col.active_border" = "rgba(ff000099)";
-          "col.inactive_border" = "rgba(ff000099)";
+          border_size = border.size;
+
+          "col.active_border" = fmtColor border.active;
+          "col.inactive_border" = fmtColor border.inactive;
 
           resize_on_border = true;
 
@@ -87,22 +88,18 @@ in
         };
 
         decoration = {
-          rounding = 10;
-          rounding_power = 2;
-          active_opacity = 1.0;
-          inactive_opacity = 1.0;
+          inherit (config.theme.win.corners) rounding rounding_power;
+
+          blur = {enabled = true;} // config.theme.win.blur;
+
+          active_opacity = config.theme.win.opacity.active;
+          inactive_opacity = config.theme.win.opacity.inactive;
+
           shadow = {
-            color = "rgba(ff8080ee)";
-            color_inactive = "rgba(ff808000)";
             enabled = true;
-            range = 5;
-            render_power = 3;
-          };
-          blur = {
-            enabled = true;
-            size = 10;
-            passes = 2;
-            vibrancy = 0.5696;
+            color = fmtColor config.theme.win.shadow.active;
+            color_inactive = fmtColor config.theme.win.shadow.inactive;
+            inherit (config.theme.win.shadow) range render_power;
           };
         };
 

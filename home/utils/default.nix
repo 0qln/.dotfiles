@@ -31,7 +31,7 @@ with lib; {
       };
 
     mkColorOption = name: default: let
-      colorType = types.str;
+      colorType = types.nullOr types.str;
     in
       mkOption {
         type = colorType;
@@ -39,6 +39,11 @@ with lib; {
         description = "The color of ${name}";
         example = "#F7768EFF";
       };
+
+    fmtColor_rgbaFn = color: let
+      matches = builtins.match "#([0-9a-f]{8})" color;
+      val = builtins.elemAt matches 0;
+    in "rgba(${val})";
 
     mkForceCopySecret = {
       secret, # can also contain a path e.g. todoist/todoist-token
