@@ -1,8 +1,5 @@
 {...}: let
-  fqdns = [
-    "0qln.duckdns.org"
-    "oq.404.mn"
-  ];
+  fqdns = import ./fqdns.nix;
 in {
   imports = [
     ../_common/configuration.nix
@@ -12,10 +9,11 @@ in {
     ./bootloader.nix
     ./bat.nix
     ./lid.nix
-    ../../modules/sops
+    ./networking.nix
 
     ../../home/users/root/default.nix
 
+    ../../modules/sops
     ../../modules/home-manager
 
     ../../services/ssh
@@ -28,7 +26,7 @@ in {
     # https://couchdb.0qln.duckdns.org/_utils/index.html#
     (import ../../services/obsidian-livesync {
       secrets-env = ./obsidian-livesync/secrets.couchdb.env;
-      fqdn = "0qln.duckdns.org";
+      fqdn = fqdns.primary;
       configFilePath = ./obsidian-livesync/secrets.couchdb.local-ini;
     })
 
@@ -93,22 +91,13 @@ in {
       dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
       adminpassFile = ./nextcloud/secrets.adminpassFile;
       storagePath = "/mnt/store-1/services/nextcloud";
-      primaryFqdn = "nextcloud.0qln.duckdns.org";
-      secondaryFqdns = [
-        "nextcloud.oq.404.mn"
-        # "nextcloud.myaddr.dev" TODO
-      ];
+      primaryFqdn = "nextcloud.${fqdns.primary}";
+      secondaryFqdns = map (x: "nextcloud.${x}") fqdns.secondary;
       localFqdns = [
         "lifbrasir"
         "192.168.178.50"
       ];
     };
-  };
-
-  networking.hosts = {
-    # TODO: use dnsmasq with a local dns server instead
-    # of specifying every subdomain maunally
-    "127.0.0.1" = fqdns ++ map (x: "nextcloud.${x}") fqdns;
   };
 
   # This value determines the NixOS release from which the default

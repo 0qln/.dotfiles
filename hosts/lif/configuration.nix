@@ -8,7 +8,6 @@
 
     ../_common/configuration.nix
 
-    ./hosts.nix
     ./bootloader.nix
     ./mount.nix
     ./bluetooth.nix
@@ -16,11 +15,11 @@
     ./packages.nix
     ./nvidia.nix
     ./intel.nix
+    ./networking.nix
 
     ../../modules/hypr
     ../../modules/ydotool
     ../../modules/steam
-    ../../modules/doh
     ../../modules/sops
 
     ../../home/users/oq

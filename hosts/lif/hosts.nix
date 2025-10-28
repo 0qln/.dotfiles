@@ -1,5 +1,0 @@
-{...}: {
-  networking.extraHosts = ''
-    192.168.178.1 fritz.box
-  '';
-}
