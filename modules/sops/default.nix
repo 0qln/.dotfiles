@@ -135,19 +135,21 @@ in {
           # exec is implemented by the sops-nix module.
         };
       in {
-        ${identitiesScript.name} = {
-          deps = [];
+        # idk why but 'deps' does not work anymore so using
+        # alphabetic ordering instead ヽ(‘ー`)ノ
+        "__0_${identitiesScript.name}" = {
           text = identitiesScript.exec;
+          # deps = [];
         };
-        ${yubiScript.name} = mkIf cfg.enableYubikeyIntegration {
-          deps = [identitiesScript.name];
+        "__1_${yubiScript.name}" = mkIf cfg.enableYubikeyIntegration {
           text = yubiScript.exec;
+          # deps = [identitiesScript.name];
         };
         ${setupSecretsScript.name} = {
-          deps = mkMerge [
-            [identitiesScript.name]
-            (mkIf cfg.enableYubikeyIntegration [yubiScript.name])
-          ];
+          # deps = mkMerge [
+          #   [identitiesScript.name]
+          #   (mkIf cfg.enableYubikeyIntegration [yubiScript.name])
+          # ];
         };
       };
 

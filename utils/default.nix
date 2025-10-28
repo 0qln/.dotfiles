@@ -14,6 +14,12 @@ in {
   config.utils = {
     sanitizeHostName = name: builtins.replaceStrings ["."] ["-"] (lib.strings.sanitizeDerivationName name);
 
+    mkIfElse = condition: yes: no:
+      mkMerge [
+        (mkIf condition yes)
+        (mkIf (!condition) no)
+      ];
+
     mods = {
       # Wether a file is hidden or not.
       isHidden = file: builtins.match "_.*" file != null;

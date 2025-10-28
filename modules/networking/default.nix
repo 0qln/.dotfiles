@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  utilz,
   ...
 }:
 with lib; let
@@ -26,7 +27,7 @@ in {
     }
 
     (mkIf (cfg.doh.enable || cfg.localDNS.enable) {
-      # if we do anything with dns, disable default dns config stuff.
+      # if we tamper with dns in any way, disable default dns stuff.
       services.resolved.enable = lib.mkForce false;
       networking = {
         nameservers = ["127.0.0.1" "::1"];
@@ -47,11 +48,13 @@ in {
           {
             address = cfg.localDNS.redirects;
           }
-          # dnscrypt integration
-          (mkIf cfg.doh.enable {
-            # set upstream to dnscrypt
-            server = ["127.0.0.1#${dnscrypt}"];
-          })
+          (utilz.mkIfElse cfg.doh.enable {
+              # set upstream to dnscrypt
+              server = ["127.0.0.1#${dnscrypt}"];
+            } {
+              # otherwise use cloudflare
+              server = ["1.1.1.1"];
+            })
         ];
       };
       # dnscrypt integration
