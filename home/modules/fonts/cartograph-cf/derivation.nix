@@ -1,12 +1,12 @@
 {pkgs}:
 pkgs.stdenvNoCC.mkDerivation {
   pname = "Cartograph CF Nerd Font";
-  version = "v1.0.2";
+  version = "v1.0.3";
   src = pkgs.fetchFromGitHub {
     owner = "0qln";
     repo = "Cartograph";
-    rev = "bc26fabe56523f009eb9f61d99bee8e35f2e635c";
-    hash = "sha256-6TAy4n5V4SuT5SuuqYvBIoJF1AJaprm4OQZB8cYs8Ls=";
+    rev = "3a23f288eee24a36005ec30fd9778a5d6a854510";
+    hash = "sha256-wk4SckewRtmVdT7VCeEndpIBwrWqQLn6mp2DZcqMnIE=";
   };
 
   buildInputs = with pkgs; [
