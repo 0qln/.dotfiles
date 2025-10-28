@@ -127,7 +127,7 @@ in {
         };
         vibrancy = mkOption {
           type = types.float;
-          default = 0.5696;
+          default = 0.5;
           description = "blur intensity/vibrancy (0.0-1.0)";
         };
       };
