@@ -5,4 +5,7 @@
     "nix-command"
     "flakes"
   ];
+  nix.settings.extra-experimental-features = [
+    "pipe-operators"
+  ];
 }

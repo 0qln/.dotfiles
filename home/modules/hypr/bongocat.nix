@@ -17,7 +17,7 @@ in
 
     config = mkIf cfg.enable {
       programs.wayland-bongocat = let
-        pawRatio = 1.0 / 3.1;
+        pawRatio = 1.0 / 3.0;
         catRatio = 1.0 - pawRatio;
         catHeight = totalHeight * catRatio;
         pawHeight = config.theme.win.layout.margin_out;
