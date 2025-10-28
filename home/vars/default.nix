@@ -202,7 +202,6 @@ in
       monitors = with cfg.monitors; {
         arrangement = {
           byName = arrangement.pictograms.${arrangement.byPictogram} devices;
-          #TODO byPosition = mapAttrs (name: v: ) arrangement.pictograms.${arrangement.byPictogram} devices;
           pictograms = {
             "|-|" = devices:
               with devices; {
