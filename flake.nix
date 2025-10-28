@@ -66,9 +66,9 @@
     inherit (nixpkgs) lib;
     utilz = import ./utils/pure.nix {inherit lib;};
 
-    # todo: we are currently importing these inputs for all outputs, even though
-    # not all of them need e.g. the citrix pinned pkgs. does this impact build times?
-    # if so, fix it
+    # this does not evaluate and thus not fetch unless pkgs-citrix is
+    # being used in the respective output.
+    # see https://discourse.nixos.org/t/nix-flake-inputs-not-lazy/25463/2
     pkgs-citrix = system:
       import nixpkgs-citrix {
         inherit system;
@@ -108,7 +108,6 @@
               specialArgs = {
                 inherit utilz;
                 inherit inputs;
-                #TODO: how to not import pkgs-citrix for outputs that don't need this input?
                 pkgs-citrix = pkgs-citrix system;
                 flake = self;
                 host-name = utilz.sanitizeHostName host;
