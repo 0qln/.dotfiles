@@ -2,9 +2,7 @@
   imports = [
     ../_common/configuration.nix
 
-    (import ../../modules/wsl {
-      defaultUser = "oq";
-    })
+    ../../modules/wsl
 
     ../../modules/sops
     ../../modules/home-manager
@@ -12,6 +10,13 @@
     ../../home/users/oq
     ../../home/users/root
   ];
+
+  modules = {
+    wsl = {
+      enable = true;
+      defaultUser = "oq";
+    };
+  };
 
   sops = {
     enable = true;
