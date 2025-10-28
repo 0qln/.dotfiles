@@ -50,17 +50,17 @@ in {
           }
           (utilz.mkIfElse cfg.doh.enable {
               # set upstream to dnscrypt
-              server = ["127.0.0.1#${dnscrypt}"];
+              server = ["127.0.0.1#${dnscrypt}" "::1#${dnscrypt}"];
             } {
               # otherwise use cloudflare
-              server = ["1.1.1.1"];
+              server = ["1.1.1.1" "2606:4700:4700::1111"];
             })
         ];
       };
       # dnscrypt integration
       services.dnscrypt-proxy = {
         # Rewrite dnscrypt to listen on some other port than 53
-        settings.listen_addresses = ["127.0.0.1:${dnscrypt}"];
+        settings.listen_addresses = ["127.0.0.1:${dnscrypt}" "[::1]:${dnscrypt}"];
       };
     }))
 
