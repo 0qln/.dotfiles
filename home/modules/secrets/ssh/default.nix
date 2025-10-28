@@ -14,12 +14,11 @@
 with lib; let
   cfg = config.modules.secrets.ssh;
 
-  linkPair = name: method: let
-    home = config.home.homeDirectory;
+  linkPair = name: let
     inherit (config.sops) secrets;
   in [
-    "L ${home}/.ssh/${name}/${method} - - - - ${secrets."sshKeys/${name}".path}"
-    "L ${home}/.ssh/${name}/${method}.pub - - - - ${secrets."sshKeys/${name}.pub".path}"
+    "L ${cfg.identities.${name}} - - - - ${secrets."sshKeys/${name}".path}"
+    "L ${cfg.identities.${name}}.pub - - - - ${secrets."sshKeys/${name}.pub".path}"
   ];
 
   keyPairType = types.submodule {
@@ -39,6 +38,30 @@ with lib; let
       };
     };
   };
+  # apparently u can use submodule like this, see
+  # https://github.com/nix-community/home-manager/blob/release-25.05/modules/programs/rofi.nix
+  # for more on this :)
+  #
+  # identityType =
+  #   types.submodule {
+  #     options = {
+  #       _type = mkOption {
+  #         type = types.enum (builtins.attrNames cfg.keyPairs);
+  #         internal = true;
+  #       };
+  #       value = mkOption {
+  #         type = types.str;
+  #         internal = true;
+  #       };
+  #     };
+  #   }
+  #   // {
+  #     description = "The path on the system where the ssh secret will life.";
+  #   };
+  #
+  # Note: using this as an implementation for my identityType here is bullscheiße, but it's neat
+  # that you can annotate types for internal usage like this :)
+  #
 in {
   options.modules.secrets.ssh = {
     enable = mkEnableOption "ssh secrets";
@@ -56,6 +79,15 @@ in {
           public = ./server/id_ed25519.pub;
           type = "ed25519";
         };
+      };
+    };
+
+    identities = mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+      description = "The path on the system where each secret will life";
+      example = {
+        "server" = "${config.home.homeDirectory}/.ssh/server/id_ed25519";
       };
     };
   };
@@ -78,15 +110,22 @@ in {
       cfg.keyPairs
     );
 
+    # ssh secret paths
+    modules.secrets.ssh.identities = let
+      home = config.home.homeDirectory;
+    in
+      attrsets.mapAttrs (name: pair: mkDefault "${home}/.ssh/${name}/id_${pair.type}")
+      cfg.keyPairs;
+
     # Link /run/secrets to ~/.ssh
     systemd.user.tmpfiles.rules = lists.flatten (
-      attrsets.mapAttrsToList (name: pair: (linkPair name "id_${pair.type}")) cfg.keyPairs
+      attrsets.mapAttrsToList (name: _pair: (linkPair name)) cfg.keyPairs
     );
 
     # Create shell aliases for ease of use
     programs.bash.initExtra = strings.concatLines (
-      attrsets.mapAttrsToList (name: pair: ''
-        alias ssh-${name}='ssh -i ~/.ssh/${name}/id_${pair.type}'
+      attrsets.mapAttrsToList (name: _pair: ''
+        alias ssh-${name}='ssh -i ${cfg.identities.${name}}'
       '')
       cfg.keyPairs
     );

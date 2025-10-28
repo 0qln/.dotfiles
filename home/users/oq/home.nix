@@ -70,6 +70,7 @@ in
           yubi.enable = mkDefault true;
           tools.enable = mkDefault true;
           zoxide.enable = mkDefault true;
+          ssh.enable = mkDefault true;
         }
 
         # gui-only modules

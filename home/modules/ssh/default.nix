@@ -1,29 +1,44 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.ssh;
+in {
   imports = [
-    # Import default values.
     ./defaultConfig.nix
   ];
 
-  programs.ssh = {
-    enable = true;
-    extraConfig = ''
-      Host 0qln.duckdns.org
-        IdentityFile ${config.home.homeDirectory}/.ssh/server/id_ed25519
-        User root
-        IdentitiesOnly yes
-        AddKeysToAgent yes
+  options.modules.ssh = {
+    enable = mkEnableOption "ssh config";
+    enableWorkSimple = mkEnableOption "work simple stuff";
+  };
 
-      Host kimai.unicorns.software
-        HostName kimai.unicorns.software
-        IdentityFile ${config.home.homeDirectory}/.ssh/work/id_ed25519
-        User root
-        ForwardAgent yes
-
-      Host odoo-dev.worksimple.de
-        HostName odoo-dev.worksimple.de
-        IdentityFile ${config.home.homeDirectory}/.ssh/work/id_ed25519
-        User root
-        ForwardAgent yes
-    '';
+  config = mkIf cfg.enable {
+    programs.ssh = {
+      enable = true;
+      matchBlocks = mkMerge [
+        {
+          "0qln.duckdns.org" = {
+            user = "root";
+            identityFile = config.modules.secrets.ssh.identities.server;
+            identitiesOnly = true;
+            addKeysToAgent = "yes";
+          };
+        }
+        (mkIf cfg.enableWorkSimple
+          (let
+            defaultCfg = {
+              identityFile = config.modules.secrets.ssh.identities.work;
+              user = "root";
+              forwardAgent = true;
+            };
+          in {
+            "kimai.unicorns.software" = defaultCfg;
+            "odoo-dev.worksimple.de" = defaultCfg;
+          }))
+      ];
+    };
   };
 }

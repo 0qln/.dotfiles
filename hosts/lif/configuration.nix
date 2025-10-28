@@ -81,6 +81,7 @@
         enableWorkSimple = true;
       };
       modules = {
+        ssh.enableWorkSimple = true;
         cursor.cursor = "frieren";
         browser = {
           firefox = {
