@@ -1,6 +1,6 @@
 {...}: {
   programs.git = {
-    extraConfig = {
+    settings = {
       merge.tool = "nvimdiff";
     };
   };

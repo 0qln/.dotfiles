@@ -22,8 +22,8 @@ in
       programs.git = mkMerge [
         {
           enable = true;
-          userName = "0qln";
-          userEmail = "linusnag@gmail.com";
+          user.name = "0qln";
+          user.email = "linusnag@gmail.com";
           extraConfig = {
             pull.rebase = false;
             safe.directory = ["*"];
