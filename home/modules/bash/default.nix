@@ -28,7 +28,7 @@ in
           alias cdf='cd $(fd --hidden --type d | fzf)'
           ${
             if config.programs.kitty.enable
-            then "alias ssh='kitten ssh'"
+            then "alias ssh='kitten ssh --kitten share_connections=no'"
             else ""
           }
           alias la='ll -a'
