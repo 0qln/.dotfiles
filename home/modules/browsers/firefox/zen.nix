@@ -108,7 +108,10 @@ in
         profiles."oq@zen" = {
           id = 0;
           isDefault = false;
-          search.engines = searchEngines;
+          search = {
+            engines = searchEngines;
+            default = "ddg";
+          };
         };
 
         # Notice: we can even extend imperatively created profiles :D
@@ -116,7 +119,10 @@ in
           id = 2;
           isDefault = true;
           path = "89h16xs5.Default (alpha)";
-          search.engines = searchEngines;
+          search = {
+            engines = searchEngines;
+            default = "ddg";
+          };
         };
       };
     };
