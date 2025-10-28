@@ -45,9 +45,6 @@
     #   serverAddress = "0qln.duckdns.org";
     #   serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
     # })
-
-    # tmp:
-    ./starship.nix
   ];
 
   sops = {

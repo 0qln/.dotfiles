@@ -35,6 +35,16 @@ in {
         transparency.enable = mkDefault true;
         colors.theme = "kanagawa";
       };
+      starship = {
+        presets = [
+          "nerd-font-symbols"
+        ];
+        settings = {
+          cmd_duration = {
+            disabled = true;
+          };
+        };
+      };
     };
     theme = {
       launcher = {

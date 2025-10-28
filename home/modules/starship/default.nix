@@ -15,11 +15,29 @@ in {
 
   options.modules.starship = {
     enable = mkEnableOption "starship";
+    presets = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "presets to use (see https://starship.rs/presets/ for a list of valid options)";
+    };
+    settings = mkOption {
+      type = types.attrs;
+      default = {};
+      description = "starship settings";
+    };
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      starship
-    ];
+    programs.starship = {
+      enable = true;
+      settings = lib.mkMerge ([
+          settings
+        ]
+        ++ map (preset: (builtins.fromTOML
+          (
+            builtins.readFile "${pkgs.starship}/share/starship/presets/${preset}.toml"
+          )))
+        cfg.presets);
+    };
   };
 }

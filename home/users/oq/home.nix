@@ -71,6 +71,7 @@ in
           tools.enable = mkDefault true;
           zoxide.enable = mkDefault true;
           ssh.enable = mkDefault true;
+          starhsip.enable = mkDefault true;
         }
 
         # gui-only modules
