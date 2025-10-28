@@ -37,6 +37,19 @@ in {
       };
     };
 
+    fonts = {
+      monospace = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "default font for monospace stuff";
+      };
+      reading = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "default font for reading stuff";
+      };
+    };
+
     win = {
       border = {
         active = mkColorOption "active window's border" null;
@@ -119,6 +132,7 @@ in {
         };
       };
     };
+
     term = {
       cursor = mkColorOption "terminal cursor" null;
       background = mkColorOption "terminal background" null;
@@ -142,6 +156,7 @@ in {
       color7 = mkColorOption "terminal color7" null;
       color15 = mkColorOption "terminal color15" null;
     };
+
     launcher = {
       background = mkColorOption "background" null;
       border = mkColorOption "border" null;

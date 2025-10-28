@@ -1,4 +1,8 @@
-profile: {pkgs, ...}: {
+profile: {
+  pkgs,
+  config,
+  ...
+}: {
   programs.vscode.profiles.${profile} = {
     userSettings = {
       "diffEditor.codeLens" = true;
@@ -10,7 +14,7 @@ profile: {pkgs, ...}: {
       "editor.minimap.renderCharacters" = false;
       "editor.occurrencesHighlight" = "multiFile";
       "editor.fontSize" = 13;
-      "editor.fontFamily" = "CartographCF Nerd Font";
+      "editor.fontFamily" = config.theme.fonts.monospace;
       "editor.fontLigatures" = true;
       # "workbench.colorCustomizations": {
       #     "editorError.background":   "#FF000000",

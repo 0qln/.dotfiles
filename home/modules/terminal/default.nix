@@ -1,4 +1,8 @@
-{lib, ...}:
+{
+  lib,
+  config,
+  ...
+}:
 with lib; let
   isDir = _file: type: type == "directory";
   emulators = builtins.attrNames (attrsets.filterAttrs isDir (builtins.readDir ./emulators));
@@ -14,10 +18,9 @@ in {
       default = "kitty";
       description = "The terminal emulator program";
     };
-    # could make this an enum config.modules.fonts;
     font = mkOption {
       type = types.nullOr types.str;
-      default = null;
+      default = config.theme.fonts.monospace;
       example = "VictorMono Nerd Font";
       description = "The font";
     };

@@ -14,11 +14,11 @@ in {
         cursor = mkDefault "frieren-winter";
       };
       fonts = {
-        #TODO: enable "CartographCF Nerd Font" once the module is refactored
+        cartograph-cf.enable = mkDefault true; # general monospace
+        ibm-plex.enable = mkDefault true; # obsidian
       };
       terminal = {
         emulator = mkDefault "kitty";
-        font = mkDefault "CartographCF Nerd Font";
         backgroundOpacity = mkDefault 0.9;
       };
       rofi = {
@@ -47,6 +47,10 @@ in {
       };
     };
     theme = {
+      fonts = {
+        monospace = "CartographCF Nerd Font";
+        reading = "IBM Plex";
+      };
       launcher = {
         # https://github.com/rebelot/kanagawa.nvim/blob/aef7f5cec0a40dbe7f3304214850c472e2264b10/lua/kanagawa/colors.lua
         background = mkDefault "#223249";
