@@ -44,29 +44,45 @@ in
           "waybar"
         ];
 
-        #TODO: map from the monitor arrangement or smth
-        workspace = lib.mkIf (monitors.arrangement.byPictogram == "|-|") [
+        workspace = let
           # don't forget to set defaults, otherwise the monitor assignments won't work:
           # https://github.com/hyprwm/Hyprland/issues/2331
-          "1, monitor:${monitors.devices.center.name}, default:true"
-          "2, monitor:${monitors.devices.center.name}"
-          "3, monitor:${monitors.devices.center.name}"
-          "4, monitor:${monitors.devices.center.name}"
-          "5, monitor:${monitors.devices.center.name}"
+          mapping = {
+            "-" = [
+              "1, monitor:${monitors.devices.center.name}, default:true"
+              "2, monitor:${monitors.devices.center.name}"
+              "3, monitor:${monitors.devices.center.name}"
+              "4, monitor:${monitors.devices.center.name}"
+              "5, monitor:${monitors.devices.center.name}"
+              "6, monitor:${monitors.devices.center.name}"
+              "7, monitor:${monitors.devices.center.name}"
+              "8, monitor:${monitors.devices.center.name}"
+              "9, monitor:${monitors.devices.center.name}"
+              "0, monitor:${monitors.devices.center.name}"
+            ];
+            "|-|" = [
+              "1, monitor:${monitors.devices.center.name}, default:true"
+              "2, monitor:${monitors.devices.center.name}"
+              "3, monitor:${monitors.devices.center.name}"
+              "4, monitor:${monitors.devices.center.name}"
+              "5, monitor:${monitors.devices.center.name}"
 
-          #TODO: trying to get the window of the special workspace not to follow the mouse cursor, does not work yet
-          "s[true], monitor:${monitors.devices.center.name}"
+              #TODO: trying to get the window of the special workspace not to follow the mouse cursor, does not work yet
+              "s[true], monitor:${monitors.devices.center.name}"
 
-          "6, monitor:${monitors.devices.left.name}, default:true"
-          "6, layoutopt:orientation:bottom"
-          "7, monitor:${monitors.devices.left.name}"
-          "7, layoutopt:orientation:bottom"
+              "6, monitor:${monitors.devices.left.name}, default:true"
+              "6, layoutopt:orientation:bottom"
+              "7, monitor:${monitors.devices.left.name}"
+              "7, layoutopt:orientation:bottom"
 
-          "8, monitor:${monitors.devices.right.name}, default:true"
-          "8, layoutopt:orientation:bottom"
-          "9, monitor:${monitors.devices.right.name}"
-          "9, layoutopt:orientation:bottom"
-        ];
+              "8, monitor:${monitors.devices.right.name}, default:true"
+              "8, layoutopt:orientation:bottom"
+              "9, monitor:${monitors.devices.right.name}"
+              "9, layoutopt:orientation:bottom"
+            ];
+          };
+        in
+          mapping.${monitors.arrangement.byPictogram};
 
         general = with config.theme.win; {
           inherit
