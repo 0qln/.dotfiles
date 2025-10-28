@@ -22,9 +22,11 @@ in
       programs.git = mkMerge [
         {
           enable = true;
-          user.name = "0qln";
-          user.email = "linusnag@gmail.com";
-          extraConfig = {
+          settings = {
+            user = {
+              name = "0qln";
+              email = "linusnag@gmail.com";
+            };
             pull.rebase = false;
             safe.directory = ["*"];
             init.defaultBranch = "master";

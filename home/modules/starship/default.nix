@@ -31,7 +31,7 @@ in {
     programs.starship = {
       enable = true;
       settings = lib.mkMerge ([
-          settings
+          cfg.settings
         ]
         ++ map (preset: (builtins.fromTOML
           (
