@@ -11,7 +11,7 @@ in {
   config = mkIf cfg.enable {
     modules = {
       cursor = {
-        cursor = mkDefault "frieren-winter"; #maomao
+        cursor = mkDefault "maomao"; #maomao
       };
       fonts = {
         cartograph-cf.enable = mkDefault true; # general monospace
@@ -63,12 +63,12 @@ in {
       };
       win = {
         border = {
-          active = "#ff000099";
-          inactive = "#ff000099";
+          active = "#9da9a0ff";
+          inactive = "#859289ff";
           size = 1;
         };
         shadow = {
-          active = "#ff8080ee";
+          active = "#ff808000";
           inactive = "#ff808000";
           range = 5;
           render_power = 3;
@@ -92,6 +92,8 @@ in {
         };
       };
       term = {
+        padding = 4;
+
         foreground = "                     #d3c6aa";
         background = "                     #2d353b";
         selection_foreground = "           #9da9a0";
@@ -159,9 +161,9 @@ in {
       wallpapers = rec {
         arrangements = with images; {
           "|-|" = {
-            left = horz1;
+            left = horz2;
             center = horz1;
-            right = horz1;
+            right = horz2;
           };
           "-" = {
             center = horz1;
@@ -179,6 +181,10 @@ in {
           horz1 = "${pkgs.fetchurl {
             url = "https://w.wallhaven.cc/full/qr/wallhaven-qr2dxr.jpg";
             hash = "sha256-Sca+LBBAVS7xFjhO24dwsAHs9vqoqMZb6Ce4yF15BqM=";
+          }}";
+          horz2 = "${pkgs.fetchurl {
+            url = "https://w.wallhaven.cc/full/6l/wallhaven-6lo8w6.png";
+            hash = "sha256-tGHSZEPIRagf1IG4henexc+HJ1vnZWWdE5Fc3n6LUt0=";
           }}";
         };
       };

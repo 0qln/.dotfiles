@@ -134,6 +134,12 @@ in {
     };
 
     term = {
+      padding = mkOption {
+        type = types.ints.unsigned;
+        default = 0;
+        description = "terminal padding";
+      };
+
       cursor = mkColorOption "terminal cursor" null;
       background = mkColorOption "terminal background" null;
       foreground = mkColorOption "terminal foreground" null;
