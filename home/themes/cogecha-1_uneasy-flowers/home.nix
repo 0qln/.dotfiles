@@ -82,9 +82,9 @@ in {
           rounding_power = 2;
         };
         blur = {
-          size = 0;
-          passes = 6;
-          vibrancy = -200.0;
+          size = 20;
+          passes = 4;
+          vibrancy = 1.0;
         };
         layout = {
           gaps_in = 10;
