@@ -76,72 +76,94 @@ with lib; {
           "top_right_corner"
           "bottom_left_corner"
         ];
-      in {
-        "normal" = [
+        normal = [
           "left_ptr"
           "default"
           "arrow"
           "top_left_arrow"
           "left_arrow"
         ];
-        "help" = [
-          "question_arrow"
-          "help"
-        ];
-        "text" = [
-          "xterm"
-          "text"
-        ];
-        "busy" = ["watch"];
-        "work" = [
-          "left_ptr_watch"
-          "half-busy"
-          "progress"
-        ];
-        "vertical" = [
-          "sb_v_double_arrow"
-          "size_ver"
-          "v_double_arrow"
-        ];
-        "horizontal" = [
-          "sb_h_double_arrow"
-          "size_hor"
-          "h_double_arrow"
-        ];
-        #TODO: remove common prefix (e.g. 'Maomao') and go for full matches
-        "^diagonal (resize)?$" = diagonal1;
-        "^diagonal (resize)? 1$" = diagonal1;
-        "^diagonal (resize)? 2$" = diagonal2;
-        "move" = [
+        move = [
+          "hand1"
+          "hand"
+          "pointer"
+          "pointing_hand"
           "fleur"
           "move"
           "all-scroll"
           "dnd-move"
         ];
-        "precision" = [
+        horizontal = [
+          "sb_h_double_arrow"
+          "size_hor"
+          "h_double_arrow"
+        ];
+        vertical = [
+          "sb_v_double_arrow"
+          "size_ver"
+          "v_double_arrow"
+        ];
+      in {
+        "^\\s*normal\\s*$" = normal;
+        "^\\s*$" = normal;
+
+        "^\\s*help\\s*$" = [
+          "question_arrow"
+          "help"
+        ];
+
+        "^\\s*text\\s*$" = [
+          "xterm"
+          "text"
+        ];
+
+        "^\\s*busy\\s*$" = [
+          "watch"
+        ];
+
+        "^\\s*work\\s*$" = [
+          "left_ptr_watch"
+          "half-busy"
+          "progress"
+        ];
+
+        "^\\s*vertical\\s*$" = vertical;
+        "^\\s*vert\\s*$" = vertical;
+
+        "^\\s*horizontal\\s*$" = horizontal;
+        "^\\s*horz\\s*$" = horizontal;
+
+        "^\\s*diagonal( resize)?\\s*$" = diagonal1;
+        "^\\s*diagonal( resize)? 1\\s*$" = diagonal1;
+        "^\\s*dgn1\\s*$" = diagonal1;
+
+        "^\\s*diagonal( resize)? 2\\s*$" = diagonal2;
+        "^\\s*dgn2\\s*$" = diagonal2;
+
+        "^\\s*precision\\s*$" = [
           "crosshair"
           "cross"
           "tcross"
           "color-picker"
         ];
-        "hand" = [
-          "hand1"
-          "hand"
-          "pointer"
-          "pointing_hand"
-        ];
-        "link" = [
+
+        "^\\s*hand\\s*$" = move;
+        "^\\s*move\\s*$" = move;
+
+        "^\\s*link\\s*$" = [
           "hand2"
           "link"
           "alias"
           "dnd-link"
         ];
-        "unavailable" = [
+
+        "^\\s*unavailable\\s*$" = [
           "crossed_circle"
           "not-allowed"
           "forbidden"
         ];
-        "alt" = ["center_ptr"];
+
+        "^\\s*alt\\s*$" = ["center_ptr"];
       },
     }: let
       # we rename here bc sometimes the name of the download is the url part like "/cursor-downloadset.php?id=neco-arc"
@@ -162,8 +184,34 @@ with lib; {
         buildInputs = with pkgs; [
           win2xcur
           unzip
+          python3
         ];
-        buildPhase =
+        buildPhase = let
+          getCommonPrefix =
+            pkgs.writers.writePython3Bin "get-common-prefix" {}
+            ''
+              import os
+              files = [f for f in os.listdir(".") if os.path.isfile(f)]
+              if not files:
+                  raise Exception(f"Could not read files: {files}")
+              prefix = os.path.commonprefix(files)
+              print(prefix if prefix else "")
+            '';
+
+          # I don't got the nerves to deal with posix regex so here we fucking go :D
+          regexMatches =
+            pkgs.writers.writePython3Bin "get-common-prefix" {}
+            ''
+              import re
+              import sys
+
+              regex = sys.argv[2]
+              test_str = sys.argv[1]
+              result = re.search(regex, test_str)
+
+              exit(0 if result else 1)
+            '';
+        in
           # sh
           ''
             unzip winPack.zip -d winPack
@@ -187,25 +235,40 @@ with lib; {
             # name mapping
             (
               cd "$iconsDir/cursors"
+
+              common_prefix="$(${getExe getCommonPrefix})"
+
+              echo "Common Prefix: '$common_prefix'"
+
               ${lib.concatStringsSep "\n" (
               lib.mapAttrsToList (
-                k: v:
-                # sh
-                ''
-                  # either a perfect match
-                  if [ -f "${k}" ]; then
-                    ${lib.concatMapStringsSep "\n" (v: ''[ "$winFile" != "${v}" ] && cp "$winFile" "${v}"'') v}
-                  fi
-                  # or a partial match e.g. $file='neco-arc normal'
-                  for file in * ; do
-                    pat="${k}"
-                    lowercase_pat="''${pat,,}"
-                    lowercase_file="''${file,,}"
-                    if [[ "$lowercase_file" =~ "$lowercase_pat" ]]; then
-                      ${lib.concatMapStringsSep "\n" (v: ''[ "$file" != "${v}" ] && cp "$file" "${v}"'') v}
-                    fi
-                  done
-                ''
+                winPat: linuxNames: let
+                  copyCursorTo = x:
+                  #bash
+                  ''[ "$orig_file" != "${x}" ] && cp "$orig_file" "${x}"'';
+                in
+                  # sh
+                  ''
+                    echo "Scanning for pattern: '${winPat}'"
+
+                    # see if any of the windows cursor file names matches any pattern
+                    for file in * ; do
+                      orig_file="$file"
+
+                      # compare case-insensitive
+                      file="''${file#"$common_prefix"}" # strip common prefix
+                      file="''${file,,}" # convert to lowercase
+
+                      # if they match, copy the cursor to the output dir under the linux names.
+                      if "${getExe regexMatches}" "$file" "${winPat}"; then
+                        echo "[x] Found match (Original File: '$orig_file', Processed File: '$file')"
+                        ${lib.concatMapStringsSep "\n" copyCursorTo linuxNames}
+                      else
+                        echo "[o] No match (Original File: '$orig_file', Processed File: '$file')"
+                      fi
+
+                    done
+                  ''
               )
               nameMap
             )}
