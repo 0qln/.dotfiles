@@ -28,6 +28,10 @@ in {
       extraGroups = ["tty"];
     };
 
+    environment.shellAliases = {
+      "dashboard" = "${service}/bin/${serviceName}";
+    };
+
     # Set session as startup
     systemd.services."getty@tty1" = {
       enable = true;

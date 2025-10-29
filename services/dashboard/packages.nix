@@ -1,6 +1,6 @@
 {pkgs}:
 with pkgs; [
-  neofetch
+  fastfetch
   tmux
   nethogs
   btop
