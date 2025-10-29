@@ -55,8 +55,8 @@ in {
         # https://github.com/rebelot/kanagawa.nvim/blob/aef7f5cec0a40dbe7f3304214850c472e2264b10/lua/kanagawa/colors.lua
         background = mkDefault "#223249";
         border = mkDefault "#ff8080ee";
-        background-alt = mkDefault "#2D4F67";
-        foreground = mkDefault "#DCD7BA";
+        background-alt = mkDefault "#1f1f28";
+        foreground = mkDefault "#DCD7CA";
         selected = mkDefault "#7E9CD8";
         active = mkDefault "#98BB6C";
         urgent = mkDefault "#E46876";
@@ -96,7 +96,7 @@ in {
         # https://github.com/kovidgoyal/kitty-themes/blob/master/themes/kanagawa.conf
         cursor = "#7f7f7f";
         background = "#1f1f28";
-        foreground = "#dcd7ba";
+        foreground = "#DCD7CA";
         selection_background = "#b4d5ff";
         selection_foreground = "#000000";
         color0 = "#4f4f4f";
