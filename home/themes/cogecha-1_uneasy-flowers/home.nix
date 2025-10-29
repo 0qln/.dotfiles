@@ -45,6 +45,9 @@ in {
           };
         };
       };
+      discord.vesktop = {
+        theme = "system24-everforest";
+      };
     };
     theme = {
       fonts = {
