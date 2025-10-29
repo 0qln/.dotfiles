@@ -67,9 +67,6 @@ in
               "4, monitor:${monitors.devices.center.name}"
               "5, monitor:${monitors.devices.center.name}"
 
-              #TODO: trying to get the window of the special workspace not to follow the mouse cursor, does not work yet
-              "s[true], monitor:${monitors.devices.center.name}"
-
               "6, monitor:${monitors.devices.left.name}, default:true"
               "6, layoutopt:orientation:bottom"
               "7, monitor:${monitors.devices.left.name}"
