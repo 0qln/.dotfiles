@@ -34,6 +34,8 @@ in {
         cursor_trail_decay = "0.1 0.4";
 
         font_family = mkIf (cfg.font != null) cfg.font;
+
+        window_padding_width = config.theme.term.padding;
       };
 
       keybindings = {
