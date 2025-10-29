@@ -1,3 +1,3 @@
 _: {
-  imports = [./vesktop.nix];
+  imports = [./vesktop];
 }
