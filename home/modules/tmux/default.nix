@@ -10,12 +10,16 @@ in
     options.modules.tmux = {
       enable = mkEnableOption "tmux";
       enableNvimIntegration = config.utils.mkEnableOption "tmux neovim integration" cfg.enable;
+      statusline.enable = mkEnableOption "status line";
     };
 
     config = mkIf cfg.enable {
       programs.tmux = {
         enable = true;
         extraConfig = mkMerge [
+          (mkIf (!cfg.statusline.enable) ''
+            set-option -g status off
+          '')
           (mkIf cfg.enableNvimIntegration ''
             # nvim bindings
             bind-key -T copy-mode-vi 'v' send -X begin-selection
