@@ -78,7 +78,6 @@
       };
       modules = {
         ssh.enableWorkSimple = true;
-        cursor.cursor = "frieren";
         browser = {
           firefox = {
             tor.enable = true;
