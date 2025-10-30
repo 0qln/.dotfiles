@@ -1,5 +1,7 @@
-{...}: {
+{inputs, ...}: {
   imports = [
+    inputs.private.nixosModules."lif"
+
     ../_common/configuration.nix
 
     ../../modules/wsl
@@ -15,6 +17,24 @@
     wsl = {
       enable = true;
       defaultUser = "oq";
+    };
+  };
+
+  home-manager = {
+    users.oq = _: {
+      imports = [./vars.nix];
+      settings = {
+        enable = true;
+        uiEnv = "tui";
+      };
+      modules = {
+        fonts.enable = true;
+      };
+      private = {
+        secrets.ssh = {
+          server = true;
+        };
+      };
     };
   };
 

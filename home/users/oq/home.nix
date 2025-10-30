@@ -76,6 +76,7 @@ in
 
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
+          nixvim.wayland.enable = mkDefault true;
           browser.firefox = {
             firefox = {
               enable = mkDefault true;
