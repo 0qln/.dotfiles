@@ -15,7 +15,7 @@ in {
   options.modules.terminal = {
     emulator = mkOption {
       type = emulatorType;
-      default = "kitty";
+      default = "tty";
       description = "The terminal emulator program";
     };
     font = mkOption {
