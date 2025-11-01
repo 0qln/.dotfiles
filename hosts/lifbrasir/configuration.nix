@@ -47,8 +47,8 @@ in {
     })
 
     ../../services/postgresql
-
     ../../services/gitea
+    ../../services/docker
   ];
 
   sops = {
@@ -87,6 +87,10 @@ in {
     acme = {
       enable = true;
       duckdnsTokenFile = ./duckdns/secrets.token;
+      certs.baseDn.name = fqdns.primary;
+    };
+    docker = {
+      enable = false;
     };
   };
 

@@ -137,6 +137,8 @@ in {
       };
     };
 
+    modules.acme.certs.baseDn.aliases = [cfg.primaryFqdn];
+
     services = {
       nginx.virtualHosts = let
         allowedHostsRegex = with lib.strings;
@@ -147,7 +149,7 @@ in {
               acc
               // {
                 ${hostName} = {
-                  enableACME = true;
+                  # TODO: ssl certificate
                   forceSSL = true;
                   locations."/" = {
                     proxyPass = "https://${cfg.primaryFqdn}";
@@ -164,7 +166,7 @@ in {
           cfg.secondaryFqdns)
         // {
           ${cfg.primaryFqdn} = {
-            enableACME = true;
+            useACMEHost = "0qln.duckdns.org";
             forceSSL = true;
 
             # All serverAliases will be added as extra domain names on the certificate.
