@@ -84,14 +84,16 @@ with lib; {
           "left_arrow"
         ];
         move = [
-          "hand1"
-          "hand"
-          "pointer"
-          "pointing_hand"
           "fleur"
           "move"
           "all-scroll"
           "dnd-move"
+        ];
+        hand = [
+          "hand1"
+          "hand"
+          "pointer"
+          "pointing_hand"
         ];
         horizontal = [
           "sb_h_double_arrow"
@@ -147,7 +149,7 @@ with lib; {
           "color-picker"
         ];
 
-        "^\\s*hand\\s*$" = move;
+        "^\\s*hand\\s*$" = hand;
         "^\\s*move\\s*$" = move;
 
         "^\\s*link\\s*$" = [
