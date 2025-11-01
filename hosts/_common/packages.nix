@@ -8,5 +8,6 @@
     dig
     age
     jq
+    openssl
   ];
 }
