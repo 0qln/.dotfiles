@@ -1,7 +1,6 @@
 {pkgs, ...}: let
   serviceUser = "mysql";
-  # DO NOT PUT A TRAILING SLASH AT THE ENDD111!!!
-  # (took me an hour to figure this out (i just want to quit and become a farmer... (fml :D)))
+  # DO NOT PUT A TRAILING SLASH AT THE ENDD111!!!einseins
   serviceDataDir = "/mnt/store-1/services/mysql";
 in {
   config = {

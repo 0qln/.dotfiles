@@ -166,6 +166,9 @@ in {
           ${cfg.primaryFqdn} = {
             enableACME = true;
             forceSSL = true;
+
+            # All serverAliases will be added as extra domain names on the certificate.
+            # serverAliases = ["bar.example.com"]; # TODO: FOR SECONDARY FQDNS???????
           };
         };
 
