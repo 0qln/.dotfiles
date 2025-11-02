@@ -1,11 +1,11 @@
 {
   lib,
   config,
+  utilz,
   ...
 }:
 with lib; let
-  isDir = _file: type: type == "directory";
-  emulators = builtins.attrNames (attrsets.filterAttrs isDir (builtins.readDir ./emulators));
+  emulators = utilz.mods.collectMods ./emulators;
   emulatorType = types.enum emulators;
 in {
   imports = [
