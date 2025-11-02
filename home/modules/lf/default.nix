@@ -70,7 +70,7 @@ in {
       '';
 
       commands = {
-        dragon-out = ''%${pkgs.xdragon}/bin/xdragon -a -x "$fx"'';
+        dragon-out = ''%${getExe pkgs.dragon-drop} -a -x "$fx"'';
 
         open = ''
           &{{
