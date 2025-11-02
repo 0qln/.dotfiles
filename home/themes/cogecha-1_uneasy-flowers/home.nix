@@ -66,12 +66,12 @@ in {
       };
       win = {
         border = {
-          active = "#9da9a0ff";
-          inactive = "#859289ff";
-          size = 1;
+          active = "#9da9a000";
+          inactive = "#85928900";
+          size = 0;
         };
         shadow = {
-          active = "#ff808000";
+          active = "#9da9a0ff";
           inactive = "#ff808000";
           range = 5;
           render_power = 3;
