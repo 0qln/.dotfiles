@@ -7,6 +7,7 @@
 with lib; let
   name = import ./name.nix;
   cfg = config.themes.${name};
+  inherit (config.vars) monitors;
 in {
   config = mkIf cfg.enable {
     modules = {
@@ -44,6 +45,39 @@ in {
             disabled = true;
           };
         };
+      };
+    };
+    programs = {
+      waybar = {
+        settings = [
+          {
+            name = "barRight";
+            layer = "top";
+            position = "top";
+            height = 30;
+            output = [monitors.devices.right.name];
+            modules-left = [
+            ];
+            modules-center = [
+            ];
+            modules-right = [
+              "clock"
+            ];
+          }
+          {
+            name = "barLeft";
+            layer = "top";
+            position = "top";
+            height = 30;
+            output = [monitors.devices.left.name];
+            modules-left = [
+            ];
+            modules-center = [
+            ];
+            modules-right = [
+            ];
+          }
+        ];
       };
     };
     theme = {

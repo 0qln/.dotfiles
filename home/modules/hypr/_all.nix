@@ -4,7 +4,7 @@ _: {
     ./hyprland
     ./hyprpaper
     ./hyprshot.nix
-    ./waybar.nix
+    ./waybar
     ./wayneko.nix
     ./wlsunset.nix
     ./bongocat.nix

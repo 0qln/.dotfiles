@@ -116,6 +116,11 @@ in
               default = 60;
               description = "Monitor refresh rate in Hz";
             };
+            workspaces = mkOption {
+              type = types.listOf types.int;
+              default = [];
+              description = "The workspaces accociated with this monitor";
+            };
           };
         };
 
@@ -184,12 +189,12 @@ in
               byPictogram = mkOption {
                 type = types.enum (builtins.attrNames cfg.monitors.arrangement.pictograms);
                 default = "-";
-                description = "Arrangement pattern by pictogram";
+                description = "Set the arrangement pattern by specifying a pictogram";
               };
 
               byName = mkOption {
                 type = types.attrsOf positionType;
-                description = "Monitor position";
+                description = "Monitor arrangement by name";
               };
             };
           };

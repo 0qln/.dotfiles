@@ -101,6 +101,11 @@ in {
           default = 1.0;
           description = "opacity level for inactive windows (0.0-1.0)";
         };
+        background = mkOption {
+          type = types.float;
+          default = 1.0;
+          description = "background opacity level for apps (0.0-1.0)";
+        };
       };
       corners = {
         rounding = mkOption {

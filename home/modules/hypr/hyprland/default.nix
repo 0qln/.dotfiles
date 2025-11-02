@@ -39,11 +39,6 @@ in
           )
           monitors.devices;
 
-        # =============== OTHER APPS ==============
-        exec-once = [
-          "waybar"
-        ];
-
         workspace = let
           # don't forget to set defaults, otherwise the monitor assignments won't work:
           # https://github.com/hyprwm/Hyprland/issues/2331

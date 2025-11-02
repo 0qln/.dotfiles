@@ -72,6 +72,7 @@ in
           zoxide.enable = mkDefault true;
           ssh.enable = mkDefault true;
           starship.enable = mkDefault true;
+          bluetooth.client = mkDefault "bluetui";
         }
 
         # gui-only modules

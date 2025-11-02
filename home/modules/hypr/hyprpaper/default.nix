@@ -20,7 +20,7 @@ in
         enable = true;
         settings = {
           ipc = "on";
-          preload = lib.attrsets.attrValues imgs;
+          preload = map toString (lib.attrsets.attrValues imgs);
           wallpaper =
             lib.attrsets.mapAttrsToList (
               k: v:
