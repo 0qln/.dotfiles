@@ -19,6 +19,8 @@ in {
     ../../services/ssh
     ../../services/dashboard
 
+    ../../services/acme
+
     (import ../../services/todoist-backup {
       secrets-env = ./todoist-backup/secrets.env;
     })
@@ -43,6 +45,10 @@ in {
       privateKeyFile = ./wireguard/0qln/private.key.secrets;
       externalInterface = "wlo1";
     })
+
+    ../../services/postgresql
+    ../../services/gitea
+    ../../services/docker
   ];
 
   sops = {
@@ -64,6 +70,28 @@ in {
         file = ../../yubis/${name};
       }
     ];
+  };
+
+  my-services = {
+    gitea = {
+      enable = true;
+      primaryFqdn = "git.${fqdns.primary}";
+      dbpassFile = ./gitea/secrets/dbpass;
+    };
+  };
+
+  modules = {
+    postgresql = {
+      enable = true;
+    };
+    acme = {
+      enable = true;
+      duckdnsTokenFile = ./duckdns/secrets.token;
+      certs.baseDn.name = fqdns.primary;
+    };
+    docker = {
+      enable = false;
+    };
   };
 
   services = {
