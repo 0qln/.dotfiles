@@ -75,7 +75,7 @@ in {
   my-services = {
     gitea = {
       enable = true;
-      primaryFqdn = "gitea.${fqdns.primary}";
+      primaryFqdn = "git.${fqdns.primary}";
       dbpassFile = ./gitea/secrets/dbpass;
     };
   };

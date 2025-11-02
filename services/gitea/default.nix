@@ -21,10 +21,6 @@ in {
     };
   };
 
-  imports = [
-    ../acme
-  ];
-
   config = mkIf cfg.enable {
     modules.acme.certs.baseDn.aliases = [cfg.primaryFqdn];
 
