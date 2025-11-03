@@ -13,6 +13,7 @@ with lib; let
 in {
   config = mkIf cfg.enable {
     modules = {
+      #TODO: zen background rgba(45,53,59,0.7)
       cursor = {
         cursor = mkDefault "maomao"; #maomao
       };

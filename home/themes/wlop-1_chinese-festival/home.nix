@@ -11,6 +11,7 @@ with lib; let
 in {
   config = mkIf cfg.enable {
     modules = {
+      #TODO: zen background #1f1f28e5
       cursor = {
         cursor = mkDefault "frieren-winter";
       };
