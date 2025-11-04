@@ -31,7 +31,7 @@
     ../../modules/wireguard/unicorns
     ../../modules/ydotool
 
-    #todo: fix wireguard vpn
+    # todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
     #   ip = "10.100.0.2/32";
     #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
@@ -51,7 +51,7 @@
 
   sops = {
     enable = true;
-    # TODO: improve yubi key integration and use it.
+    # todo: improve yubi key integration and use it.
     enableYubikeyIntegration = false;
     identities = [
       {
