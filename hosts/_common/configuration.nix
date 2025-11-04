@@ -9,5 +9,6 @@
     ./nix-config.nix
     ./packages.nix
     ./vars.nix
+    ./smart-card-daemon.nix
   ];
 }
