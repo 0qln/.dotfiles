@@ -48,6 +48,15 @@ in
                 ) (lib.lists.range 2 5)
               )
           }
+
+          setup-ssh-agent() {
+            eval "$(ssh-agent -s)"
+            trap 'ssh-agent -k' EXIT
+          }
+
+          if [ -z "$SSH_AGENT_PID" ]; then
+            setup-ssh-agent > /dev/null
+          fi
         '';
         bashrcExtra = ''
           eval "$(direnv hook bash)"
