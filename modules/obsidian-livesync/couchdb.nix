@@ -1,14 +1,13 @@
 {
-  serviceName,
-  secrets-env,
-  fqdn,
-  configFilePath,
-}: {
   config,
   lib,
   pkgs,
   ...
-}: let
+}:
+with lib; let
+  serviceName = "obsidian-livesync";
+  cfg = config.modules.obsidian-livesync;
+
   # Documentation:
   #
   # CouchDB obs-livesync specific setup:
@@ -25,13 +24,13 @@
   # - https://github.com/apache/couchdb/issues/2623
   couchdbUser = "couchdb";
   secretsName = "${serviceName}.couchdb";
-  hostName = "couchdb.${fqdn}";
+  hostName = "couchdb.${cfg.fqdn}";
   port = 5984;
   initScript = pkgs.callPackage ./couchdb-init.nix {};
   initStateFile = "/var/lib/couchdb/.couchdb-initialized";
   serviceDataDir = "/mnt/store-1/services/couchdb";
 in {
-  config = lib.mkIf config.services.${serviceName}.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [couchdb3];
 
     systemd.tmpfiles.rules = [
@@ -41,7 +40,7 @@ in {
 
     # for the setup script:
     sops.secrets.${secretsName} = {
-      sopsFile = secrets-env;
+      sopsFile = cfg.secretsEnvFile;
       owner = couchdbUser;
       group = couchdbUser;
       mode = "0400";
@@ -51,7 +50,7 @@ in {
 
     # for couchdb local.ini
     sops.secrets."obsidian-livesync/couchdb/local.ini" = {
-      sopsFile = configFilePath;
+      sopsFile = cfg.configFile;
       owner = couchdbUser;
       group = couchdbUser;
       mode = "700";

@@ -1,9 +1,20 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.mysql;
   serviceUser = "mysql";
   # DO NOT PUT A TRAILING SLASH AT THE ENDD111!!!einseins
   serviceDataDir = "/mnt/store-1/services/mysql";
 in {
-  config = {
+  options.modules.mysql = {
+    enable = mkEnableOption "mysql database";
+  };
+
+  config = mkIf cfg.enable {
     users.groups.${serviceUser} = {};
     users.users.${serviceUser} = {
       group = serviceUser;

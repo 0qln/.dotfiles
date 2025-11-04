@@ -21,30 +21,34 @@
     ../../modules/ydotool
     ../../modules/steam
     ../../modules/sops
-
+    ../../modules/avahi
     ../../home/users/oq
     ../../home/users/root
 
     ../../modules/home-manager
 
-    (import ../../services/flake-upgrader {
-      flakeDir = "/home/oq/.dotfiles";
-      mode = "boot";
-    })
-
-    (import ../../services/nixos-garbage-disposal {
-      })
-
+    ../../modules/flake-upgrader
+    ../../modules/nixpkgs-garbage-disposal
+    ../../modules/wireguard
     ../../modules/wireguard/unicorns
 
     #todo: fix wireguard vpn
-    # (import ../../modules/wireguard/0qln {
+    # (import ../../modules/wireguard/template.nix {
     #   ip = "10.100.0.2/32";
     #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
     #   serverAddress = "0qln.duckdns.org";
     #   serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
+    #   vpnName = "0qln";
     # })
   ];
+
+  modules = {
+    wireguard.enable = true;
+    avahi.enable = true;
+    hypr.enable = true;
+    steam.enable = true;
+    ydotool.enable = true;
+  };
 
   sops = {
     enable = true;

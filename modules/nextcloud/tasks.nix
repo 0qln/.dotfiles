@@ -3,7 +3,7 @@
     nextcloud = {
       extraAppsEnable = true;
       extraApps = {
-        inherit (config.services.my-nextcloud._apps) tasks;
+        inherit (config.modules.nextcloud._apps) tasks;
       };
     };
   };

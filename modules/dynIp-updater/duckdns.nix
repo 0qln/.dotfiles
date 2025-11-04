@@ -1,17 +1,27 @@
 {
-  tokenFile,
-  domains,
-}: {
   lib,
   config,
   pkgs,
   ...
-}: let
-  serviceName = "dynIp-updater-duckdns";
-  systemUser = "dynIp-updater-duckdns";
-  domainsStr = lib.concatStringsSep "," domains;
+}:
+with lib; let
+  cfg = config.modules.dynIp-updater.duckdns;
 in {
-  config = {
+  options.modules.dynIp-updater.duckdns = {
+    enable = mkEnableOption "duckdns dynamic ip updater";
+    tokenFile = mkOption {
+      type = types.path;
+    };
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [];
+    };
+  };
+  config = mkIf cfg.enable (let
+    serviceName = "dynIp-updater.duckdns";
+    systemUser = "dynIp-updater-duckdns";
+    domainsStr = lib.concatStringsSep "," cfg.domains;
+  in {
     environment.systemPackages = with pkgs; [
       curl
       bash
@@ -24,7 +34,7 @@ in {
     };
 
     sops.secrets."${serviceName}/token" = {
-      sopsFile = tokenFile;
+      sopsFile = cfg.tokenFile;
       owner = systemUser;
       group = systemUser;
       mode = "0400";
@@ -59,5 +69,5 @@ in {
         OnUnitActiveSec = "10min";
       };
     };
-  };
+  });
 }

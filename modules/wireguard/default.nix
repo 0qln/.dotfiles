@@ -1,9 +1,23 @@
-{pkgs, ...}: {
-  networking.wireguard = {
-    enable = true;
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.wireguard;
+in {
+  options.modules.wireguard = {
+    enable = mkEnableOption "wireguard";
   };
 
-  environment.systemPackages = with pkgs; [
-    wireguard-tools
-  ];
+  config = mkIf cfg.enable {
+    networking.wireguard = {
+      enable = true;
+    };
+
+    environment.systemPackages = with pkgs; [
+      wireguard-tools
+    ];
+  };
 }

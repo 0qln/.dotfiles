@@ -3,7 +3,10 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+with lib; let
+  cfg = config.modules.dashboard;
+
   serviceName = "dashboard";
   serviceUser = "dashboard";
   serviceGroup = "dashboard";
@@ -13,11 +16,11 @@
     inherit servicePkgs;
   };
 in {
-  options.services.${serviceName} = {
-    enable = lib.mkEnableOption "Dashboard";
+  options.modules.${serviceName} = {
+    enable = mkEnableOption "Dashboard";
   };
 
-  config = lib.mkIf config.services.${serviceName}.enable {
+  config = mkIf cfg.enable {
     # Dedicated user
     users.groups.${serviceGroup} = {};
     users.users.${serviceUser} = {

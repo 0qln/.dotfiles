@@ -4,10 +4,10 @@
   ...
 }:
 with lib; let
-  cfg = config.my-services.gitea;
+  cfg = config.modules.gitea;
   port = 3001;
 in {
-  options.my-services.gitea = {
+  options.modules.gitea = {
     enable = mkEnableOption "gitea";
 
     primaryFqdn = mkOption {

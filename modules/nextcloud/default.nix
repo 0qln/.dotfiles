@@ -4,19 +4,17 @@
   lib,
   ...
 }: let
-  serviceName = "my-nextcloud";
+  serviceName = "nextcloud";
   package = pkgs.nextcloud31;
   packages = pkgs.nextcloud31Packages;
-  cfg = config.services.${serviceName};
+  cfg = config.modules.${serviceName};
 in {
   imports = [
-    ../database
-    ../acme
     ./calendar.nix
     ./tasks.nix
   ];
 
-  options.services.${serviceName} = with lib; {
+  options.modules.${serviceName} = with lib; {
     enable = mkEnableOption serviceName;
 
     storagePath = mkOption {
@@ -100,7 +98,7 @@ in {
   };
 
   config = {
-    services.my-nextcloud._apps = packages.apps;
+    modules.nextcloud._apps = packages.apps;
 
     networking.firewall = {
       allowedTCPPorts = [

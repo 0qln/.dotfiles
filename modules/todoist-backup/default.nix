@@ -1,9 +1,12 @@
-{secrets-env}: {
+{
   config,
   lib,
   pkgs,
   ...
-}: let
+}:
+with lib; let
+  cfg = config.modules.todoist-backup;
+
   serviceName = "todoist-backup";
   serviceUser = "todoist-backup";
   serviceGroup = "todoist-backup";
@@ -13,13 +16,16 @@
     inherit servicePkgs;
   };
 in {
-  options.services.${serviceName} = {
-    enable = lib.mkEnableOption "Todoist backup service";
+  options.modules.${serviceName} = {
+    enable = mkEnableOption "Todoist backup service";
+    secretsEnvFile = mkOption {
+      type = types.path;
+    };
   };
 
-  config = lib.mkIf config.services.${serviceName}.enable {
+  config = mkIf cfg.enable {
     sops.secrets.${serviceName} = {
-      sopsFile = secrets-env;
+      sopsFile = cfg.secretsEnvFile;
       owner = serviceUser;
       group = serviceGroup;
       mode = "0400";

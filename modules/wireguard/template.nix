@@ -4,6 +4,7 @@
   serverAddress,
   serverPort ? 51820,
   serverPubKey,
+  vpnName,
 }: {
   host-name,
   config,
@@ -12,10 +13,6 @@
   port = 51820;
   privateKey = "wg/${host-name}/privateKey";
 in {
-  imports = [
-    ../default.nix
-  ];
-
   networking.firewall = {
     allowedUDPPorts = [port]; # Clients and peers can use the same port, see listenport
   };
@@ -28,7 +25,7 @@ in {
 
   networking.wireguard.interfaces = {
     # The network interface name. You can name the interface arbitrarily.
-    "wg_0qln" = {
+    "wg_${vpnName}" = {
       # Determines the IP address and subnet of the client's end of the tunnel interface.
       ips = [ip];
       listenPort = port; # to match firewall allowedUDPPorts (without this wg uses random port numbers)

@@ -15,40 +15,21 @@ in {
 
     ../../modules/sops
     ../../modules/home-manager
-
-    ../../services/ssh
-    ../../services/dashboard
-
-    ../../services/acme
-
-    (import ../../services/todoist-backup {
-      secrets-env = ./todoist-backup/secrets.env;
-    })
-
-    # https://couchdb.0qln.duckdns.org/_utils/index.html#
-    (import ../../services/obsidian-livesync {
-      secrets-env = ./obsidian-livesync/secrets.couchdb.env;
-      fqdn = fqdns.primary;
-      configFilePath = ./obsidian-livesync/secrets.couchdb.local-ini;
-    })
-
-    ../../services/nextcloud
-
-    (import ../../services/dynIp-updater/duckdns.nix {
-      tokenFile = ./duckdns/secrets.token;
-      domains = ["0qln"];
-    })
-
-    ../../services/dynIp-updater/afraid.nix
-
-    (import ../../services/wireguard {
-      privateKeyFile = ./wireguard/0qln/private.key.secrets;
-      externalInterface = "wlo1";
-    })
-
-    ../../services/postgresql
-    ../../services/gitea
-    ../../services/docker
+    ../../modules/ssh/service.nix
+    ../../modules/dashboard
+    ../../modules/acme
+    ../../modules/ssh
+    ../../modules/todoist-backup
+    ../../modules/obsidian-livesync
+    ../../modules/nextcloud
+    ../../modules/dynIp-updater/duckdns.nix
+    ../../modules/dynIp-updater/afraid.nix
+    ../../modules/wireguard/service.nix
+    ../../modules/postgresql
+    ../../modules/gitea
+    ../../modules/docker
+    ../../modules/mysql
+    ../../modules/obsidian-livesync
   ];
 
   sops = {
@@ -72,30 +53,44 @@ in {
     ];
   };
 
-  my-services = {
+  modules = {
+    dynIp-updater = {
+      duckdns = {
+        enable = true;
+        tokenFile = ./duckdns/secrets.token;
+        domains = ["0qln"];
+      };
+      afraid = {
+        enable = false;
+        credentialsFile = ./afraid/secrets.credentials.env;
+        domains = ["oq.404.mn"];
+      };
+    };
     gitea = {
       enable = true;
       primaryFqdn = "git.${fqdns.primary}";
       dbpassFile = ./gitea/secrets/dbpass;
     };
-  };
 
-  modules = {
     postgresql = {
       enable = true;
     };
+
+    mysql = {
+      enable = true;
+    };
+
     acme = {
       enable = true;
       duckdnsTokenFile = ./duckdns/secrets.token;
       certs.baseDn.name = fqdns.primary;
     };
+
     docker = {
       enable = false;
     };
-  };
 
-  services = {
-    todoist-backup = {
+    avahi = {
       enable = true;
     };
 
@@ -103,17 +98,35 @@ in {
       enable = true;
     };
 
+    ssh-service = {
+      enable = true;
+      keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHGSLpGhb4X7V6eDVqXq9uzUth9xfHJsSugmOZzS+qt1 user@Linus-PC"
+      ];
+    };
+
+    todoist-backup = {
+      enable = true;
+      secretsEnvFile = ./todoist-backup/secrets.env;
+    };
+
     obsidian-livesync = {
-      enable = true;
+      enable = false;
+      # admin page: https://couchdb.0qln.duckdns.org/_utils/index.html#
+      couchdb = {
+        fqdn = fqdns.primary;
+        secretsEnvFile = ./obsidian-livesync/secrets.couchdb.env;
+        configFile = ./obsidian-livesync/secrets.couchdb.local-ini;
+      };
     };
 
-    dynIp-updater-afraid = {
-      enable = true;
-      credentialsFile = ./afraid/secrets.credentials.env;
-      domains = ["oq.404.mn"];
+    wireguard-service = {
+      enable = false;
+      privateKeyFile = ./wireguard/0qln/private.key.secrets;
+      externalInterface = "wlo1";
     };
 
-    my-nextcloud = {
+    nextcloud = {
       enable = true;
       dbpassFile = ./nextcloud/secrets.dbpassFile;
       dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
