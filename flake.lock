@@ -890,11 +890,11 @@
         "rev": "8594105cdd1a0e85d230e64680c0a2a1c309c37f",
         "revCount": 11,
         "type": "git",
-        "url": "ssh://git@github.com/0qln/.private.git"
+        "url": "ssh://gitea@git.0qln.duckdns.org/0qln/.private.git"
       },
       "original": {
         "type": "git",
-        "url": "ssh://git@github.com/0qln/.private.git"
+        "url": "ssh://gitea@git.0qln.duckdns.org/0qln/.private.git"
       }
     },
     "root": {

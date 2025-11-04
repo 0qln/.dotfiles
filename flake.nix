@@ -17,7 +17,7 @@
     };
 
     private = {
-      url = "git+ssh://git@github.com/0qln/.private.git";
+      url = "git+ssh://gitea@git.0qln.duckdns.org/0qln/.private.git";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
