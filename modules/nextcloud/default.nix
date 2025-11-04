@@ -5,8 +5,8 @@
   ...
 }: let
   serviceName = "nextcloud";
-  package = pkgs.nextcloud31;
-  packages = pkgs.nextcloud31Packages;
+  package = pkgs.nextcloud32;
+  packages = pkgs.nextcloud32Packages;
   cfg = config.modules.${serviceName};
 in {
   imports = [
