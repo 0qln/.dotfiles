@@ -8,29 +8,28 @@
 
     ../_common/configuration.nix
 
-    ./bootloader.nix
-    ./mount.nix
     ./bluetooth.nix
+    ./bootloader.nix
     ./glorious-model-o.nix
-    ./packages.nix
-    ./nvidia.nix
     ./intel.nix
+    ./mount.nix
     ./networking.nix
+    ./nvidia.nix
+    ./packages.nix
 
-    ../../modules/hypr
-    ../../modules/ydotool
-    ../../modules/steam
-    ../../modules/sops
-    ../../modules/avahi
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/home-manager
-
+    ../../modules/avahi
     ../../modules/flake-upgrader
+    ../../modules/home-manager
+    ../../modules/hypr
     ../../modules/nixpkgs-garbage-disposal
+    ../../modules/sops
+    ../../modules/steam
     ../../modules/wireguard
     ../../modules/wireguard/unicorns
+    ../../modules/ydotool
 
     #todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
