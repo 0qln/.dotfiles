@@ -10,6 +10,9 @@ in
     options.modules.git = {
       enable = mkEnableOption "git config";
       lazygit.enable = config.utils.mkEnableOption "lazygit" cfg.enable;
+      #todo
+      # gitea.enable = config.utils.mkEnableOption "gitea" cfg.enable;
+      # github.enable = config.utils.mkEnableOption "github" cfg.enable;
       enableWorkSimple = mkEnableOption "worksimple stuff";
     };
 
@@ -17,6 +20,7 @@ in
       home.packages = with pkgs; [
         git
         delta
+        tea
       ];
 
       programs.git = mkMerge [
