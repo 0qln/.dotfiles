@@ -6,10 +6,6 @@
 with lib; let
   cfg = config.modules.ssh;
 in {
-  imports = [
-    ./defaultConfig.nix
-  ];
-
   options.modules.ssh = {
     enable = mkEnableOption "ssh config";
     enableWorkSimple = mkEnableOption "work simple stuff";
