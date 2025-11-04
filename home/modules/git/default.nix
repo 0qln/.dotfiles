@@ -29,7 +29,7 @@ in
           settings = {
             user = {
               name = "0qln";
-              email = "linusnag@gmail.com";
+              email = "0qln@proton.me";
             };
             pull.rebase = false;
             safe.directory = ["*"];
