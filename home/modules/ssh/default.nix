@@ -47,6 +47,7 @@ in {
             };
           in {
             "kimai.unicorns.software" = defaultCfg;
+            "nginx.unicorns.software" = defaultCfg;
             "odoo-dev.worksimple.de" = defaultCfg;
           }))
       ];
