@@ -35,6 +35,7 @@ in {
             user = "root";
             identityFile = config.modules.secrets.ssh.identities.server;
             identitiesOnly = true;
+            forwardAgent = true;
             addKeysToAgent = "yes";
           };
         }
