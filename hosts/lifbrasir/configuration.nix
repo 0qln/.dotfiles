@@ -24,6 +24,7 @@ in {
     ../../modules/nextcloud
     ../../modules/dynIp-updater/duckdns.nix
     ../../modules/dynIp-updater/afraid.nix
+    ../../modules/dynIp-updater/cloudflare.nix
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
     ../../modules/gitea
@@ -64,6 +65,11 @@ in {
         enable = false;
         credentialsFile = ./afraid/secrets.credentials.env;
         domains = ["oq.404.mn"];
+      };
+      cloudflare = {
+        enable = true;
+        configFile = ./cloudflare/secrets/config.env;
+        domains = ["07112025.xyz"];
       };
     };
     gitea = {
