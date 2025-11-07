@@ -59,13 +59,13 @@ in {
             ${getExe pkgs.curl} https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$DNS_RECORD_ID \
               -X PUT \
               -H 'Content-Type: application/json' \
-              -H "X-Auth-Email: $CLOUDFLARE_EMAIL" \
-              -H "X-Auth-Key: $CLOUDFLARE_API_KEY" \
-              -d "${builtins.toJSON {
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -d "${strings.escape ["\""] (builtins.toJSON {
               name = dn;
               type = "A";
               content = "$IP";
-            }}"
+              ttl = 300;
+            })}"
           '';
           Restart = "on-failure";
           RestartSec = "30s";
@@ -77,12 +77,15 @@ in {
     in
       builtins.listToAttrs (map mkUpdater cfg.domains);
 
-    systemd.timers.${serviceName} = {
-      wantedBy = ["timers.target"];
-      timerConfig = {
-        OnBootSec = "10min";
-        OnUnitActiveSec = "10min";
-      };
-    };
+    systemd.timers = let
+      mkTimer = dn: (nameValuePair "${serviceName}-${dn}" {
+        wantedBy = ["timers.target"];
+        timerConfig = {
+          OnBootSec = "10min";
+          OnUnitActiveSec = "10min";
+        };
+      });
+    in
+      builtins.listToAttrs (map mkTimer cfg.domains);
   });
 }
