@@ -27,7 +27,19 @@ in {
       };
       rofi = {
         enable = mkDefault true;
-        themeFile = mkDefault (pkgs.writeText "theme.rasi" (import ./rofi/theme.nix config.theme.launcher));
+        themeFile = let
+          womenInChair = pkgs.fetchurl {
+            url = "https://github.com/adi1090x/rofi/raw/093c1a79f58daab358199c4246de50357e5bf462/files/images/e.jpg";
+            hash = "sha256-KyA/KpARKAF8XQWmGnOnJLkXM1/pT39DGjguZz4AZcw=";
+          };
+          wallhaven-xe59v3 = ./rofi/wallhaven-xe59v3-cropped.png;
+          rasi =
+            import ./rofi/theme.nix
+            wallhaven-xe59v3
+            config.theme.launcher
+            "${config.theme.fonts.monospace} Italic 11";
+        in
+          mkDefault (pkgs.writeText "theme.rasi" rasi);
       };
       ytm = {
         stylesheetFile = mkDefault ./ytm/stylesheet.css;
@@ -459,13 +471,14 @@ in {
       };
       launcher = {
         # https://github.com/rebelot/kanagawa.nvim/blob/aef7f5cec0a40dbe7f3304214850c472e2264b10/lua/kanagawa/colors.lua
-        background = mkDefault "#223249";
-        border = mkDefault "#ff8080ee";
-        background-alt = mkDefault "#1f1f28";
-        foreground = mkDefault "#DCD7CA";
-        selected = mkDefault "#7E9CD8";
-        active = mkDefault "#98BB6C";
-        urgent = mkDefault "#E46876";
+        background = mkDefault "#272E33";
+        border = mkDefault "#7A8478";
+        background-alt = mkDefault "#2E383C";
+        foreground = mkDefault "#D3C6AA";
+        foreground-selected = mkDefault "#272E33";
+        selected = mkDefault "#7FBBB3";
+        active = mkDefault "#A7C080";
+        urgent = mkDefault "#E67E80";
       };
       win = {
         border = {

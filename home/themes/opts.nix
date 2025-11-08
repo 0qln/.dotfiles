@@ -173,6 +173,7 @@ in {
       border = mkColorOption "border" null;
       background-alt = mkColorOption "alternative background" null;
       foreground = mkColorOption "foreground" null;
+      foreground-selected = mkColorOption "foreground-selected" null;
       selected = mkColorOption "selected elements" null;
       active = mkColorOption "active elements" null;
       urgent = mkColorOption "urgent things" null;
