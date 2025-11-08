@@ -1,4 +1,4 @@
-_: {
+{config, ...}: {
   imports = [
     ../../modules/networking
   ];
@@ -8,6 +8,6 @@ _: {
     localDNS.enable = true;
     localDNS.redirects =
       ["/fritz.box/192.168.178.1"]
-      ++ (map (x: "/${x}/127.0.0.1") (import ./fqdns.nix).all);
+      ++ (map (x: "/${x}/127.0.0.1") config.vars.hosts.lifbrasir.fqdns.all);
   };
 }

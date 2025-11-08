@@ -22,7 +22,7 @@
 
   home-manager = {
     users.oq = _: {
-      imports = [./vars.nix];
+      imports = [./home-vars.nix];
       settings = {
         enable = true;
         uiEnv = "tui";

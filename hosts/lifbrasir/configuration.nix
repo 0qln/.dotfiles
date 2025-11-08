@@ -1,5 +1,5 @@
-{...}: let
-  fqdns = import ./fqdns.nix;
+{config, ...}: let
+  inherit (config.vars.hosts.lifbrasir) fqdns;
 in {
   imports = [
     ../_common/configuration.nix
@@ -68,13 +68,15 @@ in {
       };
       cloudflare = {
         enable = true;
-        configFile = ./cloudflare/secrets/config.env;
-        domains = ["07112025.xyz"];
+        configFile = ./cloudflare/secrets/dynIp-updater/config.env;
       };
     };
     gitea = {
       enable = true;
-      primaryFqdn = "git.${fqdns.primary}";
+      fqdn = {
+        dn = "git.${fqdns.primary.dn}";
+        acmeHost = fqdns.primary.dn;
+      };
       dbpassFile = ./gitea/secrets/dbpass;
     };
 
@@ -88,8 +90,16 @@ in {
 
     acme = {
       enable = true;
-      duckdnsTokenFile = ./duckdns/secrets.token;
-      certs.baseDn.name = fqdns.primary;
+      certs = {
+        "0qln.duckdns.org" = {
+          registrar = "duckdns";
+          duckdnsInfos.tokenFile = ./duckdns/secrets.token;
+        };
+        "07112025.xyz" = {
+          registrar = "cloudflare";
+          cloudflareInfos.tokenFile = ./cloudflare/secrets/acme/token;
+        };
+      };
     };
 
     docker = {
@@ -118,9 +128,9 @@ in {
 
     obsidian-livesync = {
       enable = false;
-      # admin page: https://couchdb.0qln.duckdns.org/_utils/index.html#
+      # admin page: fqdn/_utils/index.html
       couchdb = {
-        fqdn = fqdns.primary;
+        fqdn = fqdns.primary.dn;
         secretsEnvFile = ./obsidian-livesync/secrets.couchdb.env;
         configFile = ./obsidian-livesync/secrets.couchdb.local-ini;
       };
@@ -138,8 +148,8 @@ in {
       dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
       adminpassFile = ./nextcloud/secrets.adminpassFile;
       storagePath = "/mnt/store-1/services/nextcloud";
-      primaryFqdn = "nextcloud.${fqdns.primary}";
-      secondaryFqdns = map (x: "nextcloud.${x}") fqdns.secondary;
+      primaryFqdn = "nextcloud.${fqdns.primary.dn}";
+      acmeHost = fqdns.primary.dn;
       localFqdns = [
         "lifbrasir"
         "192.168.178.50"

@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+with lib; let
   serviceName = "nextcloud";
   package = pkgs.nextcloud32;
   packages = pkgs.nextcloud32Packages;
@@ -14,7 +15,7 @@ in {
     ./tasks.nix
   ];
 
-  options.modules.${serviceName} = with lib; {
+  options.modules.${serviceName} = {
     enable = mkEnableOption serviceName;
 
     storagePath = mkOption {
@@ -77,11 +78,9 @@ in {
       type = types.str;
       description = "The primary fqdn.";
     };
-
-    secondaryFqdns = mkOption {
-      type = types.listOf types.str;
-      default = [];
-      description = "Secondary fsdns.";
+    acmeHost = mkOption {
+      type = types.str;
+      description = "The host domain that has an ssl certificate.";
     };
 
     localFqdns = mkOption {
@@ -97,7 +96,7 @@ in {
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     modules.nextcloud._apps = packages.apps;
 
     networking.firewall = {
@@ -135,42 +134,15 @@ in {
       };
     };
 
-    modules.acme.certs.baseDn.aliases = [cfg.primaryFqdn];
+    modules.acme.certs.${cfg.acmeHost}.aliases = [cfg.primaryFqdn];
 
     services = {
-      nginx.virtualHosts = let
-        allowedHostsRegex = with lib.strings;
-          concatStringsSep "|" (map escapeRegex (cfg.secondaryFqdns ++ [cfg.primaryFqdn]));
-      in
-        (lib.foldl (
-            acc: hostName:
-              acc
-              // {
-                ${hostName} = {
-                  # TODO: ssl certificate
-                  forceSSL = true;
-                  locations."/" = {
-                    proxyPass = "https://${cfg.primaryFqdn}";
-                    extraConfig = ''
-                      if ($http_origin ~* "^https?://(${allowedHostsRegex}|google\.com)$") {
-                          add_header Access-Control-Allow-Origin "$http_origin" always;
-                          add_header 'Access-Control-Allow-Credentials' 'true';
-                      }
-                    '';
-                  };
-                };
-              }
-          ) {}
-          cfg.secondaryFqdns)
-        // {
-          ${cfg.primaryFqdn} = {
-            useACMEHost = "0qln.duckdns.org";
-            forceSSL = true;
-
-            # All serverAliases will be added as extra domain names on the certificate.
-            # serverAliases = ["bar.example.com"]; # TODO: FOR SECONDARY FQDNS???????
-          };
+      nginx.virtualHosts = {
+        ${cfg.primaryFqdn} = {
+          useACMEHost = cfg.acmeHost;
+          forceSSL = true;
         };
+      };
 
       nextcloud = {
         enable = true;
@@ -199,13 +171,13 @@ in {
         };
         settings = rec {
           default_phone_region = "DE";
-          trusted_domains = [cfg.primaryFqdn] ++ cfg.secondaryFqdns ++ cfg.localFqdns;
-          trusted_proxies =
-            [
-              "127.0.0.1"
-              "::1"
-            ]
-            ++ trusted_domains;
+          trusted_domains = [cfg.primaryFqdn] ++ cfg.localFqdns;
+          # trusted_proxies =
+          #   [
+          #     "127.0.0.1"
+          #     "::1"
+          #   ]
+          #   ++ trusted_domains;
         };
       };
 

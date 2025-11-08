@@ -1,5 +1,7 @@
-with import <nixpkgs> {}; let
-  lifbrasir = (import ./hosts/lifbrasir/fqdns.nix).primary;
+with import <nixpkgs> {};
+with import ./utils; let
+  vars = (import-module ./vars {}).vars;
+  lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
 
   packages = [
     alejandra

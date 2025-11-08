@@ -12,14 +12,18 @@ in {
     configFile = mkOption {
       type = types.path;
     };
-    domains = mkOption {
+    subdomains = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = ["*"];
     };
   };
   config = mkIf cfg.enable (let
     serviceName = "dynIp-updater.cloudflare";
     systemUser = "dynIp-updater-cloudflare";
+    unitName = name:
+      if name == "*"
+      then serviceName
+      else "${serviceName}-${name}";
   in {
     environment.systemPackages = with pkgs; [
       curl
@@ -41,7 +45,7 @@ in {
     };
 
     systemd.services = let
-      mkUpdater = dn: (nameValuePair "${serviceName}-${dn}" {
+      mkUpdater = n: (nameValuePair (unitName n) {
         after = ["network.target"];
         wants = ["network-online.target"];
         description = "Send dynamic ip address changes to cloudflare.";
@@ -61,7 +65,7 @@ in {
               -H 'Content-Type: application/json' \
               -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
               -d "${strings.escape ["\""] (builtins.toJSON {
-              name = dn;
+              name = n;
               type = "A";
               content = "$IP";
               ttl = 300;
@@ -75,10 +79,10 @@ in {
         };
       });
     in
-      builtins.listToAttrs (map mkUpdater cfg.domains);
+      builtins.listToAttrs (map mkUpdater cfg.subdomains);
 
     systemd.timers = let
-      mkTimer = dn: (nameValuePair "${serviceName}-${dn}" {
+      mkTimer = n: (nameValuePair (unitName n) {
         wantedBy = ["timers.target"];
         timerConfig = {
           OnBootSec = "10min";
@@ -86,6 +90,6 @@ in {
         };
       });
     in
-      builtins.listToAttrs (map mkTimer cfg.domains);
+      builtins.listToAttrs (map mkTimer cfg.subdomains);
   });
 }

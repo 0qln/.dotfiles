@@ -10,9 +10,15 @@ in {
   options.modules.gitea = {
     enable = mkEnableOption "gitea";
 
-    primaryFqdn = mkOption {
-      type = types.str;
-      description = "The primary fqdn.";
+    fqdn = {
+      dn = mkOption {
+        type = types.str;
+        description = "The primary fqdn.";
+      };
+      acmeHost = mkOption {
+        type = types.str;
+        description = "The host domain that has an ssl certificate.";
+      };
     };
 
     dbpassFile = mkOption {
@@ -22,12 +28,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    modules.acme.certs.baseDn.aliases = [cfg.primaryFqdn];
+    modules.acme.certs.${cfg.fqdn.acmeHost}.aliases = [cfg.fqdn.dn];
 
     services = {
-      nginx.virtualHosts."${cfg.primaryFqdn}" = {
+      nginx.virtualHosts."${cfg.fqdn.dn}" = {
         forceSSL = true;
-        useACMEHost = "0qln.duckdns.org";
+        useACMEHost = cfg.fqdn.acmeHost;
         locations."/" = {
           proxyPass = "http://localhost:${toString port}/";
         };
@@ -57,8 +63,8 @@ in {
         };
         settings = {
           server = {
-            DOMAIN = cfg.primaryFqdn;
-            ROOT_URL = "https://${cfg.primaryFqdn}/";
+            DOMAIN = cfg.fqdn.dn;
+            ROOT_URL = "https://${cfg.fqdn.dn}/";
             HTTP_PORT = port;
           };
 

@@ -1,16 +1,63 @@
-{lib, ...}: {
-  options.vars = {
-    home = lib.mkOption {
-      type = lib.types.submodule {
+{lib, ...}:
+with lib; {
+  options.vars = let
+    domainInfoType = types.submodule {
+      options = {
+        registrar = mkOption {
+          type = types.str;
+          description = "The registrar (e.g. cloudflare, duckdns)";
+        };
+        dn = mkOption {
+          type = types.str;
+          example = "e.g. example.com";
+        };
+      };
+    };
+  in {
+    domains = mkOption {
+      type = types.attrsOf domainInfoType;
+      default = {};
+      description = "domain infos";
+    };
+
+    hosts = let
+      hostInfoType = types.submodule {
         options = {
-          config = lib.mkOption {
-            type = lib.types.submodule {
+          fqdns = mkOption {
+            type = types.submodule {
               options = {
-                backup = lib.mkOption {
-                  type = lib.types.submodule {
+                all = mkOption {
+                  type = types.listOf types.str;
+                  default = [];
+                  description = "The fqdns that point to this host";
+                };
+                primary = mkOption {
+                  type = types.domainInfoType;
+                  description = "The primary fqdn";
+                };
+              };
+            };
+          };
+        };
+      };
+    in
+      mkOption {
+        type = types.attrsOf hostInfoType;
+        default = {};
+        description = "hosts infos";
+      };
+
+    home = mkOption {
+      type = types.submodule {
+        options = {
+          config = mkOption {
+            type = types.submodule {
+              options = {
+                backup = mkOption {
+                  type = types.submodule {
                     options = {
-                      extension = lib.mkOption {
-                        type = lib.types.str;
+                      extension = mkOption {
+                        type = types.str;
                         description = "Backup file extension";
                       };
                     };

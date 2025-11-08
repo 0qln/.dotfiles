@@ -30,15 +30,18 @@ in {
             controlPersist = "no";
           };
         }
-        {
-          "0qln.duckdns.org" = {
+        (let
+          lifbrasirCfg = {
             user = "root";
             identityFile = config.modules.secrets.ssh.identities.server;
             identitiesOnly = true;
             forwardAgent = true;
             addKeysToAgent = "yes";
           };
-        }
+        in {
+          "0qln.duckdns.org" = lifbrasirCfg;
+          "07112025.xyz" = lifbrasirCfg;
+        })
         (mkIf cfg.enableWorkSimple
           (let
             defaultCfg = {

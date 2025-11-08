@@ -35,7 +35,7 @@
     # (import ../../modules/wireguard/template.nix {
     #   ip = "10.100.0.2/32";
     #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
-    #   serverAddress = "0qln.duckdns.org";
+    #   serverAddress = config.vars.fqdns.primary.dn;
     #   serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
     #   vpnName = "0qln";
     # })
@@ -73,7 +73,7 @@
 
   home-manager = {
     users.oq = _: {
-      imports = [./vars.nix];
+      imports = [./home-vars.nix];
       settings = {
         enable = true;
         uiEnv = "gui";

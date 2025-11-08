@@ -17,7 +17,7 @@
     };
 
     private = {
-      url = "git+ssh://gitea@git.0qln.duckdns.org/0qln/.private.git";
+      url = "git+ssh://gitea@git.07112025.xyz/0qln/.private.git";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
@@ -67,150 +67,152 @@
     nur,
     home-manager,
     ...
-  }: let
-    inherit (nixpkgs) lib;
-    utilz = import ./utils/pure.nix {inherit lib;};
+  }:
+    with import ./utils; let
+      inherit (nixpkgs) lib;
 
-    # this does not evaluate and thus not fetch unless pkgs-citrix is
-    # being used in the respective output.
-    # see https://discourse.nixos.org/t/nix-flake-inputs-not-lazy/25463/2
-    pkgs-citrix = system:
-      import nixpkgs-citrix {
-        inherit system;
-        config = {
-          allowUnfreePredicate = pkg:
-            builtins.elem (lib.getName pkg) [
-              "citrix-workspace"
+      utilz = (import-module ./utils/module.nix {inherit lib;}).utils;
+
+      # this does not evaluate and thus not fetch unless pkgs-citrix is
+      # being used in the respective output.
+      # see https://discourse.nixos.org/t/nix-flake-inputs-not-lazy/25463/2
+      pkgs-citrix = system:
+        import nixpkgs-citrix {
+          inherit system;
+          config = {
+            allowUnfreePredicate = pkg:
+              builtins.elem (lib.getName pkg) [
+                "citrix-workspace"
+              ];
+            permittedInsecurePackages = [
+              "libxml2-2.13.8"
+              "libsoup-2.74.3"
             ];
-          permittedInsecurePackages = [
-            "libxml2-2.13.8"
-            "libsoup-2.74.3"
-          ];
+          };
         };
+
+      hm = {
+        users = utilz.mods.collectMods ./home/users;
+        themes = utilz.mods.collectMods ./home/themes;
+        envs = user: (import ./home/users/${user}/envs.nix);
       };
+      hosts = utilz.mods.collectMods ./hosts;
 
-    hm = {
-      users = utilz.mods.collectMods ./home/users;
-      themes = utilz.mods.collectMods ./home/themes;
-      envs = user: (import ./home/users/${user}/envs.nix);
-    };
-    hosts = utilz.mods.collectMods ./hosts;
-
-    nixosConfigurations = builtins.listToAttrs (
-      utilz.mods.eachX hosts (
-        utilz.mods.eachX hm.themes (
-          theme: host: let
-            systemPath = ./hosts/${host}/system.nix;
-            system =
-              if builtins.pathExists systemPath
-              then (import systemPath)
-              else "x86_64-linux";
-          in {
-            name = host;
-            value = lib.nixosSystem rec {
-              inherit system;
-              modules = [./hosts/${host}];
-              specialArgs = {
-                inherit utilz;
-                inherit inputs;
-                pkgs-citrix = pkgs-citrix system;
-                flake = self;
-                host-name = utilz.sanitizeHostName host;
+      nixosConfigurations = builtins.listToAttrs (
+        utilz.mods.eachX hosts (
+          utilz.mods.eachX hm.themes (
+            theme: host: let
+              systemPath = ./hosts/${host}/system.nix;
+              system =
+                if builtins.pathExists systemPath
+                then (import systemPath)
+                else "x86_64-linux";
+            in {
+              name = host;
+              value = lib.nixosSystem rec {
+                inherit system;
+                modules = [./hosts/${host}];
+                specialArgs = {
+                  inherit utilz;
+                  inherit inputs;
+                  pkgs-citrix = pkgs-citrix system;
+                  flake = self;
+                  host-name = utilz.sanitizeHostName host;
+                };
               };
-            };
-          }
-        )
-      )
-    );
-
-    homeConfigurations = let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [nur.overlays.default];
-      };
-      vars = import ./vars {
-        inherit (vars) config;
-        inherit (pkgs) lib;
-      };
-    in
-      builtins.listToAttrs (
-        pkgs.lib.lists.flatten (
-          # todo: add hosts info (e.g. lif.cachyos)
-          utilz.mods.eachX hm.users (
-            user:
-              utilz.mods.eachX (hm.envs user) (
-                utilz.mods.eachX hm.themes (
-                  theme: env: let
-                    hm.config = import ./modules/home-manager/config.nix {
-                      inherit utilz;
-                      inherit inputs;
-                      inherit (pkgs) nur;
-                      pkgs-citrix = pkgs-citrix system;
-                      config = vars;
-                    };
-                    hm.vars = import ./home/users/${user}/vars.nix {
-                      inherit (hm.vars) config;
-                      inherit (pkgs) lib;
-                    };
-                  in {
-                    name = "${user}-${env}-${theme}";
-                    value = home-manager.lib.homeManagerConfiguration (
-                      hm.config
-                      // {
-                        inherit pkgs;
-                        extraSpecialArgs = {
-                          flake = self;
-                          inherit inputs;
-                          inherit (pkgs) nur;
-                        };
-                        modules = [
-                          hm.vars
-                          (import ./home/users/${user}/home.nix)
-                          (import ./home/themes/${theme}/default.nix)
-                          (_: {
-                            settings = {
-                              enable = pkgs.lib.mkDefault true;
-                              uiEnv = pkgs.lib.mkDefault env;
-                            };
-                          })
-                          (_: {
-                            # Let Home Manager install and manage itself.
-                            programs.home-manager.enable = true;
-
-                            home.username = user;
-                            home.homeDirectory = hm.vars.config.vars.root;
-                          })
-                        ];
-                      }
-                    );
-                  }
-                )
-              )
+            }
           )
         )
       );
-  in {
-    meta = {
-      inherit hosts;
-      hm = rec {
-        inherit (hm) users themes;
-        envs = builtins.listToAttrs (
-          map (u: {
-            name = u;
-            value = hm.envs u;
-          })
-          users
+
+      homeConfigurations = let
+        system = "x86_64-linux";
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [nur.overlays.default];
+        };
+        vars = import ./vars {
+          inherit (vars) config;
+          inherit (pkgs) lib;
+        };
+      in
+        builtins.listToAttrs (
+          pkgs.lib.lists.flatten (
+            # todo: add hosts info (e.g. lif.cachyos)
+            utilz.mods.eachX hm.users (
+              user:
+                utilz.mods.eachX (hm.envs user) (
+                  utilz.mods.eachX hm.themes (
+                    theme: env: let
+                      hm.config = import ./modules/home-manager/config.nix {
+                        inherit utilz;
+                        inherit inputs;
+                        inherit (pkgs) nur;
+                        pkgs-citrix = pkgs-citrix system;
+                        config = vars;
+                      };
+                      hm.vars = import ./home/users/${user}/vars.nix {
+                        inherit (hm.vars) config;
+                        inherit (pkgs) lib;
+                      };
+                    in {
+                      name = "${user}-${env}-${theme}";
+                      value = home-manager.lib.homeManagerConfiguration (
+                        hm.config
+                        // {
+                          inherit pkgs;
+                          extraSpecialArgs = {
+                            flake = self;
+                            inherit inputs;
+                            inherit (pkgs) nur;
+                          };
+                          modules = [
+                            hm.vars
+                            (import ./home/users/${user}/home.nix)
+                            (import ./home/themes/${theme}/default.nix)
+                            (_: {
+                              settings = {
+                                enable = pkgs.lib.mkDefault true;
+                                uiEnv = pkgs.lib.mkDefault env;
+                              };
+                            })
+                            (_: {
+                              # Let Home Manager install and manage itself.
+                              programs.home-manager.enable = true;
+
+                              home.username = user;
+                              home.homeDirectory = hm.vars.config.vars.root;
+                            })
+                          ];
+                        }
+                      );
+                    }
+                  )
+                )
+            )
+          )
         );
+    in {
+      meta = {
+        inherit hosts;
+        hm = rec {
+          inherit (hm) users themes;
+          envs = builtins.listToAttrs (
+            map (u: {
+              name = u;
+              value = hm.envs u;
+            })
+            users
+          );
+        };
+
+        outputs = {
+          nixosConfigurations = builtins.attrNames nixosConfigurations;
+          homeConfigurations = builtins.attrNames homeConfigurations;
+        };
       };
 
-      outputs = {
-        nixosConfigurations = builtins.attrNames nixosConfigurations;
-        homeConfigurations = builtins.attrNames homeConfigurations;
-      };
+      inherit nixosConfigurations;
+      inherit homeConfigurations;
     };
-
-    inherit nixosConfigurations;
-    inherit homeConfigurations;
-  };
 }
