@@ -32,7 +32,7 @@ with lib; {
                   description = "The fqdns that point to this host";
                 };
                 primary = mkOption {
-                  type = types.domainInfoType;
+                  type = domainInfoType;
                   description = "The primary fqdn";
                 };
               };
