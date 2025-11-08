@@ -98,7 +98,6 @@ in
         profiles."[DEV] my-internet@zen" = {
           id = 1;
           isDefault = false;
-          extensions.packages = extensions;
           settings = {
             # automatically enable extensions
             "extensions.autoDisableScopes" = 0;
@@ -108,6 +107,7 @@ in
         profiles."oq@zen" = {
           id = 0;
           isDefault = false;
+          extensions.packages = extensions;
           search = {
             engines = searchEngines;
             default = "ddg";
