@@ -18,6 +18,7 @@ in {
     ../../modules/ssh/service.nix
     ../../modules/dashboard
     ../../modules/acme
+    ../../modules/vaultwarden
     ../../modules/ssh
     ../../modules/todoist-backup
     ../../modules/obsidian-livesync
@@ -55,6 +56,14 @@ in {
   };
 
   modules = {
+    vaultwarden = {
+      enable = true;
+      environmentFile = ./vaultwarden/secrets/config.env;
+      fqdn = {
+        dn = "vw.${fqdns.primary.dn}";
+        acmeHost = fqdns.primary.dn;
+      };
+    };
     dynIp-updater = {
       duckdns = {
         enable = true;
