@@ -43,6 +43,8 @@ image: colors: font:
 
       /* properties for all widgets */
       enabled:                     true;
+      border:                      1px solid;
+      border-color:                @border;
       border-radius:               15px;
       cursor:                      "default";
       background-color:            @background;
