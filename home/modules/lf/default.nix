@@ -53,6 +53,8 @@ in {
 
     # https://home-manager-options.extranix.com/?query=lf&release=release-25.05
 
+    xdg.configFile."lf/icons".source = ./icons;
+
     programs.lf = {
       enable = true;
 
