@@ -59,9 +59,11 @@ in
           fi
         '';
         bashrcExtra = ''
-          eval "$(direnv hook bash)"
           shopt -s dotglob
+
           set -o vi
+
+          eval "$(direnv hook bash)"
         '';
       };
     };
