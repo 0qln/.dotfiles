@@ -93,6 +93,7 @@ image: colors: font:
       enabled:                     true;
       expand:                      false;
       str:                         "";
+      padding:                     0px 5px;
       background-color:            inherit;
       text-color:                  inherit;
   }
@@ -106,7 +107,7 @@ image: colors: font:
   }
 
   /*****----- Mode Switcher -----*****/
-  mode-switcher{
+  mode-switcher {
       enabled:                     true;
       spacing:                     20px;
       background-color:            transparent;

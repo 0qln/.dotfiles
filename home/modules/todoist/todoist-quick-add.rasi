@@ -1,0 +1,22 @@
+@import "~/.config/rofi/config.rasi"
+
+configuration {
+    modes: [run];
+    run-command: "todoist quick '{cmd}'";
+}
+
+entry {
+    placeholder: "Add a task";
+}
+
+listbox {
+    enabled: false;
+}
+
+window {
+    width: 600px;
+}
+
+mainbox {
+    children: [inputbar];
+}

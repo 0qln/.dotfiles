@@ -14,17 +14,21 @@ in {
   config = mkIf cfg.enable {
     modules = {
       #TODO: zen background rgba(45,53,59,0.7)
+
       cursor = {
         cursor = mkDefault "maomao"; #maomao
       };
+
       fonts = {
         cartograph-cf.enable = mkDefault true; # general monospace
         ibm-plex.enable = mkDefault true; # obsidian
       };
+
       terminal = {
         emulator = mkDefault "kitty";
         backgroundOpacity = mkDefault config.theme.win.opacity.background;
       };
+
       rofi = {
         enable = mkDefault true;
         themeFile = let
@@ -41,16 +45,25 @@ in {
         in
           mkDefault (pkgs.writeText "theme.rasi" rasi);
       };
+
+      todoist.quickAdd.rofi.configFile = let
+        rasi = import ./rofi/todoist-quick-add.nix {};
+      in
+        mkDefault (pkgs.writeText "config.rasi" rasi);
+
       ytm = {
         stylesheetFile = mkDefault ./ytm/stylesheet.css;
       };
+
       zathura = {
         zathurarcFile = mkDefault ./zathura/zathurarc;
       };
+
       nixvim = {
         transparency.enable = mkDefault true;
         colors.theme = "everforest";
       };
+
       starship = {
         presets = [
           "nerd-font-symbols"
@@ -61,9 +74,11 @@ in {
           };
         };
       };
+
       discord.vesktop = {
         theme = "system24-everforest";
       };
+
       wallust = {
         enable = true;
         wallpaper = pkgs.fetchurl {

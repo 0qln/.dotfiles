@@ -98,7 +98,10 @@ in
           todoist = {
             enable = mkDefault true;
             cliProgram.enable = mkDefault true;
-            quickAdd.enable = mkDefault true;
+            quickAdd = {
+              enable = mkDefault true;
+              impl = "rofi";
+            };
           };
           starship.enable = mkDefault true;
           zathura = {

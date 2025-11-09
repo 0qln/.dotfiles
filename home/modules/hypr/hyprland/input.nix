@@ -53,9 +53,29 @@ in
           [
             "${mainMod}, B, exec, ${terminal} -e bluetoothctl"
           ]
-          (mkIf config.modules.todoist.quickAdd.enable [
-            "${mainMod}, T, exec, [float; center; size 600 100] ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}"
-          ])
+          (mkIf config.modules.todoist.quickAdd.enable (let
+            exec = {
+              # TODO:
+              # impl where:
+              #
+              # neovim plugin with completion for stuff like
+              # @... (todoist labels | awk '{print $2}')
+              # #... (todoist projects | awk '{print $2}')
+              #
+              # then create a {terminal} with a scratch buffer:
+              # echo "daily" > /tmp/neovim_buffer.txt && $EDITOR /tmp/neovim_buffer.txt && cat /tmp/neovim_buffer.txt
+              #
+
+              # terminal
+              "terminal" = "[float; center; size 600 100] ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}";
+
+              # rofi
+              # can't use dmenu, because it outputs the selection, so we cannot get the whole task the user entered.
+              "rofi" = "rofi -show run -config ${config.modules.todoist.quickAdd.rofi.configFile}";
+            };
+          in [
+            "${mainMod}, T, exec, ${exec.${config.modules.todoist.quickAdd.impl}}"
+          ]))
           [
             #"CTRL, SPACE, exec, [float; center; size 600 100] ${pkgs.writeShellScript "todoist-quick-add-shortcut" ''
             #  #!${pkgs.bash}/bin/bash
