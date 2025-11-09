@@ -10,24 +10,29 @@ with import ./utils; let
     age-plugin-yubikey
   ];
 
-  mapFuncs = transform: lib.concatStringsSep "\n" (lib.mapAttrsToList transform funcs);
-  addToPath = derivation: "PATH_add '${builtins.dirOf (lib.getExe derivation)}'";
+  mapFuncs = transform: (lib.mapAttrsToList transform funcs);
+
   funcToDerivation = name: body:
     writeShellApplication {
       inherit name;
       runtimeInputs = packages;
+      checkPhase = ["disable=SC2154"];
       text = ''
-        ${mapFuncs funcToBash}
         ${body}
       '';
     };
-  funcToBash = name: body: ''
-    ${name}() {
-      ${body}
-    }
-  '';
+
+  var-ensure = key: val:
+  # bash
+  ''[ -z "''$${key}" ] && export ${key}="${val}"'';
 
   funcs = {
+    echo-test =
+      # bash
+      ''
+        echo 'test'
+      '';
+
     update-sops-keys =
       # bash
       ''
@@ -37,7 +42,7 @@ with import ./utils; let
     dots-prepare =
       # bash
       ''
-        ssh-ensure "$HOME/.ssh/id_ed25519"
+        ssh-ensure "$1"
         cd ~/.dotfiles
         nix flake update private
         git add .
@@ -49,7 +54,7 @@ with import ./utils; let
         action="$1"
         output="$2"
 
-        dots-prepare
+        dots-prepare "$git_key"
         nixos-rebuild "$action" --flake "$HOME/.dotfiles?submodules=1#$output" --impure --show-trace --sudo
       '';
 
@@ -61,7 +66,8 @@ with import ./utils; let
         action="$3"
         output="$4"
 
-        dots-prepare
+        ssh-ensure "$key"
+        dots-prepare "$git_key"
         nixos-rebuild --target-host "$host" "$action" --flake ~/.dotfiles?submodules=1#"$output" --impure --show-trace --sudo
       '';
 
@@ -69,10 +75,8 @@ with import ./utils; let
       # bash
       ''
         action="$1"
-        key="$HOME/.ssh/server/id_ed25519"
 
-        ssh-ensure "$key"
-        dots-remote "root@${lifbrasir}" "$key" "$action" "lifbrasir"
+        dots-remote "root@$lifbrasir" "$lifbrasir_key" "$action" "lifbrasir"
       '';
 
     ssh-ensure =
@@ -107,13 +111,13 @@ with import ./utils; let
 in
   mkShell {
     name = "dotfiles";
-    inherit packages;
+    packages = packages ++ (mapFuncs funcToDerivation);
 
     shellHook =
       # bash
       ''
-        export lifbrasir=${lifbrasir}
-
-        ${mapFuncs (name: body: (addToPath (funcToDerivation name body)))}
+        ${var-ensure "lifbrasir" lifbrasir}
+        ${var-ensure "lifbrasir_key" "$HOME/.ssh/server/id_ed25519"}
+        ${var-ensure "git_key" "$HOME/.ssh/id_ed25519"}
       '';
   }
