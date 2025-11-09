@@ -1,6 +1,6 @@
 with import <nixpkgs> {};
 with import ./utils; let
-  vars = (import-module ./vars {}).vars;
+  inherit (import-module ./vars {}) vars;
   lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
 
   packages = [
