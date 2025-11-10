@@ -80,7 +80,6 @@
         enableWorkSimple = true;
       };
       modules = {
-        ssh.enableWorkSimple = true;
         browser = {
           firefox = {
             tor.enable = true;

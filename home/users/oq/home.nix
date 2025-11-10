@@ -125,6 +125,11 @@ in
           #
         })
 
+        (mkIf cfg.enableWorkSimple {
+          ssh.enableWorkSimple = true;
+          git.enableWorkSimple = mkDefault true;
+        })
+
         (mkIf (cfg.uiEnv == "gui" && cfg.enableWorkSimple) {
           citrix.enable = mkDefault true;
           browser = {
@@ -133,7 +138,6 @@ in
               enableWorkSimple = mkDefault true;
             };
           };
-          git.enableWorkSimple = mkDefault true;
           msteams.enable = true;
           postman.enable = true;
         })
