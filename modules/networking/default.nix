@@ -19,6 +19,13 @@ in {
         description = "local redirects";
       };
     };
+    baseDNS = mkOption {
+      type = types.listOF types.str;
+      default = [
+        "1.1.1.1"
+        "2606:4700:4700::1111"
+      ];
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -52,8 +59,7 @@ in {
               # set upstream to dnscrypt
               server = ["127.0.0.1#${dnscrypt}" "::1#${dnscrypt}"];
             } {
-              # otherwise use cloudflare
-              server = ["1.1.1.1" "2606:4700:4700::1111"];
+              server = cfg.baseDNS;
             })
         ];
       };
