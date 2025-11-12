@@ -101,6 +101,7 @@
           prismlauncher.enable = true;
         };
         shotcut.enable = true;
+        tools.worksimple.enable = true;
       };
       private = {
         secrets.ssh = {

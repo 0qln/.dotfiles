@@ -16,31 +16,38 @@ in {
         description = "Set as default app for these";
       };
     };
+    worksimple.enable = mkEnableOption "worksimple stuff";
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      # files
-      fzf
-      fd
-      tree
-      unzip
-      ripgrep
-      srm
+    home.packages = mkMerge [
+      (with pkgs; [
+        # files
+        fzf
+        fd
+        tree
+        unzip
+        ripgrep
+        srm
 
-      # images/videos
-      ffmpeg
-      mpv
-      imagemagick
-      qimgv
-      vlc
+        # images/videos
+        ffmpeg
+        mpv
+        imagemagick
+        qimgv
+        vlc
 
-      # networking
-      iperf3
-      nethogs
+        # networking
+        iperf3
+        nethogs
 
-      # super important
-      fastfetch
+        # super important
+        fastfetch
+      ])
+      (mkIf cfg.worksimple.enable [
+        # remote desktop client
+        pkgs.remmina
+      ])
     ];
 
     xdg.mimeApps.defaultApplications = builtins.listToAttrs (
