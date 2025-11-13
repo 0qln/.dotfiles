@@ -1,4 +1,8 @@
 {...}: {
+  imports = [
+    ../../modules/networking
+  ];
+
   home-manager = {
     users.oq = _: {
       settings = {
