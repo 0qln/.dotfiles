@@ -26,6 +26,7 @@ in {
     ./modules/dap.nix
     ./modules/trouble.nix
     ./modules/wayland.nix
+    ./modules/wsl.nix
     ./modules/system-clipboard.nix
     ./modules/clanker.nix
 

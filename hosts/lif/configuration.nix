@@ -80,6 +80,8 @@
         enableWorkSimple = true;
       };
       modules = {
+        nixvim.wayland.enable = true;
+        hypr.enable = true;
         browser = {
           firefox = {
             tor.enable = true;

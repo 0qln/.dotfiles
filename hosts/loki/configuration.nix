@@ -29,6 +29,7 @@
       };
       modules = {
         fonts.enable = true;
+        nixvim.wsl.enable = true;
       };
       private = {
         secrets.ssh = {

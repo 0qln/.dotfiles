@@ -78,13 +78,11 @@ in
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
           terminal.emulator = mkDefault "kitty";
-          nixvim.wayland.enable = mkDefault true;
           browser.firefox = {
             firefox = {
               enable = mkDefault true;
             };
           };
-          hypr.enable = mkDefault true;
           discord.vesktop.enable = mkDefault true;
           discord.vesktop.theme = mkDefault "system24";
           libreoffice.enable = mkDefault true;

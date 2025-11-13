@@ -7,7 +7,7 @@ with lib; let
   cfg = config.modules.nixvim;
 in {
   options.modules.nixvim = {
-    wayland.enable = mkEnableOption "wayland clipboard integration";
+    wayland.enable = mkEnableOption "wayland integration";
   };
   config = mkIf cfg.wayland.enable {
     programs.nixvim = {
