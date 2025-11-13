@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: {
   programs.nixvim = {
@@ -14,11 +15,7 @@
           go = ["golangcilint"];
           dockerfile = ["hadolint"];
           lua = ["luacheck"];
-          nix = [
-            "deadnix"
-            "nix"
-            "statix"
-          ];
+          nix = ["deadnix" "nix" "statix"];
           python = ["pylint"];
           sh = ["shellcheck"];
           yaml = ["yamllint"];
@@ -112,6 +109,14 @@
               checkOnSave = true;
             };
           };
+
+          # Java
+          jdtls = {
+            enable = true;
+            # cmd = ["jdtls" "-configuration" "${config.home.homeDirectory}/.cache/jdtls"];
+            # filetypes = ["ant" "java"];
+          };
+
           ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS
           tailwindcss.enable = true; # TailwindCSS

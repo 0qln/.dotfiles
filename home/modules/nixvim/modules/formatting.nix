@@ -58,6 +58,7 @@ in {
                 timeout_ms = 2000;
                 stop_after_first = true;
               };
+              java = ["astyle"];
               latex = ["latexindent"];
               "_" = [
                 "squeeze_blanks"
