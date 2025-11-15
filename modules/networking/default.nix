@@ -20,7 +20,7 @@ in {
       };
     };
     baseDNS = mkOption {
-      type = types.listOF types.str;
+      type = types.listOf types.str;
       default = [
         "1.1.1.1"
         "2606:4700:4700::1111"
