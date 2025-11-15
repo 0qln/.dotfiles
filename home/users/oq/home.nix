@@ -83,6 +83,36 @@ in
               enable = mkDefault true;
             };
           };
+          hypr.land.input.submaps = {
+            "workspace" = {
+              key = "W";
+            };
+            "resize" = {
+              key = "R";
+              binds = [
+                {
+                  flags = "e";
+                  keys = ", right";
+                  dispatch = "resizeactive 10 0";
+                }
+                {
+                  flags = "e";
+                  keys = ", left";
+                  dispatch = "resizeactive -10 0";
+                }
+                {
+                  flags = "e";
+                  keys = ", up";
+                  dispatch = "resizeactive 0 -10";
+                }
+                {
+                  flags = "e";
+                  keys = ", down";
+                  dispatch = "resizeactive 0 10";
+                }
+              ];
+            };
+          };
           discord.vesktop.enable = mkDefault true;
           discord.vesktop.theme = mkDefault "system24";
           libreoffice.enable = mkDefault true;

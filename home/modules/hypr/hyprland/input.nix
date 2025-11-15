@@ -3,15 +3,42 @@
   lib,
   config,
   ...
-}: let
+}:
+with lib; let
   todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix {};
   mainMod = "SUPER";
   inherit (config.vars) terminal fileexplorer;
-  cfg = config.modules.hypr.land;
-in
-  with lib; {
-    config = mkIf cfg.enable {
-      wayland.windowManager.hyprland.settings = {
+  cfg = config.modules.hypr.land.input;
+in {
+  options.modules.hypr.land.input = {
+    submaps = mkOption {
+      type = types.attrsOf (types.submodule {
+        options = {
+          key = mkOption {type = types.str;};
+          binds = mkOption {
+            type = types.listOf (types.either types.str (types.submodule {
+              options = {
+                flags = mkOption {
+                  type = types.str;
+                  default = "";
+                };
+                keys = mkOption {type = types.str;};
+                dispatch = mkOption {type = types.str;};
+                reset = mkOption {
+                  type = types.bool;
+                  default = false;
+                };
+              };
+            }));
+          };
+        };
+      });
+    };
+  };
+
+  config = {
+    wayland.windowManager.hyprland = {
+      settings = {
         # For some reason hardware_cursors draws the cursor like 250px
         # to the left and some other issues...
         # fix source: https://github.com/hyprwm/Hyprland/issues/8852
@@ -182,5 +209,57 @@ in
           "${mainMod}, mouse:273, resizewindow"
         ];
       };
+
+      extraConfig = with strings;
+        concatLines (
+          [
+            ''
+              # some config
+            ''
+          ]
+          ++
+          # Submaps
+          (attrsets.mapAttrsToList
+            (
+              name: {
+                key,
+                binds,
+              }:
+                concatStrings [
+                  ''
+                    bind = ${mainMod}, ${key}, submap, ${name}
+                    submap = ${name}
+                  ''
+                  (
+                    concatMapStrings (
+                      bind:
+                        if (isString bind)
+                        then ''
+                          ${bind}
+                        ''
+                        else let
+                          escape = strings.escape ["\"" "\\"];
+                          dispatch = ''hyprctl dispatch "${escape bind.dispatch}"'';
+                          reset =
+                            if bind.reset
+                            then "hyprctl dispatch submap reset"
+                            else ":";
+                          action = ''exec, bash -c "${escape dispatch} && ${reset}"'';
+                        in ''
+                          bind${bind.flags} = ${bind.keys}, ${action}
+                        ''
+                    )
+                    binds
+                  )
+                  ''
+                    bind = , escape, submap, reset
+                    bind = , catchall, submap, reset
+                    submap = reset
+                  ''
+                ]
+            )
+            cfg.submaps)
+        );
     };
-  }
+  };
+}
