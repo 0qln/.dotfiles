@@ -13,6 +13,7 @@ in {
     ./profiles/kimai.nix
     ./profiles/odoo.nix
     ./profiles/odoo.kanagawa.nix
+    ./fixes/mutability.nix
   ];
 
   options.modules.vscode = {

@@ -9,6 +9,7 @@ with lib; {
   imports = [
     ./sops.nix
     ./cursors.nix
+    ./mutability.nix
   ];
 
   options.utils = mkOption {
