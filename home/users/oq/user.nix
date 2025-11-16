@@ -17,6 +17,7 @@
       "networkmanager"
       "wheel"
       "input" # required for dotool
+      "tty"
     ];
     hashedPasswordFile = config.sops.secrets."oq/hashedPassword".path;
   };
