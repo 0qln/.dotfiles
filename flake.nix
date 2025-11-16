@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
+    nixpkgs-stable.url = "nixpkgs/nixos-25.05";
+
     nixpkgs-citrix.url = "nixpkgs/12bd230118a1901a4a5d393f9f56b6ad7e571d01";
 
     nur = {
@@ -63,6 +65,7 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    nixpkgs-stable,
     nixpkgs-citrix,
     nur,
     home-manager,
@@ -91,6 +94,11 @@
           };
         };
 
+      pkgs-stable = system:
+        import nixpkgs-stable {
+          inherit system;
+        };
+
       hm = {
         users = utilz.mods.collectMods ./home/users;
         themes = utilz.mods.collectMods ./home/themes;
@@ -116,6 +124,7 @@
                   inherit utilz;
                   inherit inputs;
                   pkgs-citrix = pkgs-citrix system;
+                  pkgs-stable = pkgs-stable system;
                   flake = self;
                   host-name = utilz.sanitizeHostName host;
                 };
@@ -150,6 +159,7 @@
                         inherit inputs;
                         inherit (pkgs) nur;
                         pkgs-citrix = pkgs-citrix system;
+                        pkgs-system = pkgs-system system;
                         config = vars;
                       };
                       hm.vars = import ./home/users/${user}/vars.nix {

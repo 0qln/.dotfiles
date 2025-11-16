@@ -3,6 +3,7 @@
   inputs,
   nur,
   pkgs-citrix,
+  pkgs-stable,
   config,
   utilz,
   ...
@@ -13,6 +14,7 @@ in {
     inherit inputs;
     inherit nur;
     inherit pkgs-citrix;
+    inherit pkgs-stable;
     inherit backupExtension;
     inherit utilz;
   };

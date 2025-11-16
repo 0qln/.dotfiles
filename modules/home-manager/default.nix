@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgs-citrix,
+  pkgs-stable,
   config,
   inputs,
   utilz,
@@ -15,6 +16,7 @@
       inherit (pkgs) nur;
       inherit pkgs;
       inherit pkgs-citrix;
+      inherit pkgs-stable;
       inherit inputs;
       inherit config;
       inherit utilz;
