@@ -1,4 +1,5 @@
 {
+  pkgs,
   inputs,
   nur,
   pkgs-citrix,
@@ -17,4 +18,6 @@ in {
   };
 
   backupFileExtension = backupExtension;
+
+  backupCommand = pkgs.lib.getExe pkgs.trashy;
 }

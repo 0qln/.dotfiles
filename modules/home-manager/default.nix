@@ -13,6 +13,7 @@
   home-manager = let
     configuration = import ./config.nix {
       inherit (pkgs) nur;
+      inherit pkgs;
       inherit pkgs-citrix;
       inherit inputs;
       inherit config;

@@ -81,11 +81,6 @@ in
         }"
       );
 
-      #TODO: everytime we restart zen, the search.json.mozlz4 link is replaced by
-      # what it's pointing to. As a consequence, home-manager complains when it cannot
-      # write a link to that location.
-      # Find a workaround for ts or else this is unusable.
-
       programs.zen-browser = {
         enable = true;
 
@@ -114,7 +109,7 @@ in
           };
         };
 
-        # Notice: we can even extend imperatively created profiles :D
+        # we can even extend imperatively created profiles :D
         profiles."Default (Windows)" = {
           id = 2;
           isDefault = true;

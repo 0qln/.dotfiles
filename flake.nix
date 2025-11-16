@@ -145,6 +145,7 @@
                   utilz.mods.eachX hm.themes (
                     theme: env: let
                       hm.config = import ./modules/home-manager/config.nix {
+                        inherit pkgs;
                         inherit utilz;
                         inherit inputs;
                         inherit (pkgs) nur;
