@@ -135,6 +135,7 @@ in
           zathura = {
             setDefault = mkDefault ["application/pdf"];
             enable = mkDefault true;
+            systemClipboard.enable = mkDefault true;
           };
           tools = {
             qimgv.setDefault = mkDefault [

@@ -56,7 +56,14 @@ in {
       };
 
       zathura = {
-        zathurarcFile = mkDefault ./zathura/zathurarc;
+        zathurarc =
+          # zathurarc
+          ''
+            set recolor "true"
+            set default-bg rgba(45,53,59,0.7)
+            set recolor-lightcolor rgba(0,0,0,0)
+            set adjust-open "width"
+          '';
       };
 
       nixvim = {

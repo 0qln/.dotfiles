@@ -19,6 +19,7 @@ in {
       default = null;
       description = "A path to the zathurarc";
     };
+    systemClipboard.enable = mkEnableOption "yank to system clipboard";
     setDefault = mkOption {
       type = types.listOf types.str;
       default = [];
@@ -31,6 +32,13 @@ in {
     home.packages = with pkgs; [
       zathura
     ];
+
+    modules.zathura.zathurarc =
+      mkIf cfg.systemClipboard.enable
+      # zathurarc
+      ''
+        set selection-clipboard clipboard
+      '';
 
     home.file.".config/zathura/zathurarc" = {
       text = mkIf (cfg.zathurarc != null) cfg.zathurarc;
