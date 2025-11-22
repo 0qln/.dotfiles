@@ -25,6 +25,11 @@ in {
       type = types.path;
       description = "Database password file";
     };
+
+    serviceDataDir = mkOption {
+      type = types.str;
+      default = "/mnt/store-1/services/gitea/data";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -61,11 +66,20 @@ in {
           type = "postgres";
           passwordFile = config.sops.secrets."postgres/gitea_dbpass".path;
         };
+        lfs = {
+          enable = true;
+          contentDir = "${cfg.serviceDataDir}/lfs";
+        };
         settings = {
           server = {
             DOMAIN = cfg.fqdn.dn;
             ROOT_URL = "https://${cfg.fqdn.dn}/";
             HTTP_PORT = port;
+          };
+
+          "repository.upload" = {
+            FILE_MAX_SIZE = 1024;
+            LFS_MAX_FILE_SIZE = 1024;
           };
 
           # Don't allow anyone to create an account

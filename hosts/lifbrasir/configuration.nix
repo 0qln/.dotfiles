@@ -32,6 +32,7 @@ in {
     ../../modules/docker
     ../../modules/mysql
     ../../modules/obsidian-livesync
+    ../../modules/nginx
   ];
 
   sops = {
@@ -56,6 +57,7 @@ in {
   };
 
   modules = {
+    nginx.enable = true;
     vaultwarden = {
       enable = true;
       environmentFile = ./vaultwarden/secrets/config.env;

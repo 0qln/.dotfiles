@@ -37,6 +37,7 @@ in
             mergetool.prompt = false;
             mergetool.keepBackup = false;
           };
+          lfs.enable = true;
         }
         (mkIf cfg.enableWorkSimple {
           includes = [

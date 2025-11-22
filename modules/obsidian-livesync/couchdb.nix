@@ -90,10 +90,6 @@ in {
       databaseDir = serviceDataDir;
     };
 
-    services.nginx = {
-      clientMaxBodySize = "200m";
-    };
-
     systemd.services.couchdb-init = {
       after = ["couchdb.service"];
       requires = ["couchdb.service"];
