@@ -65,6 +65,9 @@ in {
                 "trim_whitespace"
                 "trim_newlines"
               ];
+              xml = [
+                "xmlstarlet"
+              ];
             };
             formatters = {
               rustfmt = {
