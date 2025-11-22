@@ -10,5 +10,6 @@
     ./packages.nix
     ./vars.nix
     ./smart-card-daemon.nix
+    ./app-image.nix
   ];
 }
