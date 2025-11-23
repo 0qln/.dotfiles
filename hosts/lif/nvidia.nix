@@ -36,6 +36,7 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
+    # todo: pin this to "github:NixOS/nixpkgs/2fb006b87f04c4d3bdf08cfdbc7fab9c13d94a15"
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 }
