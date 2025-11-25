@@ -14,6 +14,8 @@ in
       programs.chromium = {
         enable = true;
         extensions = mkMerge [
+          [(import ./extensions/bitwarden.nix)]
+
           (mkIf cfg.enableWorkSimple [
             (import ./extensions/passbolt.nix)
           ])

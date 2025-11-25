@@ -1,3 +1,1 @@
-{
-  id = "didegimhafipceonhjepacocaffmoppf";
-}
+{id = "didegimhafipceonhjepacocaffmoppf";}
