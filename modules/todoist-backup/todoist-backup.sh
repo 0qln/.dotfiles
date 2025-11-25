@@ -54,16 +54,17 @@ unzip "$file_abs" -d "$data_dir"
 # TODO: this isn't pure yet. The repo has to be set up manually. Automate this!
 echo "Backing up changes..."
 (
-  cd "$data_dir" &&
+    cd "$data_dir"
+
     # Git config
-    git config user.email "$GIT_EMAIL" &&
-    git config user.name "$GIT_NAME" &&
-    git config credential.helper "store --file=$git_config" &&
-    echo "https://$GITHUB_NAME:$GITHUB_TOKEN@github.com" >"$git_config" &&
+    git config user.email "$GIT_EMAIL"
+    git config user.name "$GIT_NAME"
+    git config credential.helper "store --file=$git_config"
+    echo "https://$GITHUB_NAME:$GITHUB_TOKEN@github.com" >"$git_config"
 
     # Git backup
-    git add . &&
-    git commit --allow-empty -m "Backup $version" &&
+    git add .
+    git commit --allow-empty -m "Backup $version"
     git push -u origin master
 )
 
