@@ -79,7 +79,10 @@ in {
       };
       cloudflare = {
         enable = true;
-        configFile = ./cloudflare/secrets/dynIp-updater/config.env;
+        records = {
+          wildcard = ./cloudflare/secrets/dynIp-updater/wildcard.env;
+          root = ./cloudflare/secrets/dynIp-updater/root.env;
+        };
       };
     };
     gitea = {
