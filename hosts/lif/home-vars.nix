@@ -10,12 +10,12 @@
         };
 
         left = {
-          name = "DP-2";
+          name = "DP-3";
           workspaces = [6 7];
         };
 
         right = {
-          name = "DP-3";
+          name = "DP-2";
           workspaces = [8 9];
         };
       };
