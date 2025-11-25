@@ -8,9 +8,9 @@ set -euo pipefail
 auth_header="Authorization: Bearer $TODOIST_TOKEN"
 
 mkdir -p "$DIR"
-if [$DIR -eq "/" || $DIR -eq "" ]; then
+if [ "$DIR" = "/" ] || [ "$DIR" = "" ]; then
   echo "You shouldn't use root dir..."
-  exit -1
+  exit 1
 fi
 
 tmp_dir="$DIR/tmp"
@@ -31,8 +31,8 @@ echo "Searching backups..."
 backups=$(curl -X GET -H "$auth_header" "https://api.todoist.com/api/v1/backups")
 
 # Most recent url is the first
-backup=$(echo $backups | jq -r '.[0].url')
-version=$(echo $backups | jq -r '.[0].version')
+backup=$(echo "$backups" | jq -r '.[0].url')
+version=$(echo "$backups" | jq -r '.[0].version')
 echo "Backup $version URL: $backup"
 
 file="${backup#*file=}"
@@ -51,7 +51,7 @@ rm -fr "$data_dir"
 unzip "$file_abs" -d "$data_dir"
 
 # Versioning
-# TODO: this is'nt pure yet. The repo has to be set up manually. Automate this!
+# TODO: this isn't pure yet. The repo has to be set up manually. Automate this!
 echo "Backing up changes..."
 (
   cd "$data_dir" &&
@@ -69,5 +69,5 @@ echo "Backing up changes..."
 
 # Clean up
 echo "Cleaning up..."
-rm -fr "$download_dir/*"
-rm -fr "$tmp_dir/*"
+rm -fr "${download_dir:?}/*"
+rm -fr "${tmp_dir:?}/*"
