@@ -19,6 +19,7 @@ in {
       default = {};
       description = "starship settings";
     };
+    nixShellImpureHint.enable = mkEnableOption "import suffix when in nix-shells";
   };
 
   config = mkIf cfg.enable {
@@ -34,6 +35,11 @@ in {
               description = ''Indicator that shows up if currently in a tmux session'';
               command = ''echo '■' '';
               when = ''[[ -n $TMUX ]] && exit 0 '';
+            };
+          })
+          (mkIf (!cfg.nixShellImpureHint.enable) {
+            nix_shell = {
+              impure_msg = '''';
             };
           })
         ]
