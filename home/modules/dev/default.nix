@@ -29,13 +29,6 @@ in {
           !include ${config.sops.secrets."nix/accessTokens".path}
         '';
       })
-      (mkIf cfg.devenv.enable {
-        extraOptions = ''
-          # set up devenv-cachix
-          extra-substituters = https://nixpkgs-python.cachix.org https://devenv.cachix.org
-          extra-trusted-public-keys = devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw= nixpkgs-python.cachix.org-1:hxjI7pFxTyuTHn2NkvWCrAUcNZLNS3ZAvfYNuYifcEU=
-        '';
-      })
     ];
 
     sops.secrets."nix/accessTokens" = mkIf (cfg.accessTokens.configFile != null) {
