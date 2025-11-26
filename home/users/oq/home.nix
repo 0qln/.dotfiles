@@ -61,7 +61,11 @@ in
           tmux.enable = mkDefault true;
           secrets.ssh.enable = mkDefault true;
           btop.enable = mkDefault true;
-          direnv.enable = mkDefault true;
+          dev = {
+            direnv.enable = mkDefault true;
+            devenv.enable = mkDefault true;
+            accessTokens.configFile = mkDefault ./secrets/nix/accessTokens.conf.enc;
+          };
           gh.enable = mkDefault true;
           lf.enable = mkDefault true;
           proton.vpn.enable = mkDefault true;

@@ -48,7 +48,7 @@ in
           lf.enable = mkDefault true;
           bash.enable = mkDefault true;
           btop.enable = mkDefault true;
-          direnv.enable = mkDefault true;
+          dev.direnv.enable = mkDefault true;
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;
           tools.enable = mkDefault true;
