@@ -172,6 +172,20 @@ in {
         settings = rec {
           default_phone_region = "DE";
           trusted_domains = [cfg.primaryFqdn] ++ cfg.localFqdns;
+          enable_previews = true;
+          enabledPreviewProviders = [
+            "OC\\Preview\\PNG"
+            "OC\\Preview\\JPEG"
+            "OC\\Preview\\GIF"
+            "OC\\Preview\\BMP"
+            "OC\\Preview\\XBitmap"
+            "OC\\Preview\\MP3"
+            "OC\\Preview\\TXT"
+            "OC\\Preview\\MarkDown"
+            "OC\\Preview\\OpenDocument"
+            "OC\\Preview\\Krita"
+            "OC\\Preview\\HEIC"
+          ];
           # trusted_proxies =
           #   [
           #     "127.0.0.1"
