@@ -6,12 +6,15 @@
 }:
 with lib; let
   cfg = config.modules.lf;
-  previewer = import ./previewer.nix {inherit pkgs;};
   cleaner = import ./cleaner.nix {inherit pkgs;};
   lf-ueberzug = import ./lf-ueberzug.nix {inherit pkgs;};
 in {
   options.modules.lf = {
     enable = mkEnableOption "lf fileexplorer";
+    previewer.backend = mkOption {
+      type = types.enum ["chafa" "ueberzug"];
+      default = "chafa";
+    };
   };
 
   imports = [
@@ -20,40 +23,42 @@ in {
   ];
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      # TODO:
-      # `Gtk-Message: 20:24:39.360: Failed to load module "colorreload-gtk-module"`
-      # even though gtk 3 is installed and in the path
-      dragon-drop
+    home.packages = with pkgs; (mkMerge [
+      [
+        dragon-drop
 
-      unzip
-      mescc-tools-extra # untar
-      gnutar
-      unrar-wrapper
-      p7zip
+        unzip
+        mescc-tools-extra # untar
+        gnutar
+        unrar-wrapper
+        p7zip
 
-      ueberzugpp
+        fzf
 
-      fzf
+        file
 
-      file
+        xdg-utils
 
-      xdg-utils
+        poppler-utils # pdftotext
 
-      poppler-utils # pdftotext
+        highlight
 
-      highlight
-
-      chafa
-
-      lf-ueberzug
-
-      trashy
-    ];
+        trashy
+      ]
+    ]);
 
     # https://home-manager-options.extranix.com/?query=lf&release=release-25.05
 
     xdg.configFile."lf/icons".source = ./icons;
+
+    programs.bash.initExtra = let
+      wrapper = pkgs.writeShellApplication {
+        name = "lf-wrapper";
+        text = builtins.readFile ./lf-ueberzug.sh;
+      };
+    in ''
+      alias lf='${getExe wrapper}'
+    '';
 
     programs.lf = {
       enable = true;
@@ -66,9 +71,20 @@ in {
         truncatechar = "⋯";
       };
 
-      extraConfig = ''
-        set previewer ${previewer}/bin/previewer
-        set cleaner ${cleaner}/bin/cleaner
+      extraConfig = let
+        previewer = pkgs.writeShellApplication {
+          name = "lf-previewer";
+          runtimeInputs = with pkgs; [
+            (mkIf (cfg.previewer.backend == "ueberzug") [ueberzugpp])
+            (mkIf (cfg.previewer.backend == "chafa") [chafa])
+          ];
+          text = ''
+            chafa --fit-width "$width" "$path"
+          '';
+        };
+      in ''
+        set previewer ${getExe previewer}
+        set cleaner ${getExe cleaner}
       '';
 
       commands = {

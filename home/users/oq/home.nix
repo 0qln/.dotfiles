@@ -77,6 +77,7 @@ in
 
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
+          lf.previewer.backend = "ueberzug";
           terminal.emulator = mkDefault "kitty";
           browser.firefox = {
             firefox = {

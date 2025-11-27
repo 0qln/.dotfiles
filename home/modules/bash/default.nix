@@ -33,7 +33,6 @@ in
           }
           alias la='ll -a'
           alias lg='lazygit'
-          alias lf='lf-ueberzug'
           alias nivm='nvim'
           alias clearfetch='clear && ${vars.sysfetcher} && read _'
 
