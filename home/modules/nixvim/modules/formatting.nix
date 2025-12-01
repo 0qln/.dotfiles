@@ -50,6 +50,7 @@ in {
               ];
               rust = ["rustfmt"];
               cpp = ["clang_format"];
+              c = ["clang_format"];
               nix = {
                 __unkeyed-1 = "alejandra";
               };
