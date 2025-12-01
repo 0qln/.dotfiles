@@ -9,4 +9,13 @@
       "users"
     ];
   };
+
+  fileSystems."/mnt/store-2" = {
+    device = "/dev/disk/by-uuid/edac87da-fcbb-42a6-924e-ecfed9a6324a";
+    fsType = "ext4";
+    options = [
+      "nofail"
+      "users"
+    ];
+  };
 }
