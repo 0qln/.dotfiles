@@ -68,8 +68,8 @@ in {
         };
         lfs = {
           enable = true;
-          contentDir = "${cfg.serviceDataDir}/lfs";
         };
+        stateDir = "${cfg.serviceDataDir}";
         settings = {
           server = {
             DOMAIN = cfg.fqdn.dn;
