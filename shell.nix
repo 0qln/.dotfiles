@@ -42,7 +42,6 @@ with import ./utils; let
     dots-prepare =
       # bash
       ''
-        ssh-ensure "$1"
         cd ~/.dotfiles
         nix flake update private
         git add .
@@ -54,7 +53,7 @@ with import ./utils; let
         action="$1"
         output="$2"
 
-        dots-prepare "$git_key"
+        dots-prepare
         nixos-rebuild "$action" --flake "$HOME/.dotfiles?submodules=1#$output" --impure --show-trace --sudo
       '';
 
@@ -62,12 +61,10 @@ with import ./utils; let
       # bash
       ''
         host="$1"
-        key="$2"
-        action="$3"
-        output="$4"
+        action="$2"
+        output="$3"
 
-        ssh-ensure "$key"
-        dots-prepare "$git_key"
+        dots-prepare
         nixos-rebuild --target-host "$host" "$action" --flake ~/.dotfiles?submodules=1#"$output" --impure --show-trace --sudo
       '';
 
@@ -76,36 +73,7 @@ with import ./utils; let
       ''
         action="$1"
 
-        dots-remote "root@$lifbrasir" "$lifbrasir_key" "$action" "lifbrasir"
-      '';
-
-    ssh-ensure =
-      # bash
-      ''
-        set +e
-
-        key="$1"
-
-        # list ssh keys
-        ssh-add -l > /dev/null 2>&1
-        case $? in
-          0)
-            # echo agent exist and has keys
-            if ! ssh-add -l | grep "$(ssh-keygen -lf "$key")" > /dev/null; then
-              # agent does not have the identity "$key"
-              ssh-add "$key" > /dev/null
-            fi
-            ;;
-          1)
-            # agent exists but does not have any keys
-            ssh-add "$key" > /dev/null
-            ;;
-          2)
-            # no agent exists
-            eval "$(ssh-agent -s)"
-            ssh-add "$key" > /dev/null
-            ;;
-        esac
+        dots-remote "root@$lifbrasir" "$action" "lifbrasir"
       '';
   };
 in
@@ -117,7 +85,5 @@ in
       # bash
       ''
         ${var-ensure "lifbrasir" lifbrasir}
-        ${var-ensure "lifbrasir_key" "$HOME/.ssh/server/id_ed25519"}
-        ${var-ensure "git_key" "$HOME/.ssh/id_ed25519"}
       '';
   }

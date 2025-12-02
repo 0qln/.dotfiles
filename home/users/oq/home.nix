@@ -51,6 +51,9 @@ in
 
       private = {
         secrets.gh.hostsYml = mkDefault true;
+        secrets.ssh = {
+          zettelkasten = true;
+        };
       };
 
       modules = mkMerge [
@@ -69,7 +72,6 @@ in
           gh.enable = mkDefault true;
           lf.enable = mkDefault true;
           proton.vpn.enable = mkDefault true;
-          repos.enable = mkDefault true;
           xdg-utils.enable = mkDefault true;
           yubi.enable = mkDefault true;
           tools.enable = mkDefault true;
@@ -77,6 +79,7 @@ in
           ssh.enable = mkDefault true;
           starship.enable = mkDefault true;
           bluetooth.client = mkDefault "bluetui";
+          keychain.enable = mkDefault true;
         }
 
         # gui-only modules

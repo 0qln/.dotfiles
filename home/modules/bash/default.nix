@@ -19,6 +19,10 @@ in
         enableBashIntegration = true;
       };
 
+      programs.keychain = {
+        enableBashIntegration = true;
+      };
+
       programs.bash = {
         enable = true;
         # Setting session variables normally is broken when using home-manager ;(
@@ -48,15 +52,6 @@ in
                 ) (lib.lists.range 2 5)
               )
           }
-
-          setup-ssh-agent() {
-            eval "$(ssh-agent -s)"
-            trap 'ssh-agent -k' EXIT
-          }
-
-          if [ -z "$SSH_AGENT_PID" ]; then
-            setup-ssh-agent > /dev/null
-          fi
         '';
         bashrcExtra = ''
           shopt -s dotglob
