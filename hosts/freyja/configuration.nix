@@ -15,7 +15,8 @@
     ../../home/users/oq
     ../../home/users/root
 
-    # ../../modules/avahi
+    ../../modules/battery
+    ../../modules/avahi
     ../../modules/home-manager
     ../../modules/hypr
     ../../modules/sops
@@ -32,7 +33,8 @@
   ];
 
   modules = {
-    # avahi.enable = true;
+    battery.enable = true;
+    avahi.enable = true;
     hypr.enable = true;
     ydotool.enable = true;
   };
