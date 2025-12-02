@@ -51,9 +51,6 @@ in
 
       private = {
         secrets.gh.hostsYml = mkDefault true;
-        secrets.ssh = {
-          zettelkasten = true;
-        };
       };
 
       modules = mkMerge [
