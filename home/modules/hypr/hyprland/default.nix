@@ -175,7 +175,7 @@ in
           "tag +music, title:(?i).*youtube[-_ ]?music.*"
           "size 918 536, tag:music"
           "pseudo, tag:music"
-          "monitor ${monitors.devices.left.name}, tag:music"
+          # "monitor ${monitors.devices.left.name}, tag:music"
 
           # chromium popups
           "tag +chromium_popup, title: about:blank - Chromium"
@@ -198,7 +198,7 @@ in
           # zoom
           "tag +zoom, class:zoom"
           "float, tag:zoom"
-          "monitor ${monitors.devices.left.name}, tag:zoom"
+          # "monitor ${monitors.devices.left.name}, tag:zoom"
 
           # no animations
           "tag +no-anim, class:ueberzug.*"

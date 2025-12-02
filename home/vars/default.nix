@@ -241,7 +241,7 @@ in
                 };
               };
 
-            "-" = _: {
+            "-" = d: with d; {
               ${center.name} = {
                 x = mkDefault 0;
                 y = mkDefault 0;
