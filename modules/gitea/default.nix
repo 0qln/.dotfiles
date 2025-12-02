@@ -77,6 +77,12 @@ in {
             HTTP_PORT = port;
           };
 
+          repository = {
+            ENABLE_PUSH_CREATE_USER = true;
+            DISABLE_STARS = true;
+            ALLOW_FORK_INTO_SAME_OWNER = true;
+          };
+
           "repository.upload" = {
             FILE_MAX_SIZE = 1024;
             LFS_MAX_FILE_SIZE = 1024;
