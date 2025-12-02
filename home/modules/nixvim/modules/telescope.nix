@@ -23,6 +23,7 @@
           file_ignore_patterns = [
             "^.git/"
             "flake.lock"
+            "^result$"
           ];
           set_env.COLORTERM = "truecolor";
         };
