@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+action="$1"
+lifbrasir="${lifbrasir:-"lifbrasir"}"
+
+dots-remote "root@$lifbrasir" "$action" "lifbrasir"

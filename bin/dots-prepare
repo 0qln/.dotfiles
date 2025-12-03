@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cd ~/.dotfiles || exit 69
+nix flake update private
+git add .

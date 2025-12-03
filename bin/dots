@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+action="$1"
+output="$2"
+
+dots-prepare
+nixos-rebuild "$action" --flake "$HOME/.dotfiles?submodules=1#$output" --impure --show-trace --sudo

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+host="$1"
+action="$2"
+output="$3"
+
+dots-prepare
+nixos-rebuild --target-host "$host" "$action" --flake ~/.dotfiles?submodules=1#"$output" --impure --show-trace --sudo

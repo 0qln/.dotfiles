@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+pattern="${1:-'.*secrets.*'}"
+
+fd -Ht f . | grep "$pattern" | xargs sops updatekeys -y
