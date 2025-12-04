@@ -96,6 +96,12 @@ in {
           backend = "fastresize";
           color_space = "lch";
           palette = "dark";
+          templates = {
+            waybar = {
+              template = "waybar.css";
+              target = "~/.config/waybar/colors.css";
+            };
+          };
         };
       };
     };
