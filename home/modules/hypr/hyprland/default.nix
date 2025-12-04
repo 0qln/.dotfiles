@@ -166,48 +166,58 @@ in
         };
 
         # ============== WINDOW RULES ==============
-        windowrule = [
-          "float, title:todoist-quick-add"
+        windowrule = let
+          mapping = {
+            "-" = [];
+            "|-|" = [
+              "monitor ${monitors.devices.left.name}, tag:music"
+              "monitor ${monitors.devices.left.name}, tag:zoom"
+            ];
+          };
+        in
+          mkMerge [
+            mapping.${monitors.arrangement.byPictogram}
+            [
+              "float, title:todoist-quick-add"
 
-          "float, title:Open Files"
-          "center, title:Open Files"
+              "float, title:Open Files"
+              "center, title:Open Files"
 
-          "tag +music, title:(?i).*youtube[-_ ]?music.*"
-          "size 918 536, tag:music"
-          "pseudo, tag:music"
-          # "monitor ${monitors.devices.left.name}, tag:music"
+              "tag +music, title:(?i).*youtube[-_ ]?music.*"
+              "size 918 536, tag:music"
+              "pseudo, tag:music"
 
-          # chromium popups
-          "tag +chromium_popup, title: about:blank - Chromium"
-          "float, tag:chromium_popup"
-          "center, tag:chromium_popup"
-          "size 900 900, tag:chromium_popup"
+              # chromium popups
+              "tag +chromium_popup, title: about:blank - Chromium"
+              "float, tag:chromium_popup"
+              "center, tag:chromium_popup"
+              "size 900 900, tag:chromium_popup"
 
-          # image windows
-          "tag +qimgv, class:qimgv"
-          "float, tag:qimgv"
-          "center, tag:qimgv"
-          "size 900 900, tag:qimgv"
+              # image windows
+              "tag +qimgv, class:qimgv"
+              "float, tag:qimgv"
+              "center, tag:qimgv"
+              "size 900 900, tag:qimgv"
 
-          # dialogs
-          "tag +dialog, class:code, title:Open File"
-          "float, tag:dialog"
-          "center, tag:dialog"
-          "size 900 900, tag:dialog"
+              # dialogs
+              "tag +dialog, class:code, title:Open File"
+              "float, tag:dialog"
+              "center, tag:dialog"
+              "size 900 900, tag:dialog"
 
-          # zoom
-          "tag +zoom, class:zoom"
-          "float, tag:zoom"
-          # "monitor ${monitors.devices.left.name}, tag:zoom"
+              # zoom
+              "tag +zoom, class:zoom"
+              "float, tag:zoom"
 
-          # no animations
-          "tag +no-anim, class:ueberzug.*"
-          "noanim, tag:no-anim"
+              # no animations
+              "tag +no-anim, class:ueberzug.*"
+              "noanim, tag:no-anim"
 
-          # move ueberzug windows off the screen so they don't
-          # flicker in the center until ueberzug moves them.
-          "move -10000 -10000, initialClass:ueberzug.*"
-        ];
+              # move ueberzug windows off the screen so they don't
+              # flicker in the center until ueberzug moves them.
+              "move -10000 -10000, initialClass:ueberzug.*"
+            ]
+          ];
         # windowrule = [
         #   "float,class:^(kitty)$,title:^(kitty)$"
         #   "suppressevent maximize, class:.*"
