@@ -73,6 +73,9 @@
             zen = {
               enable = true;
               setDefault = true;
+              profiles = [
+                "oq@zen"
+              ];
             };
           };
         };
