@@ -15,7 +15,6 @@
     ./mount.nix
     ./networking.nix
     ./nvidia.nix
-    ./packages.nix
 
     ../../home/users/oq
     ../../home/users/root
