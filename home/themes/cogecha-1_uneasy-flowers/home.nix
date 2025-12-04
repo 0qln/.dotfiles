@@ -13,29 +13,39 @@ with lib; let
 in {
   config = mkIf cfg.enable {
     # stuff to try and get darkmode <
-    gtk.colorScheme = "dark";
+    gtk = {
+      enable = true;
+      colorScheme = "dark";
+      theme = {
+        package = pkgs.gnome-themes-extra;
+        name = "Adwaita-dark";
+      };
+    };
+
     home.packages = with pkgs; [
       dconf
     ];
+
+    qt = {
+      enable = true;
+      style = {
+        package = pkgs.adwaita-qt;
+        name = "adwaita-dark";
+      };
+    };
+
+    xdg.portal = {
+      enable = true;
+    };
 
     dconf = {
       enable = true;
       settings = {
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
+          gtk-theme = "Adwaita-dark";
         };
       };
-    };
-
-    wayland.windowManager.hyprland.settings = {
-      exec = [
-        "gsettings set org.gnome.desktop.interface gtk-theme \"YOUR_DARK_GTK3_THEME\"" # for GTK3 apps
-        "gsettings set org.gnome.desktop.interface color-scheme \"prefer-dark\"" # for GTK4 apps
-      ];
-
-      env = [
-        "QT_QPA_PLATFORMTHEME,qt6ct" # for Qt apps
-      ];
     };
     # />
 
