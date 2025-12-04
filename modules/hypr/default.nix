@@ -21,12 +21,6 @@ in {
     services.displayManager.sddm.wayland.enable = true;
     services.displayManager.sddm.enable = true;
 
-    # # Configure keymap in X11
-    # services.xserver.xkb = {
-    #   layout = "us";
-    #   variant = "";
-    # };
-
     environment.systemPackages = with pkgs; [
       kitty # required for the default Hyprland config
       playerctl
