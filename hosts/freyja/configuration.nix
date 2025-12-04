@@ -10,7 +10,7 @@
 
     # ./bluetooth.nix
     ./bootloader.nix
-    ./keyboard.nix
+    ./keys.nix
     ./bluetooth.nix
 
     ../../home/users/oq
