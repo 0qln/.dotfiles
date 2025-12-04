@@ -12,6 +12,33 @@ with lib; let
   inherit (config.vars) monitors;
 in {
   config = mkIf cfg.enable {
+    # stuff to try and get darkmode <
+    gtk.colorScheme = "dark";
+    home.packages = with pkgs; [
+      dconf
+    ];
+
+    dconf = {
+      enable = true;
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+        };
+      };
+    };
+
+    wayland.windowManager.hyprland.settings = {
+      exec = [
+        "gsettings set org.gnome.desktop.interface gtk-theme \"YOUR_DARK_GTK3_THEME\"" # for GTK3 apps
+        "gsettings set org.gnome.desktop.interface color-scheme \"prefer-dark\"" # for GTK4 apps
+      ];
+
+      env = [
+        "QT_QPA_PLATFORMTHEME,qt6ct" # for Qt apps
+      ];
+    };
+    # />
+
     modules = {
       #TODO: zen background rgba(45,53,59,0.7)
 
