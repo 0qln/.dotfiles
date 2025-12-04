@@ -87,6 +87,10 @@
             zen = {
               enable = true;
               setDefault = true;
+              profiles = [
+                "Default (Windows)"
+                "[DEV] my-internet@zen"
+              ];
             };
           };
         };
