@@ -22,10 +22,16 @@ in
         };
       };
       wayland.windowManager.hyprland.settings = {
-        workspace = [
-          "${steam_id}, monitor:${monitors.devices.right.name}"
-          "${steam_id}, gapsout:1500 ${gaps_out} ${gaps_out} ${gaps_out}"
-        ];
+        workspace = let
+          mapping = {
+            "-" = ["${steam_id}, monitor:${monitors.devices.center.name}"];
+            "|-|" = ["${steam_id}, monitor:${monitors.devices.right.name}"];
+          };
+        in
+          mkMerge [
+            mapping.${monitors.arrangement.byPictogram}
+            ["${steam_id}, gapsout:1500 ${gaps_out} ${gaps_out} ${gaps_out}"]
+          ];
         windowrule = [
           "tag +steam_bongocat, class:^(steam_app_${steam_id})$, title:^(BongoCat)$"
           "workspace ${steam_id}, tag:steam_bongocat"

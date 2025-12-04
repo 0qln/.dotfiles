@@ -4,4 +4,5 @@ with nur.repos; [
   rycee.firefox-addons.privacy-badger
   rycee.firefox-addons.ublock-origin
   rycee.firefox-addons.bitwarden
+  rycee.firefox-addons.darkreader
 ]

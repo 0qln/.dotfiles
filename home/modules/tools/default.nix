@@ -43,6 +43,9 @@ in {
 
         # super important
         fastfetch
+
+        # gsettings
+        glib
       ])
       (mkIf cfg.worksimple.enable [
         # remote desktop client

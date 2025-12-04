@@ -13,6 +13,7 @@ in {
 
     ../../home/users/root/default.nix
 
+    ../../modules/battery
     ../../modules/sops
     ../../modules/home-manager
     ../../modules/ssh/service.nix
@@ -57,6 +58,7 @@ in {
   };
 
   modules = {
+    battery.enable = true;
     nginx.enable = true;
     vaultwarden = {
       enable = true;

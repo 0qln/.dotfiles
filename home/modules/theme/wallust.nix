@@ -22,7 +22,8 @@ in {
     };
     settings = mkOption {
       type = types.attrs;
-      default = {
+      default = {};
+      example = {
         # wallust v3.4
         #
         # You can copy this file to ~/.config/wallust/wallust.toml (keep in mind is a sample config)

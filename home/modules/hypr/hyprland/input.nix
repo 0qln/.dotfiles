@@ -54,7 +54,8 @@ in {
           accel_profile = "flat";
           force_no_accel = true;
           touchpad = {
-            natural_scroll = false;
+            natural_scroll = true;
+            scroll_factor = 1.0;
           };
         };
 

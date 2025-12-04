@@ -1,4 +1,4 @@
-{
+args @ {
   inputs,
   lib,
   pkgs,
@@ -6,8 +6,6 @@
   backupExtension,
   ...
 }: let
-  searchEngines = import ./search-engines pkgs;
-  extensions = import ./extensions/_common.nix pkgs.nur;
   cfg = config.modules.browser.firefox.zen;
 in
   with lib; {
@@ -18,6 +16,11 @@ in
     options.modules.browser.firefox.zen = {
       enable = mkEnableOption "zen";
       setDefault = mkEnableOption "set default browser";
+      profiles = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "a list of strings of profiles that are defined in ./profiles";
+      };
     };
 
     config = mkIf cfg.enable {
@@ -86,39 +89,11 @@ in
 
         # any other options under `programs.firefox` are also supported here.
 
-        # nah fuck this, that shit contains nothing...:
-        # ~~see `man home-configuration.nix`, search: profiles.\<name\>.settings~~
-
-        # https://mynixos.com/home-manager/option/programs.firefox.profiles.%3Cname%3E.extensions.packages
-        profiles."[DEV] my-internet@zen" = {
-          id = 1;
-          isDefault = false;
-          settings = {
-            # automatically enable extensions
-            "extensions.autoDisableScopes" = 0;
-          };
-        };
-
-        profiles."oq@zen" = {
-          id = 0;
-          isDefault = false;
-          extensions.packages = extensions;
-          search = {
-            engines = searchEngines;
-            default = "ddg";
-          };
-        };
-
-        # we can even extend imperatively created profiles :D
-        profiles."Default (Windows)" = {
-          id = 2;
-          isDefault = true;
-          path = "89h16xs5.Default (alpha)";
-          search = {
-            engines = searchEngines;
-            default = "ddg";
-          };
-        };
+        profiles = let
+          mkProfile = p: (nameValuePair p (import ./profiles/${p}.nix args));
+          profiles = map mkProfile cfg.profiles;
+        in
+          builtins.listToAttrs profiles;
       };
     };
   }
