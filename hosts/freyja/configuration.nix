@@ -9,8 +9,9 @@
     ../_common/configuration.nix
 
     # ./bluetooth.nix
-    ./configuration-init.nix
-    # ./packages.nix
+    ./bootloader.nix
+    ./keyboard.nix
+    ./bluetooth.nix
 
     ../../home/users/oq
     ../../home/users/root
@@ -21,16 +22,11 @@
     ../../modules/hypr
     ../../modules/sops
     ../../modules/ydotool
-
-    # todo: fix wireguard vpn
-    # (import ../../modules/wireguard/template.nix {
-    #   ip = "10.100.0.2/32";
-    #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
-    #   serverAddress = config.vars.fqdns.primary.dn;
-    #   serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
-    #   vpnName = "0qln";
-    # })
   ];
+
+  # temp? because of darkmode stuff
+  # https://home-manager-options.extranix.com/?query=xdg.portal.enable&release=release-25.11
+  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 
   modules = {
     battery.enable = true;
@@ -103,4 +99,12 @@
       };
     };
   };
+
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "25.11"; # Did you read the comment?
 }

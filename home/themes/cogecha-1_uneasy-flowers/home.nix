@@ -12,6 +12,43 @@ with lib; let
   inherit (config.vars) monitors;
 in {
   config = mkIf cfg.enable {
+    # stuff to try and get darkmode <
+    gtk = {
+      enable = true;
+      colorScheme = "dark";
+      theme = {
+        package = pkgs.gnome-themes-extra;
+        name = "Adwaita-dark";
+      };
+    };
+
+    home.packages = with pkgs; [
+      dconf
+    ];
+
+    qt = {
+      enable = true;
+      style = {
+        package = pkgs.adwaita-qt;
+        name = "adwaita-dark";
+      };
+    };
+
+    xdg.portal = {
+      enable = true;
+    };
+
+    dconf = {
+      enable = true;
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+          gtk-theme = "Adwaita-dark";
+        };
+      };
+    };
+    # />
+
     modules = {
       #TODO: zen background rgba(45,53,59,0.7)
 
