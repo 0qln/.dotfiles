@@ -349,7 +349,7 @@ in {
           default = {
             left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
             center = ["hyprland/workspaces"];
-            right = ["group/expand" "bluetooth" "network" "battery"];
+            right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
             bar = monitor: (
               {
                 layer = "top";
@@ -437,6 +437,21 @@ in {
               "tooltip-format-enumerate-connected" = "{device_alias}\n{device_address}";
               "tooltip-format-enumerate-connected-battery" = "{device_alias}\n{device_address}\n{device_battery_percentage}%";
               "on-click-right" = config.modules.bluetooth.app;
+            };
+            "pulseaudio" = {
+              "max-volume" = 100;
+              "scroll-step" = 10;
+              "format" = "{icon}";
+              "tooltip-format" = "{volume}%";
+              "format-muted" = "x";
+              "format-icons" = {
+                "default" = [
+                  " "
+                  " "
+                  " "
+                ];
+              };
+              "on-click" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
             };
             "battery" = {
               "interval" = 30;

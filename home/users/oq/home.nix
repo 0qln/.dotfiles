@@ -81,6 +81,7 @@ in
 
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
+          audio.enable = mkDefault true;
           terminal.emulator = mkDefault "kitty";
           browser.firefox = {
             firefox = {
