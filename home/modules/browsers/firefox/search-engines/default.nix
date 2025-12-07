@@ -3,6 +3,7 @@ pkgs: {
   nix-packages = import ./nix-packages.nix pkgs;
   nix-options = import ./nix-options.nix pkgs;
   hm-options = import ./hm-options.nix {};
+  nix-user-repository = import ./nix-user-repository.nix {};
   nixos-wiki = import ./nixos-wiki.nix {};
   worksimple-xwiki = import ./worksimple-xwiki.nix {};
   tenor = import ./tenor.nix {};
