@@ -6,7 +6,7 @@ args @ {pkgs, ...}: {
       (import ../extensions/zen-internet.nix args)
       (import ../extensions/todoist.nix args)
     ]
-    ++ (import ../extensions/_common.nix pkgs.nur);
+    ++ (import ../extensions/_common.nix args);
   search = {
     engines = import ../search-engines pkgs;
     default = "ddg";
