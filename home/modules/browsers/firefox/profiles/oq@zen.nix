@@ -4,6 +4,7 @@ args @ {pkgs, ...}: {
   extensions.packages =
     [
       (import ../extensions/zen-internet.nix args)
+      (import ../extensions/todoist.nix args)
     ]
     ++ (import ../extensions/_common.nix pkgs.nur);
   search = {
