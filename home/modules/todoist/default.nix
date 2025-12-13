@@ -46,7 +46,7 @@ in {
       };
 
       # Todoist cli cant handle links
-      home.activation.todoist-token = mkIf cli (
+      systemd.user.services."copy-todoist-token" = mkIf cli (
         config.utils.mkForceCopySecret {
           secret = "todoist-token";
           destPath = "${config.xdg.configHome}/todoist/config.json";

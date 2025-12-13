@@ -49,24 +49,47 @@ with lib; {
     mkForceCopySecret = {
       secret, # can also contain a path e.g. todoist/todoist-token
       destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
-      deps ? ["writeBoundary"],
     }:
-      hm.dag.entryAfter deps
-      # sh
-      ''
-        #!${pkgs.bash}/bin/bash
-        dst="${destPath}"
-        src="$XDG_RUNTIME_DIR/secrets/${secret}"
-        if [[ -e "$dst" ]]; then
-          run rm -r "$dst"
-        fi
-        # the todoist-cli cannot handle soft symlinks. hardlinks break
-        # break because XDG_RUNTIME_DIR is usually /run/user/..., which is
-        # an in-memory filesystem.
-        # so we have no other option but to copy :(
-        # (we could bind the file systems, but that's just overkill)
-        run cp -Lrp "$src" "$dst"
-      '';
+    # sh
+    {
+      Unit = {
+        Description = "Copy secret ${secret} to ${destPath}.";
+        After = ["sops-nix.service"];
+      };
+
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "copy-secret" ''
+          dst="${destPath}"
+          # $XDG_RUNTIME_DIR is not available in some contexts, so we hardcode this here.
+          src="${userRuntimeDir}/secrets/${secret}"
+
+          echo "dst=$dst"
+          echo "src=$src"
+
+          if [[ -e "$dst" ]]; then
+            echo "Destination exists. Removing..."
+            rm -fr "$dst"
+          fi
+
+          echo "Copying secret..."
+          # the todoist-cli cannot handle soft symlinks. hardlinks break
+          # break because XDG_RUNTIME_DIR is usually /run/user/..., which is
+          # an in-memory filesystem.
+          # so we have no other option but to copy :(
+          # (we could bind the file systems, but that's just overkill)
+          cp -Lrp "$src" "$dst"
+
+          echo "Done."
+
+          exit 0
+
+        ''}";
+      };
+
+      Install = {
+        WantedBy = ["default.target"];
+      };
+    };
 
     mkCopy = {
       source,
