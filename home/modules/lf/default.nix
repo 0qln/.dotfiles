@@ -21,9 +21,6 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # TODO:
-      # `Gtk-Message: 20:24:39.360: Failed to load module "colorreload-gtk-module"`
-      # even though gtk 3 is installed and in the path
       dragon-drop
 
       unzip
