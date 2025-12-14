@@ -1,7 +1,6 @@
 # we can even extend imperatively created profiles :D
 {pkgs, ...}: {
-  id = 2;
-  isDefault = false;
+  isDefault = true;
   path = "89h16xs5.Default (alpha)";
   search = {
     engines = import ../search-engines pkgs;

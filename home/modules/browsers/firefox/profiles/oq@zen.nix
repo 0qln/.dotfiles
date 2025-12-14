@@ -1,5 +1,4 @@
 args @ {pkgs, ...}: {
-  id = 0;
   isDefault = true;
   extensions.packages =
     [
