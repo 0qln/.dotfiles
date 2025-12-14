@@ -1,0 +1,180 @@
+{
+  "dev": false,
+  "replaceDelay": 500,
+  "playMP4URLs": false,
+  "playStreamURLs": false,
+  "analyzeVideos": false,
+  "downloadAll": true,
+  "previewEnabled": true,
+  "autoEnableBestSubtitles": true,
+  "storeProgress": true,
+  "autoplayYoutube": true,
+  "autoplayNext": false,
+  "defaultYoutubeClient": "WEB",
+  "defaultQuality": "1080p",
+  "colorTheme": "default",
+  "autoEnableURLs": [
+    "hianime"
+  ],
+  "customSourcePatterns": "",
+  "keybinds": {
+    "HidePlayer": "AltRight",
+    "ToggleControls": "None",
+    "PlayPause": "Space",
+    "Fullscreen": "KeyF",
+    "WindowedFullscreen": "KeyW",
+    "PictureInPicture": "KeyP",
+    "VolumeUp": "ArrowUp",
+    "VolumeDown": "ArrowDown",
+    "VolumeReset": "None",
+    "Mute": "KeyM",
+    "SeekForward": "ArrowRight",
+    "SeekBackward": "ArrowLeft",
+    "SeekForwardLarge": "Period",
+    "SeekBackwardLarge": "Comma",
+    "SeekForwardFrame": "Shift+ArrowRight",
+    "SeekBackwardFrame": "Shift+ArrowLeft",
+    "IncreasePlaybackRate": "Shift+ArrowUp",
+    "DecreasePlaybackRate": "Shift+ArrowDown",
+    "ResetPlaybackRate": "None",
+    "UndoSeek": "KeyZ",
+    "RedoSeek": "Shift+KeyZ",
+    "ResetFailed": "Backquote",
+    "AddDownloader": "Equal",
+    "RemoveDownloader": "Minus",
+    "PauseDownloaders": "BracketLeft",
+    "SaveVideo": "KeyD",
+    "Screenshot": "KeyX",
+    "SkipIntroOutro": "KeyS",
+    "NextChapter": "KeyA",
+    "GoToStart": "Digit0",
+    "NextVideo": "KeyN",
+    "PreviousVideo": "KeyB",
+    "ToggleSubtitles": "KeyC",
+    "FlipVideo": "KeyE",
+    "RotateVideo": "KeyR",
+    "ZoomInVideo": "None",
+    "ZoomOutVideo": "None",
+    "ZoomReset": "None",
+    "ToggleVisualFilters": "KeyQ"
+  },
+  "videoBrightness": 1,
+  "videoContrast": 1,
+  "videoSaturation": 1,
+  "videoGrayscale": 0,
+  "videoSepia": 0,
+  "videoInvert": 0,
+  "videoHueRotate": 0,
+  "videoDaltonizerType": "none",
+  "videoDaltonizerStrength": 1,
+  "videoZoom": 1,
+  "maxSpeed": -1,
+  "maxVideoSize": 5000000000,
+  "seekStepSize": 2,
+  "singleClickAction": "playpause",
+  "doubleClickAction": "fullscreen",
+  "tripleClickAction": "hidecontrols",
+  "visChangeAction": "nothing",
+  "miniSize": 0.25,
+  "miniPos": "bottomright",
+  "videoDelay": 0,
+  "maximumDownloaders": 6,
+  "youtubePlayerID": "",
+  "subtitlesSettings": {
+    "fontFamily": "Arial",
+    "fontWeight": "normal",
+    "fontSize": "2vw",
+    "color": "rgba(255,255,255,1)",
+    "background": "rgba(10,10,10,0.3)",
+    "outlineColor": "rgb(0,0,0)",
+    "outlineWidth": "0px",
+    "defaultLanguage": "en",
+    "bottomMargin": "40px"
+  },
+  "toolSettings": {
+    "playpause": {
+      "location": "left",
+      "priority": 100
+    },
+    "previous": {
+      "location": "left",
+      "priority": 200
+    },
+    "next": {
+      "location": "left",
+      "priority": 300
+    },
+    "volume": {
+      "location": "left",
+      "priority": 400
+    },
+    "duration": {
+      "location": "left",
+      "priority": 500
+    },
+    "sources": {
+      "location": "right",
+      "priority": 100
+    },
+    "audioconfig": {
+      "location": "right",
+      "priority": 200
+    },
+    "subtitles": {
+      "location": "right",
+      "priority": 300
+    },
+    "languages": {
+      "location": "right",
+      "priority": 400
+    },
+    "quality": {
+      "location": "right",
+      "priority": 500
+    },
+    "playrate": {
+      "location": "right",
+      "priority": 600
+    },
+    "settings": {
+      "location": "right",
+      "priority": 700
+    },
+    "more": {
+      "location": "right",
+      "priority": 800
+    },
+    "download": {
+      "location": "right",
+      "priority": 900
+    },
+    "fullscreen": {
+      "location": "right",
+      "priority": 1000
+    },
+    "loop": {
+      "location": "extra",
+      "priority": 100
+    },
+    "pip": {
+      "location": "extra",
+      "priority": 200
+    },
+    "windowedfs": {
+      "location": "extra",
+      "priority": 300
+    },
+    "backward": {
+      "location": "extra",
+      "priority": 400
+    },
+    "screenshot": {
+      "location": "extra",
+      "priority": 500
+    },
+    "forward": {
+      "location": "extra",
+      "priority": 600
+    }
+  }
+}
