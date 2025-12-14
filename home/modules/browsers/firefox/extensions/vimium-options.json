@@ -1,0 +1,30 @@
+{
+  "keyMappings": "# Insert your preferred key mappings here.\n\nunmap f\nmap ; LinkHints.activateMode\n\nunmap F\nmap : LinkHints.activateModeToOpenInNewTab",
+  "settingsVersion": "2.3.1",
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://mail.google.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://diep.io/*"
+    },
+    {
+      "passKeys": "d",
+      "pattern": "https?://hole-io.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://hole-io.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://zombs.io/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://app.todoist.com/*"
+    }
+  ]
+}
