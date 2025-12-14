@@ -12,6 +12,9 @@ in {
     doh = {
       enable = mkEnableOption "dns over https";
     };
+    # todo: when enabling a local dns, the unicorn wireguard vpn breaks
+    # because it requires a custom dns entry. figure out how to make the
+    # wg-quick command write to dns entry to the local dns or something.
     localDNS = {
       enable = mkEnableOption "local dns server";
       redirects = mkOption {
