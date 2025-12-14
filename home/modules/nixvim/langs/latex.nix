@@ -36,6 +36,10 @@
                 shell="shell.nix"
                 echo "Using shell: $shell"
                 nix-shell "$shell" --command "$cmd"
+              elif nix flake show --json | grep "devShells"; then
+                flake="flake.nix"
+                echo "Using flake: $flake"
+                nix develop --command bash -c "$cmd"
               else
                 exec "$cmd"
               fi
