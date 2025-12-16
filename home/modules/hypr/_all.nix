@@ -1,5 +1,6 @@
 _: {
   imports = [
+    ./lock.nix
     ./hyprpicker.nix
     ./hyprland
     ./hyprpaper

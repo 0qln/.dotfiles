@@ -6,7 +6,6 @@
 }:
 with lib; let
   todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix {};
-  mainMod = "SUPER";
   inherit (config.vars) terminal fileexplorer;
   cfg = config.modules.hypr.land.input;
 in {
@@ -34,9 +33,15 @@ in {
         };
       });
     };
+    mainMod = mkOption {
+      type = types.str;
+      default = "SUPER";
+    };
   };
 
-  config = {
+  config = let
+    inherit (cfg) mainMod;
+  in {
     wayland.windowManager.hyprland = {
       settings = {
         # For some reason hardware_cursors draws the cursor like 250px

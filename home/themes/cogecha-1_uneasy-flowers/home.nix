@@ -8,8 +8,11 @@
 }:
 with lib; let
   name = import ./name.nix;
+
   cfg = config.themes.${name};
+
   inherit (config.vars) monitors;
+  inherit (config.theme) wallpapers;
 in {
   config = mkIf cfg.enable {
     # stuff to try and get darkmode <
@@ -142,6 +145,91 @@ in {
         };
       };
     };
+
+    programs.hyprlock = let
+      fmtColor = config.utils.fmtColor_rgbaFn;
+    in {
+      settings = {
+        animations = {
+          enabled = true;
+          fade_in = {
+            duration = 300;
+          };
+          fade_out = {
+            duration = 100;
+          };
+        };
+
+        general = {
+          immediate_render = true;
+        };
+
+        background = let
+          devs = monitors.devices;
+          pict = monitors.arrangement.byPictogram;
+          wals = wallpapers.arrangements.${pict};
+        in
+          attrsets.mapAttrsToList (
+            k: v:
+              if (hasAttr k wals)
+              then {
+                monitor = v.name;
+                path = toString wals.${k};
+                crossfade_time = 1.0;
+              }
+              else throw "wallpaper for ${k} monitor '${v.name}' is missing."
+          )
+          devs;
+
+        input-field = [
+          {
+            monitor = monitors.devices.center.name;
+            size = "280, 55";
+            outline_thickness = 2;
+            dots_size = 0.2;
+            dots_spacing = 0.2;
+            dots_center = true;
+            outer_color = fmtColor config.theme.win.shadow.active;
+            inner_color = fmtColor config.theme.launcher.background;
+            font_color = fmtColor config.theme.launcher.foreground;
+            fade_on_empty = false;
+            font_family = "${config.theme.fonts.monospace}";
+            placeholder_text = ''<i><span foreground="#${config.theme.launcher.foreground}">🔒 Enter Pass</span></i>'';
+            hide_input = false;
+            # position = "0, -210";
+            halign = "center";
+            valign = "center";
+          }
+        ];
+
+        # Date display
+        label = [
+          {
+            monitor = monitors.devices.center.name;
+            text = ''cmd[update:1000] echo -e "$(LC_TIME=en_US.UTF-8 date +"%A, %B %d")"'';
+            color = fmtColor config.theme.launcher.foreground;
+            font_size = 25;
+            font_family = "${config.theme.fonts.monospace}";
+            position = "0, 350";
+            halign = "center";
+            valign = "center";
+          }
+
+          # Time display
+          {
+            monitor = monitors.devices.center.name;
+            text = ''cmd[update:1000] echo "<span>$(date +"%I:%M")</span>"'';
+            color = fmtColor config.theme.launcher.foreground;
+            font_size = 120;
+            font_family = "${config.theme.fonts.monospace}";
+            position = "0, 230";
+            halign = "center";
+            valign = "center";
+          }
+        ];
+      };
+    };
+
     programs = {
       waybar = {
         style = let
@@ -658,6 +746,7 @@ in {
         color7 = "                         #859289";
         color15 = "                        #9da9a0";
       };
+
       wallpapers = rec {
         arrangements = with images; {
           "|-|" = {

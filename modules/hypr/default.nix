@@ -61,5 +61,9 @@ in {
     services.pipewire.wireplumber = {
       enable = true;
     };
+
+    # needed for hyprlock
+    # (https://home-manager-options.extranix.com/?query=programs.hyprlock.enable&release=release-25.11)
+    security.pam.services.hyprlock = {};
   };
 }

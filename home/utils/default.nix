@@ -42,8 +42,14 @@ with lib; {
       };
 
     fmtColor_rgbaFn = color: let
-      matches = builtins.match "#([0-9a-f]{8})" color;
-      val = builtins.elemAt matches 0;
+      matches0 = builtins.match "#([0-9a-fA-F]{8})" color;
+      matches1 = builtins.match "#([0-9a-fA-F]{6})" color;
+      val =
+        if matches0 != null
+        then builtins.elemAt matches0 0
+        else if matches1 != null
+        then "${builtins.elemAt matches1 0}ff"
+        else throw "`color` does not match the expected format.";
     in "rgba(${val})";
 
     # some services (e.g. the todoist-cli) cannot handle soft symlinks.
