@@ -52,6 +52,22 @@ with lib; {
         else throw "`color` does not match the expected format.";
     in "rgba(${val})";
 
+    fmtColorWithOpacity_rgbaFn = color: opacity: let
+      matches0 = builtins.match "#([0-9a-fA-F]{6})" color;
+      val =
+        if matches0 != null
+        then builtins.elemAt matches0 0
+        else throw "`color` does not match the expected format.";
+    in "rgba(${val}${opacity})";
+
+    # fmtOpacity_percentage = opacity: let
+
+    # Float to Int
+    ftoi = x: builtins.floor x;
+
+    # Float to Percentage
+    ftop = x: x * 100;
+
     # some services (e.g. the todoist-cli) cannot handle soft symlinks.
     # hardlinks break break because XDG_RUNTIME_DIR is usually /run/user/...,
     # which is an in-memory filesystem.

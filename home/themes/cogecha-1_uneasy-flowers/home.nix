@@ -148,7 +148,11 @@ in {
 
     programs.hyprlock = let
       fmtColor = config.utils.fmtColor_rgbaFn;
+      fmtColorWO = config.utils.fmtColorWithOpacity_rgbaFn;
+      inherit (config.utils) ftop ftoi;
+      escape = replaceStrings ["#" ''"''] ["##" ''\"''];
     in {
+      # inspiration: https://www.hyprflux.dev/features/hyprlock.html#features
       settings = {
         animations = {
           enabled = true;
@@ -184,13 +188,20 @@ in {
         input-field = [
           {
             monitor = monitors.devices.center.name;
-            size = "280, 55";
-            outline_thickness = 2;
+            size = "300, 40";
+
             dots_size = 0.2;
             dots_spacing = 0.2;
             dots_center = true;
-            outer_color = fmtColor config.theme.win.shadow.active;
-            inner_color = fmtColor config.theme.launcher.background;
+
+            outline_thickness = 0;
+            shadow_color = fmtColor config.theme.win.shadow.active;
+            shadow_size = 1;
+            shadow_passes = 3;
+
+            rounding = 0;
+
+            inner_color = fmtColorWO config.theme.term.background "BB";
             font_color = fmtColor config.theme.launcher.foreground;
             fade_on_empty = false;
             font_family = "${config.theme.fonts.monospace}";
@@ -225,6 +236,49 @@ in {
             position = "0, 230";
             halign = "center";
             valign = "center";
+          }
+
+          # Song information
+          {
+            monitor = monitors.devices.center.name;
+            text = let
+              script = "${pkgs.writeShellScript "songdetails" ''
+                # Get current playing song from playerctl
+                if command -v playerctl &> /dev/null; then
+                    # Check if any player is running
+                    if playerctl status &> /dev/null; then
+                        artist=$(playerctl metadata artist 2>/dev/null)
+                        title=$(playerctl metadata title 2>/dev/null)
+
+                        if [[ -n "$artist" && -n "$title" ]]; then
+                            echo "♪ $artist - $title"
+                        elif [[ -n "$title" ]]; then
+                            echo "♪ $title"
+                        else
+                            echo "♪ Music Playing"
+                        fi
+                    else
+                        echo ""
+                    fi
+                else
+                    echo ""
+                fi
+              ''}";
+              bg = "${config.theme.term.background}";
+              al = "${toString (ftoi (ftop config.theme.win.opacity.background))}%";
+              text =
+                # html
+                ''<span bgcolor='${bg}' bgalpha='${al}'> <i>$(${script})</i> </span>'';
+            in ''cmd[update:1000] echo "${escape text}"'';
+            color = fmtColor config.theme.launcher.foreground;
+            shadow_color = fmtColor config.theme.win.shadow.active;
+            shadow_size = 1;
+            shadow_passes = 3;
+            font_size = 20;
+            font_family = "${config.theme.fonts.monospace}";
+            position = "0, 50";
+            halign = "center";
+            valign = "bottom";
           }
         ];
       };
@@ -682,69 +736,69 @@ in {
       term = {
         padding = 4;
 
-        foreground = "                     #d3c6aa";
-        background = "                     #2d353b";
-        selection_foreground = "           #9da9a0";
-        selection_background = "           #505a60";
+        foreground = "#d3c6aa";
+        background = "#2d353b";
+        selection_foreground = "#9da9a0";
+        selection_background = "#505a60";
 
-        cursor = "                         #d3c6aa";
-        # cursor_text_color = "              #343f44";
+        cursor = "#d3c6aa";
+        # cursor_text_color = "#343f44";
 
-        # url_color = "                      #7fbbb3";
+        # url_color = "#7fbbb3";
 
-        # active_border_color = "            #a7c080";
-        # inactive_border_color = "          #56635f";
-        # bell_border_color = "              #e69875";
-        # visual_bell_color = "              none";
+        # active_border_color = "#a7c080";
+        # inactive_border_color = "#56635f";
+        # bell_border_color = "#e69875";
+        # visual_bell_color = "none";
 
-        # wayland_titlebar_color = "         system";
-        # macos_titlebar_color = "           system";
+        # wayland_titlebar_color = "system";
+        # macos_titlebar_color = "system";
 
-        # active_tab_background = "          #2d353b";
-        # active_tab_foreground = "          #d3c6aa";
-        # inactive_tab_background = "        #3d484d";
-        # inactive_tab_foreground = "        #9da9a0";
-        # tab_bar_background = "             #343f44";
-        # tab_bar_margin_color = "           none";
+        # active_tab_background = "#2d353b";
+        # active_tab_foreground = "#d3c6aa";
+        # inactive_tab_background = "#3d484d";
+        # inactive_tab_foreground = "#9da9a0";
+        # tab_bar_background = "#343f44";
+        # tab_bar_margin_color = "none";
 
-        # mark1_foreground = "               #2d353b";
-        # mark1_background = "               #7fbbb3";
-        # mark2_foreground = "               #2d353b";
-        # mark2_background = "               #d3c6aa";
-        # mark3_foreground = "               #2d353b";
-        # mark3_background = "               #d699b6";
+        # mark1_foreground = "#2d353b";
+        # mark1_background = "#7fbbb3";
+        # mark2_foreground = "#2d353b";
+        # mark2_background = "#d3c6aa";
+        # mark3_foreground = "#2d353b";
+        # mark3_background = "#d699b6";
 
         #: = "black";
-        color0 = "                         #343f44";
-        color8 = "                         #868d80";
+        color0 = "#343f44";
+        color8 = "#868d80";
 
         #: = "red";
-        color1 = "                         #e67e80";
-        color9 = "                         #e67e80";
+        color1 = "#e67e80";
+        color9 = "#e67e80";
 
         #: = "green";
-        color2 = "                         #a7c080";
-        color10 = "                        #a7c080";
+        color2 = "#a7c080";
+        color10 = "#a7c080";
 
         #: = "yellow";
-        color3 = "                         #dbbc7f";
-        color11 = "                        #dbbc7f";
+        color3 = "#dbbc7f";
+        color11 = "#dbbc7f";
 
         #: = "blue";
-        color4 = "                         #7fbbb3";
-        color12 = "                        #7fbbb3";
+        color4 = "#7fbbb3";
+        color12 = "#7fbbb3";
 
         #: = "magenta";
-        color5 = "                         #d699b6";
-        color13 = "                        #d699b6";
+        color5 = "#d699b6";
+        color13 = "#d699b6";
 
         #: = "cyan";
-        color6 = "                         #83c092";
-        color14 = "                        #83c092";
+        color6 = "#83c092";
+        color14 = "#83c092";
 
         #: = "white";
-        color7 = "                         #859289";
-        color15 = "                        #9da9a0";
+        color7 = "#859289";
+        color15 = "#9da9a0";
       };
 
       wallpapers = rec {
