@@ -188,7 +188,7 @@ in {
         input-field = [
           {
             monitor = monitors.devices.center.name;
-            size = "300, 40";
+            size = "300, 50";
 
             dots_size = 0.2;
             dots_spacing = 0.2;
