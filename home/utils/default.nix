@@ -46,22 +46,28 @@ with lib; {
       val = builtins.elemAt matches 0;
     in "rgba(${val})";
 
+    # some services (e.g. the todoist-cli) cannot handle soft symlinks.
+    # hardlinks break break because XDG_RUNTIME_DIR is usually /run/user/...,
+    # which is an in-memory filesystem.
+    # so we have no other option but to copy :(
+    # (we could bind the file systems, but that's just overkill)
     mkForceCopySecret = {
       secret, # can also contain a path e.g. todoist/todoist-token
       destPath, # Full destination path (e.g., "${config.xdg.configHome}/todoist/config.json")
-    }:
-    # sh
-    {
+    }: {
       Unit = {
         Description = "Copy secret ${secret} to ${destPath}.";
         After = ["sops-nix.service"];
       };
 
       Service = {
+        Environment = "PATH=${pkgs.coreutils}/bin";
         ExecStart = "${pkgs.writeShellScript "copy-secret" ''
-          dst="${destPath}"
+          set -euo pipefail
+
           # $XDG_RUNTIME_DIR is not available in some contexts, so we hardcode this here.
           src="${userRuntimeDir}/secrets/${secret}"
+          dst="${destPath}"
 
           echo "dst=$dst"
           echo "src=$src"
@@ -72,17 +78,16 @@ with lib; {
           fi
 
           echo "Copying secret..."
-          # the todoist-cli cannot handle soft symlinks. hardlinks break
-          # break because XDG_RUNTIME_DIR is usually /run/user/..., which is
-          # an in-memory filesystem.
-          # so we have no other option but to copy :(
-          # (we could bind the file systems, but that's just overkill)
+          mkdir -p "$(dirname "$dst")"
           cp -Lrp "$src" "$dst"
 
-          echo "Done."
-
-          exit 0
-
+          if [[ -f "$dst" ]]; then
+            echo "Done."
+            exit 0
+          else
+            echo "ERROR: Failed to copy secret!"
+            exit 1
+          fi
         ''}";
       };
 
