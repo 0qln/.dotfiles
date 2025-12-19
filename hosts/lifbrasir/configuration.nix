@@ -7,7 +7,6 @@ in {
     ./mount.nix
     ./keys.nix
     ./bootloader.nix
-    ./bat.nix
     ./lid.nix
     ./networking.nix
 
