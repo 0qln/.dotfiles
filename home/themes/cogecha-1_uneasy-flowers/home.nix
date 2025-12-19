@@ -585,7 +585,7 @@ in {
               "scroll-step" = 10;
               "format" = "{icon}";
               "tooltip-format" = "{volume}%";
-              "format-muted" = "x";
+              "format-muted" = "×";
               "format-icons" = {
                 "default" = [
                   " "
