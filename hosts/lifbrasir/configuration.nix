@@ -33,6 +33,7 @@ in {
     ../../modules/mysql
     ../../modules/obsidian-livesync
     ../../modules/nginx
+    ../../modules/immich
   ];
 
   sops = {
@@ -93,6 +94,15 @@ in {
         acmeHost = fqdns.primary.dn;
       };
       dbpassFile = ./gitea/secrets/dbpass;
+    };
+
+    immich = {
+      enable = true;
+      fqdn = {
+        dn = "immich.${fqdns.primary.dn}";
+        acmeHost = fqdns.primary.dn;
+      };
+      secretsFile = ./immich/secrets/secrets.env;
     };
 
     postgresql = {
