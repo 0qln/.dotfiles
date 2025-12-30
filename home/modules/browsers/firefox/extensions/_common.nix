@@ -12,6 +12,7 @@ args @ {
     rycee.firefox-addons.bitwarden
     rycee.firefox-addons.darkreader
     rycee.firefox-addons.return-youtube-dislikes
+    rycee.firefox-addons.faststream
   ]
   ++ [
     (import ./vimium-ff.nix args)

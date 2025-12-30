@@ -64,6 +64,10 @@
         enable = true;
         uiEnv = "gui";
       };
+
+      themes.cogecha-1_uneasy-flowers.enable = false;
+      themes.cogecha-2_oni.enable = true;
+
       modules = {
         nixvim.wayland.enable = true;
         hypr.enable = true;
