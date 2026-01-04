@@ -123,7 +123,13 @@
           html.enable = true; # HTML
           astro.enable = true; # AstroJS
           phpactor.enable = true; # PHP
-          svelte.enable = false; # Svelte
+          # Svelte
+          svelte = {
+            # to get correct linting of svelte syntax in .ts files, do this for every project:
+            # https://github.com/sveltejs/language-tools/tree/master/packages/typescript-plugin#usage
+            enable = true;
+            autostart = true;
+          };
           # vuels.enable = false; # Vue (not supported anymore)
           pyright.enable = true; # Python
           nil_ls.enable = true; # Nix
