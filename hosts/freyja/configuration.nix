@@ -22,6 +22,7 @@
     ../../modules/hypr
     ../../modules/sops
     ../../modules/ydotool
+    ../../modules/lid
   ];
 
   # temp? because of darkmode stuff
@@ -29,6 +30,8 @@
   environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 
   modules = {
+    # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
+    lid.disable = true;
     battery.enable = true;
     avahi.enable = true;
     hypr.enable = true;
@@ -69,6 +72,12 @@
       themes.cogecha-2_oni.enable = true;
 
       modules = {
+        input = {
+          mouse = {
+            speed = 0.1;
+            accel = true;
+          };
+        };
         nixvim.wayland.enable = true;
         hypr.enable = true;
         browser = {

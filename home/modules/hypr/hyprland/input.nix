@@ -51,18 +51,25 @@ in {
           no_hardware_cursors = "true";
         };
 
-        input = {
-          kb_layout = "us";
-          kb_options = "compose:ralt";
-          follow_mouse = 1;
-          sensitivity = 0;
-          accel_profile = "flat";
-          force_no_accel = true;
-          touchpad = {
-            natural_scroll = true;
-            scroll_factor = 1.0;
-          };
-        };
+        input = let
+          inherit (config.modules) input;
+        in
+          mkMerge [
+            {
+              kb_layout = "us";
+              kb_options = "compose:ralt";
+              follow_mouse = 1;
+              sensitivity = input.mouse.speed;
+              touchpad = {
+                natural_scroll = true;
+                scroll_factor = 1.0;
+              };
+            }
+            (mkIf (!input.mouse.accel) {
+              accel_profile = "flat";
+              force_no_accel = true;
+            })
+          ];
 
         bind = mkMerge [
           [

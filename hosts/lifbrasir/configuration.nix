@@ -7,7 +7,6 @@ in {
     ./mount.nix
     ./keys.nix
     ./bootloader.nix
-    ./lid.nix
     ./networking.nix
 
     ../../home/users/root/default.nix
@@ -34,6 +33,7 @@ in {
     ../../modules/obsidian-livesync
     ../../modules/nginx
     ../../modules/immich
+    ../../modules/lid
   ];
 
   sops = {
@@ -58,6 +58,7 @@ in {
   };
 
   modules = {
+    lid.disable = true;
     battery.enable = true;
     nginx.enable = true;
     vaultwarden = {
