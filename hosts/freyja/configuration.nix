@@ -12,6 +12,7 @@
     ./bootloader.nix
     ./keys.nix
     ./bluetooth.nix
+    ./pen.nix
 
     ../../home/users/oq
     ../../home/users/root
