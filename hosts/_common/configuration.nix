@@ -13,6 +13,7 @@
     ./vars.nix
     ./smart-card-daemon.nix
     ./app-image.nix
+    ./compat.nix
   ];
 
   modules = {
