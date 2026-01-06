@@ -777,15 +777,28 @@ in {
 
       wallpapers = rec {
         arrangements = with images; {
+          "|-|" = {
+            left = vert1;
+            center = vert1;
+            right = vert1;
+          };
           "-" = {
-            center = horz1;
+            center = vert1;
           };
         };
         images = {
-          horz1 = pkgs.fetchurl {
+          vert1 = pkgs.fetchurl {
             url = "https://w.wallhaven.cc/full/v9/wallhaven-v9yjel.jpg";
             hash = "sha256-a/+GJfyD4b2qarXuj1kvL2iHzZLJeq9skNrt5/lwsBs=";
           };
+          # horz1 = pkgs.fetchurl {
+          #   url = "https://w.wallhaven.cc/full/73/wallhaven-73v8zv.jpg";
+          #   hash = "sha256-0qoJl0qcrO89xiRqLiaK4WHQ+a+6ylU37khb/FMHUBk=";
+          # };
+          # vert2 = pkgs.fetchurl {
+          #   url = "https://w.wallhaven.cc/full/o3/wallhaven-o3lq79.jpg";
+          #   hash = "sha256-pBrLWnxWTX/Qhynu2H2++Ld2EA/ql+bwChSz1SEeNgM=";
+          # };
         };
       };
     };
