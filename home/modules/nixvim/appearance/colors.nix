@@ -35,15 +35,25 @@ in {
         extraPlugins = with pkgs.vimPlugins; [
           everforest
           rose-pine
+          tokyonight-nvim
           melange-nvim
           kanagawa-nvim
+          (pkgs.vimUtils.buildVimPlugin {
+            name = "mellifluous-nvim";
+            src = pkgs.fetchFromGitHub {
+              owner = "ramojus";
+              repo = "mellifluous.nvim";
+              rev = "4ce6258b31420aa4fd64b35b7f7cf42dffef7403";
+              hash = "sha256-rtdDaANnzKqLNMXLcGDFnmzhU8IxjDPqw6Njp+uoZbI=";
+            };
+          })
           kanagawa-paper-nvim
+          vague-nvim
 
           #TODO:
           # https://github.com/ramojus/mellifluous.nvim
           # https://github.com/dgox16/oldworld.nvim
           # https://github.com/everviolet/nvim
-          # https://github.com/vague2k/vague.nvim
         ];
         colorschemes = mkIf (cfg.theme != null) {
           ${cfg.theme}.enable = true;
