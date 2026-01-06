@@ -8,6 +8,7 @@ with lib; let
 in {
   options.modules.hypr.lock = {
     enable = config.utils.mkEnableOption "hypr.lock" config.modules.hypr.enable;
+    autostart = mkEnableOption "automatically execute on startup";
   };
 
   config = let
@@ -42,6 +43,10 @@ in {
             [
               "${mainMod}, L, exec, hyprlock"
             ]
+          ];
+
+          exec-once = mkMerge [
+            (mkIf cfg.autostart ["hyprlock || hyprctl dispatch exit"])
           ];
         };
       };

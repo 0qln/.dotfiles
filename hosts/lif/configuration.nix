@@ -43,7 +43,10 @@
   modules = {
     wireguard.enable = true;
     avahi.enable = true;
-    hypr.enable = true;
+    hypr = {
+      enable = true;
+      defaultUser = "oq";
+    };
     steam.enable = true;
     ydotool.enable = true;
   };

@@ -10,16 +10,51 @@ with lib; let
 in {
   options.modules.hypr = {
     enable = mkEnableOption "hypr.* stuff";
+    defaultUser = mkOption {
+      type = types.str;
+      description = "The default user.";
+    };
+    lock = {
+      enable = mkOption {
+        description = "Whether to enable hyprlock.";
+        type = types.bool;
+        default = true;
+      };
+      replaceLogin = mkOption {
+        description = "Whether to replace the login screen with hyprlock.";
+        type = types.bool;
+        default = true;
+      };
+    };
+    # autologin = mkEnableOption "Enable auto login. (e.g. use this when you want to replace the login screen with hyprlock)";
   };
 
   config = mkIf cfg.enable {
     modules.nix.caches = {"hyprland.cachix.org" = "a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=";};
 
     # You can disable this if you're only using the Wayland session.
-    services.xserver.enable = false; # Enable the X11 windowing system.
+    services.xserver.enable = false;
 
-    services.displayManager.sddm.wayland.enable = true;
-    services.displayManager.sddm.enable = true;
+    # Logins screen
+    services.displayManager.sddm = {
+      # Enable the X11 windowing system.
+
+      wayland.enable = true;
+      enable = true;
+
+      settings = mkIf cfg.lock.replaceLogin {
+        Autologin = {
+          Session = "hyprland";
+          User = cfg.defaultUser;
+        };
+      };
+    };
+
+    home-manager = mkIf cfg.lock.replaceLogin {
+      users.${cfg.defaultUser} = _: {
+        modules.hypr.lock.autostart = true;
+      };
+    };
 
     environment.systemPackages = with pkgs; [
       kitty # required for the default Hyprland config
@@ -64,6 +99,6 @@ in {
 
     # needed for hyprlock
     # (https://home-manager-options.extranix.com/?query=programs.hyprlock.enable&release=release-25.11)
-    security.pam.services.hyprlock = {};
+    security.pam.services.hyprlock = mkIf cfg.lock.enable {};
   };
 }
