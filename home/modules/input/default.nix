@@ -10,7 +10,7 @@ in {
     mouse = {
       speed = mkOption {
         type = types.float;
-        default = 0;
+        default = 0.0;
         description = "Cursor speed (possible values are in range -1 to 1)";
       };
       accel = mkOption {
