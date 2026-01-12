@@ -29,6 +29,7 @@
     ../../modules/wireguard
     ../../modules/wireguard/unicorns
     ../../modules/ydotool
+    ../../modules/docker
 
     # todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
@@ -49,6 +50,11 @@
     };
     steam.enable = true;
     ydotool.enable = true;
+
+    docker = {
+      enable = true;
+      rootless.enable = true;
+    };
   };
 
   sops = {
