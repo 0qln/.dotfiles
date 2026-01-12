@@ -79,6 +79,7 @@
             accel = true;
           };
         };
+        krita.enable = true;
         nixvim.wayland.enable = true;
         hypr.enable = true;
         browser = {
