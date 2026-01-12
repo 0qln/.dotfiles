@@ -10,13 +10,6 @@
 }:
 with lib; let
   cfg = config.modules.nextcloud;
-
-  dockerImage = pkgs.dockerTools.pullImage {
-    imageName = "ghcr.io/nextcloud/nextcloud-appapi-harp:release";
-    imageDigest = "sha256:7724d3c96c62f41aa7882677f111fb771d3da94e937945ce80fddb6a46be1e76";
-    sha256 = "";
-  };
-
   serviceName = "appapi-harp";
 in {
   options.modules.nextcloud.harp = {
