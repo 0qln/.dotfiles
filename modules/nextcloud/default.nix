@@ -187,6 +187,7 @@ in {
             "OC\\Preview\\Krita"
             "OC\\Preview\\HEIC"
           ];
+          maintenance_window_start = 3;
           # trusted_proxies =
           #   [
           #     "127.0.0.1"
