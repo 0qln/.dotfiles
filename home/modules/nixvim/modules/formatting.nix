@@ -66,9 +66,9 @@ in {
                 "trim_whitespace"
                 "trim_newlines"
               ];
-              xml = [
-                "xmlstarlet"
-              ];
+              xml = ["xmlstarlet"];
+              html = ["djlint"];
+              svelte = ["prettierd"];
             };
             formatters = {
               rustfmt = {
