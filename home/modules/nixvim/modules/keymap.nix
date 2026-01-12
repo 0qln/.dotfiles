@@ -358,6 +358,19 @@ in {
           desc = "[D]iagnostics [R]un (Run rust flycheck)";
         };
       }
+
+      # [v]iew related maps
+      {
+        key = "<leader>vw";
+        action.__raw = ''
+          function()
+            vim.opt.wrap = not vim.opt.wrap:get()
+          end
+        '';
+        options = {
+          desc = "[V]view > [w]rap (Toggle local line wrapping)";
+        };
+      }
     ];
   };
 }
