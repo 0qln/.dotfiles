@@ -197,6 +197,12 @@ in {
         };
       };
 
+      # this correctly changes the php.ini file given to the phpfpm-nextcloud service, but that
+      # doesn't fix the error so idgaf
+      phpfpm.phpOptions = ''
+        opcache.interned_strings_buffer = 12
+      '';
+
       mysql = {
         ensureDatabases = [cfg.dbName];
         ensureUsers = [
