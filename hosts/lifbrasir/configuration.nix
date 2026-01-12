@@ -129,7 +129,7 @@ in {
     };
 
     docker = {
-      enable = false;
+      serviceDataDir = "/mnt/store-1/services/docker";
     };
 
     avahi = {
@@ -180,6 +180,7 @@ in {
         "lifbrasir"
         "192.168.178.50"
       ];
+      harp.environmentFile = ./nextcloud/secrets.harp;
     };
   };
 

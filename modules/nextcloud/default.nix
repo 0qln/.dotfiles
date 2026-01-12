@@ -13,6 +13,7 @@ in {
   imports = [
     ./calendar.nix
     ./tasks.nix
+    ./harp.nix
   ];
 
   options.modules.${serviceName} = {
@@ -210,6 +211,10 @@ in {
 
     users.users.${cfg.dbUser} = {
       hashedPasswordFile = "/run/secrets-for-users/${serviceName}/dbpassHashed";
+    };
+
+    modules.nextcloud.harp = {
+      enable = true;
     };
   };
 }

@@ -11,9 +11,10 @@ in {
   options.modules.docker = {
     enable = mkEnableOption "docker";
     serviceDataDir = mkOption {
-      type = types.str;
-      default = "/mnt/store-1/services/docker";
+      type = types.nullOr types.str;
+      default = null;
     };
+    rootless.enable = mkEnableOption "see `https://search.nixos.org/options?channel=25.11&show=virtualisation.docker.rootless.enable&type=options&query=virtualisation.docker`";
   };
 
   imports = [
@@ -24,8 +25,12 @@ in {
     virtualisation.docker = {
       enable = true;
       daemon.settings = {
-        data-root = cfg.serviceDataDir;
+        data-root = mkIf (cfg.serviceDataDir != null) cfg.serviceDataDir;
         userland-proxy = false;
+      };
+      rootless = mkIf cfg.rootless.enable {
+        enable = true;
+        setSocketVariable = true;
       };
     };
 
