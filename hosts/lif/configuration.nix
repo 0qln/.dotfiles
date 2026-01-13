@@ -30,6 +30,7 @@
     ../../modules/wireguard/unicorns
     ../../modules/ydotool
     ../../modules/docker
+    ../../modules/pam
 
     # todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
@@ -47,7 +48,9 @@
     hypr = {
       enable = true;
       defaultUser = "oq";
+      lock.replaceLogin = false;
     };
+    pam.enable = true;
     steam.enable = true;
     ydotool.enable = true;
 

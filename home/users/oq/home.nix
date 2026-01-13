@@ -76,7 +76,7 @@ in
           ssh.enable = mkDefault true;
           starship.enable = mkDefault true;
           bluetooth.client = mkDefault "bluetui";
-          keychain.enable = mkDefault true;
+          pam.enable = mkDefault true;
         }
 
         # gui-only modules

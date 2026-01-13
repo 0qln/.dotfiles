@@ -20,6 +20,8 @@ in {
         type = types.bool;
         default = true;
       };
+      # if you use this, gnome-keyring will not unlock automatically on login.
+      # todo: find a solution for that.
       replaceLogin = mkOption {
         description = "Whether to replace the login screen with hyprlock.";
         type = types.bool;
@@ -99,6 +101,8 @@ in {
 
     # needed for hyprlock
     # (https://home-manager-options.extranix.com/?query=programs.hyprlock.enable&release=release-25.11)
-    security.pam.services.hyprlock = mkIf cfg.lock.enable {};
+    security.pam.services.hyprlock = mkIf cfg.lock.enable {
+      enableGnomeKeyring = true;
+    };
   };
 }
