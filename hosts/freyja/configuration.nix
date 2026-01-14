@@ -24,6 +24,7 @@
     ../../modules/sops
     ../../modules/ydotool
     ../../modules/lid
+    ../../modules/pam
   ];
 
   # temp? because of darkmode stuff
@@ -35,7 +36,12 @@
     lid.disable = true;
     battery.enable = true;
     avahi.enable = true;
-    hypr.enable = true;
+    hypr = {
+      enable = true;
+      defaultUser = "oq";
+      lock.replaceLogin = false;
+    };
+    pam.enable = true;
     ydotool.enable = true;
   };
 
