@@ -153,6 +153,30 @@ in {
           };
         };
       };
+
+      hypr.land.modules = {
+        "rotate-screen".conf = let
+          n = "center";
+          v = monitors.devices.${n};
+          formatted =
+            config.utils.fmtMonitor_device
+            n
+            v
+            (monitors.arrangement.byName.${v.name} // {r = 2;});
+        in
+          #hyprlang
+          ''
+            monitor = ${formatted}
+            input {
+              touchdevice {
+                transform = 2
+              }
+              tablet {
+                transform = 2
+              }
+            }
+          '';
+      };
     };
 
     programs.hyprlock = let
@@ -361,7 +385,7 @@ in {
                 background:@background;
                 color: @foreground;
             }
-            #clock:hover, #custom-pacman:hover, #custom-nixpkgs:hover, #custom-notification:hover,#bluetooth:hover,#network:hover,#battery:hover, #cpu:hover,#memory:hover,#temperature:hover{
+            #clock:hover, #custom-pacman:hover, #custom-nixpkgs:hover, #custom-rotate-screen:hover, #custom-notification:hover,#bluetooth:hover,#network:hover,#battery:hover, #cpu:hover,#memory:hover,#temperature:hover{
                 transition: all .3s ease;
                 color:@color9;
             }
@@ -421,11 +445,15 @@ in {
                 border: none;
                 text-shadow: 0px 0px 2px rgba(0, 0, 0, .5);
             }
+            #custom-rotate-screen {
+                padding: 0px 5px;
+                transition: all .3s ease;
+                color:@foreground;
+            }
             #bluetooth{
                 padding: 0px 5px;
                 transition: all .3s ease;
                 color:@foreground;
-
             }
             #pulseaudio{
                 padding: 0px 5px;
@@ -503,7 +531,7 @@ in {
         settings = let
           default = {
             left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
-            center = ["hyprland/workspaces"];
+            center = ["hyprland/workspaces" "custom/rotate-screen"];
             right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
             bar = monitor: (
               {
@@ -659,6 +687,12 @@ in {
               signal = 8;
               tooltip = true;
               tooltip-format = "{} Nix updates available\nLeft-click: Update flake\nRight-click: Rebuild system";
+            };
+            "custom/rotate-screen" = {
+              format = "⟳";
+              on-click = config.modules.hypr.land.modules."rotate-screen".scripts.toggle;
+              tooltip = true;
+              tooltip-format = "Flip screen upside down.";
             };
             "custom/expand" = {
               "format" = "";

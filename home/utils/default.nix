@@ -60,6 +60,17 @@ with lib; {
         else throw "`color` does not match the expected format.";
     in "rgba(${val}${opacity})";
 
+    fmtMonitor_device = _k: device: pos: let
+      w = toString device.dim.w;
+      h = toString device.dim.h;
+      s = toString device.dim.s;
+      x = toString pos.x;
+      y = toString pos.y;
+      r = toString pos.r;
+      hz = toString device.hz;
+      inherit (device) name;
+    in "${name}, ${w}x${h}@${hz}Hz, ${x}x${y}, ${s}, transform, ${r}";
+
     # fmtOpacity_percentage = opacity: let
 
     # Float to Int

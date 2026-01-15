@@ -6,6 +6,7 @@
   monitors = config.vars.monitors;
   cfg = config.modules.hypr.land;
   fmtColor = config.utils.fmtColor_rgbaFn;
+  fmtMonitor = config.utils.fmtMonitor_device;
 in
   with lib; {
     options.modules.hypr.land = {
@@ -14,6 +15,7 @@ in
 
     imports = [
       ./input.nix
+      ./modules.nix
     ];
 
     config = mkIf cfg.enable {
@@ -23,20 +25,8 @@ in
         # source = "${config.xdg.cache}/pywal/colors-hyprland.conf";
 
         monitor =
-          lib.attrsets.mapAttrsToList (
-            k: v:
-              with v; let
-                conv = toString;
-                pos = monitors.arrangement.byName.${name};
-                w = conv dim.w;
-                h = conv dim.h;
-                s = conv dim.s;
-                x = conv pos.x;
-                y = conv pos.y;
-                r = conv pos.r;
-                hz = conv v.hz;
-              in "${name}, ${w}x${h}@${hz}Hz, ${x}x${y}, ${s}, transform, ${r}"
-          )
+          lib.attrsets.mapAttrsToList
+          (n: v: fmtMonitor n v monitors.arrangement.byName.${v.name})
           monitors.devices;
 
         workspace = let
