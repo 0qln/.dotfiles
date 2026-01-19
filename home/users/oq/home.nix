@@ -91,6 +91,12 @@ in
           hypr.land.input.submaps = {
             "workspace" = {
               key = "W";
+              binds = map (w: {
+                flags = "";
+                keys = ", ${toString w}";
+                dispatch = "workspace ${toString w}";
+                reset = true;
+              }) (lists.range 0 9);
             };
             "resize" = {
               key = "R";
