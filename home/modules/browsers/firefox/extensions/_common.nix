@@ -13,6 +13,7 @@ args @ {
     rycee.firefox-addons.darkreader
     rycee.firefox-addons.return-youtube-dislikes
     rycee.firefox-addons.faststream
+    rycee.firefox-addons.dont-track-me-google1
   ]
   ++ [
     (import ./vimium-ff.nix args)
