@@ -124,6 +124,7 @@ in
               ];
             };
           };
+          gimp.enable = mkDefault true;
           discord.vesktop.enable = mkDefault true;
           discord.vesktop.theme = mkDefault "system24";
           libreoffice.enable = mkDefault true;

@@ -78,11 +78,13 @@ in {
         source = ~/${modulesConf}
       '';
 
+    # modules.conf
+    systemd.user.tmpfiles.rules = [
+      "f /${config.home.homeDirectory}/${modulesConf} 0775 ${config.home.username} users - -"
+    ];
+
     # set up files
     home.file = mkMerge (lists.flatten [
-      # modules.conf
-      # {"${modulesConf}".text = lib.concatStringsSep "\n" (attrsets.mapAttrsToList (name: _: sourceX name) cfg.modules);}
-
       # modules/<name>/hyprland.conf
       (
         attrsets.mapAttrsToList

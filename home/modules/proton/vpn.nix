@@ -13,8 +13,7 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # this is depricated, TODO: find an alternative other than using gui
-      # protonvpn-cli_2
+      protonvpn-gui
     ];
   };
 }
