@@ -59,6 +59,7 @@ in {
                 timeout_ms = 2000;
                 stop_after_first = true;
               };
+              typescript = ["prettierd"];
               java = ["astyle"];
               latex = ["latexindent"];
               "_" = [
