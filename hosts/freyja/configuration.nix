@@ -13,6 +13,7 @@
     ./keys.nix
     ./bluetooth.nix
     ./pen.nix
+    ./networking.nix
 
     ../../home/users/oq
     ../../home/users/root

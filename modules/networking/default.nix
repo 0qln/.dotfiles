@@ -40,7 +40,6 @@ in {
       # if we tamper with dns in any way, disable default dns stuff.
       services.resolved.enable = lib.mkForce false;
       networking = {
-        nameservers = ["127.0.0.1" "::1"];
         # If using dhcpcd:
         dhcpcd.extraConfig = "nohook resolv.conf";
         # If using NetworkManager:
