@@ -68,7 +68,6 @@ in
           };
           gh.enable = mkDefault true;
           lf.enable = mkDefault true;
-          proton.vpn.enable = mkDefault true;
           xdg-utils.enable = mkDefault true;
           yubi.enable = mkDefault true;
           tools.enable = mkDefault true;
@@ -81,6 +80,7 @@ in
 
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
+          proton.vpn.enable = mkDefault true;
           audio.enable = mkDefault true;
           terminal.emulator = mkDefault "kitty";
           browser.firefox = {
