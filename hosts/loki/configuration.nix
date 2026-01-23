@@ -25,11 +25,7 @@
       imports = [./home-vars.nix];
       settings = {
         enable = true;
-        uiEnv = "tui";
-      };
-      modules = {
-        fonts.enable = true;
-        nixvim.wsl.enable = true;
+        uiEnv = "wsl";
       };
       private = {
         secrets.ssh = {

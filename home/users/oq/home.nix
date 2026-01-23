@@ -76,6 +76,12 @@ in
           pam.enable = mkDefault true;
         }
 
+        # wsl-only modules
+        (mkIf (cfg.uiEnv == "wsl") {
+          fonts.enable = true;
+          nixvim.wsl.enable = true;
+        })
+
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
           proton.vpn.enable = mkDefault true;
