@@ -47,8 +47,6 @@ in
       # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
       home.stateVersion = "25.05"; # Did you read the comment?
 
-      themes.cogecha-1_uneasy-flowers.enable = mkDefault true;
-
       private = {
         secrets.gh.hostsYml = mkDefault true;
       };
