@@ -237,7 +237,7 @@
       devShells.x86_64-linux.default = (
         with (import nixpkgs {system = "x86_64-linux";});
         with (import ./utils); let
-          inherit (import-module ./vars {}) vars;
+          inherit (import-module ./vars {inherit pkgs;}) vars;
           lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
 
           packages = [
