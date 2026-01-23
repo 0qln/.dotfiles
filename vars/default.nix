@@ -1,6 +1,13 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   config.vars = {
-    home.config.backup.extension = "hm-bac";
+    home.config.backup = {
+      extension = "hm-bac";
+      command = "${pkgs.lib.getExe pkgs.trashy}";
+    };
 
     domains = {
       "0qln.duckdns.org" = {

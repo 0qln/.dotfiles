@@ -60,6 +60,10 @@ with lib; {
                         type = types.str;
                         description = "Backup file extension";
                       };
+                      command = mkOption {
+                        type = types.str;
+                        description = "Backup file command";
+                      };
                     };
                   };
                   default = {};
