@@ -43,6 +43,10 @@
     bongocat = {
       url = "github:0qln/wayland-bongocat";
     };
+    cartograph-cf = {
+      url = "github:0qln/CartographCF-Nerdfont";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
@@ -138,7 +142,7 @@
         system = "x86_64-linux";
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [nur.overlays.default];
+          overlays = [nur.overlays.default inputs.cartograph-cf.overlays.default];
         };
         vars = import ./vars {
           inherit (vars) config;
