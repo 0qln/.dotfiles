@@ -19,6 +19,14 @@ with lib; let
         conf = mkOption {
           type = types.str;
         };
+        mutable = mkOption {
+          type = types.bool;
+          default = false;
+          description = ''
+            Whether the hyprland.conf file should be mutable.
+            Any edits will be removed next time this modules executes.
+          '';
+        };
         scripts = {
           up = mkOption {
             type = types.path;
@@ -69,7 +77,11 @@ in {
     };
   };
 
-  config = {
+  config = let
+    mods = cfg.modules;
+    constMods = attrsets.filterAttrs (_: m: !m.mutable) mods;
+    mutMods = attrsets.filterAttrs (_: m: m.mutable) mods;
+  in {
     # use the extraConfig option, such that the module is sourced last
     # and can overwrite the default config.
     wayland.windowManager.hyprland.extraConfig =
@@ -78,18 +90,25 @@ in {
         source = ~/${modulesConf}
       '';
 
-    # modules.conf
-    systemd.user.tmpfiles.rules = [
-      "f /${config.home.homeDirectory}/${modulesConf} 0775 ${config.home.username} users - -"
+    systemd.user.tmpfiles.rules = mkMerge [
+      # modules.conf
+      ["f /${config.home.homeDirectory}/${modulesConf} 0775 ${config.home.username} users - -"]
+
+      # (mut) modules/<name>/hyprland.conf
+      (
+        attrsets.mapAttrsToList
+        (name: module: "f+ /${config.home.homeDirectory}/${moduleXConf name} 0775 ${config.home.username} users - ${module.conf}")
+        mutMods
+      )
     ];
 
     # set up files
     home.file = mkMerge (lists.flatten [
-      # modules/<name>/hyprland.conf
+      # (const) modules/<name>/hyprland.conf
       (
         attrsets.mapAttrsToList
         (name: module: {"${moduleXConf name}".text = module.conf;})
-        cfg.modules
+        constMods
       )
 
       # modules/<name>/scripts/<script>
