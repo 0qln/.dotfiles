@@ -174,6 +174,10 @@ in {
               tablet {
                 transform = 2
               }
+              touchpad {
+                flip_x = true
+                flip_y = true
+              }
             }
           '';
       };
