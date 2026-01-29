@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   imports = [
     ../_common/configuration.nix
 
@@ -15,6 +15,7 @@
     ../../modules/avahi
     ../../modules/home-manager
     ../../modules/hypr
+    ../../modules/kde
     ../../modules/sops
     ../../modules/ydotool
     ../../modules/lid
@@ -25,12 +26,20 @@
   modules = {
     # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
     lid.disable = true;
-    battery.enable = true;
+    battery.enable = !config.modules.kde.enable;
     avahi.enable = true;
     hypr = {
       enable = true;
       defaultUser = "oq";
       lock.replaceLogin = false;
+    };
+    # enable kde x11 sessions aswell, since the hp stylus pen's configuration via wacom
+    # drivers and libwacom in not supported under wayland.
+    # see:
+    # -
+    kde = {
+      enable = true;
+      compositor = "x11";
     };
     pam.enable = true;
     ydotool.enable = true;
