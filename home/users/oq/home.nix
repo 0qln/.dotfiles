@@ -88,40 +88,50 @@ in
               enable = mkDefault true;
             };
           };
-          hypr.land.input.submaps = {
-            "workspace" = {
-              key = "W";
-              binds = map (w: {
-                flags = "";
-                keys = ", ${toString w}";
-                dispatch = "workspace ${toString w}";
-                reset = true;
-              }) (lists.range 0 9);
+          hypr.land = {
+            modules = {
+              # todo: maybe ein waybar toggle ding womit ich das dann togglen kann idk (📝)
+              "scratchpad" = {
+                # mutable config file / scratchpad
+                conf = "";
+                mutable = true;
+              };
             };
-            "resize" = {
-              key = "R";
-              binds = [
-                {
-                  flags = "e";
-                  keys = ", right";
-                  dispatch = "resizeactive 10 0";
-                }
-                {
-                  flags = "e";
-                  keys = ", left";
-                  dispatch = "resizeactive -10 0";
-                }
-                {
-                  flags = "e";
-                  keys = ", up";
-                  dispatch = "resizeactive 0 -10";
-                }
-                {
-                  flags = "e";
-                  keys = ", down";
-                  dispatch = "resizeactive 0 10";
-                }
-              ];
+            input.submaps = {
+              "workspace" = {
+                key = "W";
+                binds = map (w: {
+                  flags = "";
+                  keys = ", ${toString w}";
+                  dispatch = "workspace ${toString w}";
+                  reset = true;
+                }) (lists.range 0 9);
+              };
+              "resize" = {
+                key = "R";
+                binds = [
+                  {
+                    flags = "e";
+                    keys = ", right";
+                    dispatch = "resizeactive 10 0";
+                  }
+                  {
+                    flags = "e";
+                    keys = ", left";
+                    dispatch = "resizeactive -10 0";
+                  }
+                  {
+                    flags = "e";
+                    keys = ", up";
+                    dispatch = "resizeactive 0 -10";
+                  }
+                  {
+                    flags = "e";
+                    keys = ", down";
+                    dispatch = "resizeactive 0 10";
+                  }
+                ];
+              };
             };
           };
           gimp.enable = mkDefault true;
