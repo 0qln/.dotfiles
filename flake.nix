@@ -44,7 +44,7 @@
       url = "github:0qln/wayland-bongocat";
     };
     cartograph-cf = {
-      url = "github:0qln/CartographCF-Nerdfont";
+      url = "github:0qln/Cartograph";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
