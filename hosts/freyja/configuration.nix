@@ -36,7 +36,12 @@
     # enable kde x11 sessions aswell, since the hp stylus pen's configuration via wacom
     # drivers and libwacom in not supported under wayland.
     # see:
-    # -
+    # - https://github.com/linuxwacom/xf86-input-wacom/wiki/Wayland
+    # also relevant:
+    # - https://knowledgebase.frame.work/en_us/stylus-setup-and-troubleshooting-on-linux-B1J5djrSbx
+    # - https://github.com/linuxwacom/input-wacom/wiki/Common-Issues
+    # - https://bugs.kde.org/show_bug.cgi?id=469232
+    # - https://forums.linuxmint.com/viewtopic.php?t=444949
     kde = {
       enable = true;
       compositor = "x11";

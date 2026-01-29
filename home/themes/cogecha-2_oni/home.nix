@@ -156,6 +156,8 @@ in {
       };
 
       hypr.land.modules = {
+        # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
+        # is this any better / even relevant?
         "rotate-screen".conf = let
           n = "center";
           v = monitors.devices.${n};
