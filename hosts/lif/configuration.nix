@@ -90,6 +90,9 @@
         uiEnv = "gui";
         enableWorkSimple = true;
       };
+
+      themes.cogecha-1_uneasy-flowers.enable = true;
+
       modules = {
         nixvim.wayland.enable = true;
         hypr.enable = true;

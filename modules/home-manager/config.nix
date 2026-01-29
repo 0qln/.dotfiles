@@ -3,23 +3,18 @@
   inputs,
   nur,
   pkgs-citrix,
-  pkgs-stable,
   config,
   utilz,
   ...
 }: let
-  backupExtension = config.vars.home.config.backup.extension;
+  inherit (config.vars.home.config) backup;
 in {
   extraSpecialArgs = {
     inherit inputs;
     inherit nur;
     inherit pkgs-citrix;
-    inherit pkgs-stable;
-    inherit backupExtension;
     inherit utilz;
+    backupExtension = backup.extension;
+    backupCommand = backup.command;
   };
-
-  backupFileExtension = backupExtension;
-
-  backupCommand = pkgs.lib.getExe pkgs.trashy;
 }

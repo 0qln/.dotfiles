@@ -35,7 +35,9 @@ in {
     modules.nix.caches = {"hyprland.cachix.org" = "a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=";};
 
     # You can disable this if you're only using the Wayland session.
-    services.xserver.enable = false;
+    # (Using lower priority since this is not a *requirement* and should be easily overridable
+    # by other modules, such as ../kde)
+    services.xserver.enable = mkDefault false;
 
     # Logins screen
     services.displayManager.sddm = {

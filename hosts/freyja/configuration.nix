@@ -1,14 +1,7 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{config, ...}: {
   imports = [
-    # inputs.private.nixosModules."lif"
-
     ../_common/configuration.nix
 
-    # ./bluetooth.nix
     ./bootloader.nix
     ./keys.nix
     ./bluetooth.nix
@@ -22,28 +15,35 @@
     ../../modules/avahi
     ../../modules/home-manager
     ../../modules/hypr
+    ../../modules/kde
     ../../modules/sops
     ../../modules/ydotool
     ../../modules/lid
     ../../modules/pam
+    ../../modules/xdg
   ];
-
-  # temp? because of darkmode stuff
-  # https://home-manager-options.extranix.com/?query=xdg.portal.enable&release=release-25.11
-  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 
   modules = {
     # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
     lid.disable = true;
-    battery.enable = true;
+    battery.enable = !config.modules.kde.enable;
     avahi.enable = true;
     hypr = {
       enable = true;
       defaultUser = "oq";
       lock.replaceLogin = false;
     };
+    # enable kde x11 sessions aswell, since the hp stylus pen's configuration via wacom
+    # drivers and libwacom in not supported under wayland.
+    # see:
+    # -
+    kde = {
+      enable = true;
+      compositor = "x11";
+    };
     pam.enable = true;
     ydotool.enable = true;
+    xdg.enable = true;
   };
 
   sops = {

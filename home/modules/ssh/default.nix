@@ -31,7 +31,7 @@ in {
           };
         }
         (let
-          lifbrasirCfg = {
+          lifbrasirCfg = mkIf (builtins.hasAttr "server" config.modules.secrets.ssh.identities) {
             user = "root";
             identityFile = config.modules.secrets.ssh.identities.server;
             identitiesOnly = true;

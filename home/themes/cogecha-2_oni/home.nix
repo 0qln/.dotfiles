@@ -11,6 +11,7 @@ with lib; let
 
   cfg = config.themes.${name};
 
+  inherit (config) settings;
   inherit (config.vars) monitors;
   inherit (config.theme) wallpapers;
 in {
@@ -38,7 +39,7 @@ in {
     };
 
     xdg.portal = {
-      enable = true;
+      enable = mkIf (settings.uiEnv == "gui") true;
     };
 
     dconf = {

@@ -43,6 +43,10 @@
     bongocat = {
       url = "github:0qln/wayland-bongocat";
     };
+    cartograph-cf = {
+      url = "github:0qln/Cartograph";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
@@ -138,7 +142,7 @@
         system = "x86_64-linux";
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [nur.overlays.default];
+          overlays = [nur.overlays.default inputs.cartograph-cf.overlays.default];
         };
         vars = import ./vars {
           inherit (vars) config;
@@ -147,58 +151,66 @@
       in
         builtins.listToAttrs (
           pkgs.lib.lists.flatten (
-            # todo: add hosts info (e.g. lif.cachyos)
-            utilz.mods.eachX hm.users (
-              user:
-                utilz.mods.eachX (hm.envs user) (
-                  utilz.mods.eachX hm.themes (
-                    theme: env: let
-                      hm.config = import ./modules/home-manager/config.nix {
-                        inherit pkgs;
-                        inherit utilz;
-                        inherit inputs;
-                        inherit (pkgs) nur;
-                        pkgs-citrix = pkgs-citrix system;
-                        pkgs-system = pkgs-system system;
-                        config = vars;
-                      };
-                      hm.vars = import ./home/users/${user}/vars.nix {
-                        inherit (hm.vars) config;
-                        inherit (pkgs) lib;
-                      };
-                    in {
-                      name = "${user}-${env}-${theme}";
-                      value = home-manager.lib.homeManagerConfiguration (
-                        hm.config
-                        // {
-                          inherit pkgs;
-                          extraSpecialArgs = {
-                            flake = self;
+            utilz.mods.eachX hosts (
+              host:
+                utilz.mods.eachX hm.users (
+                  user:
+                    utilz.mods.eachX (hm.envs user) (
+                      utilz.mods.eachX hm.themes (
+                        theme: env: let
+                          hm.config = import ./modules/home-manager/config.nix {
+                            inherit pkgs;
+                            inherit utilz;
                             inherit inputs;
                             inherit (pkgs) nur;
+                            pkgs-citrix = pkgs-citrix system;
+                            pkgs-system = pkgs-system system;
+                            config = vars;
                           };
-                          modules = [
-                            hm.vars
-                            (import ./home/users/${user}/home.nix)
-                            (import ./home/themes/${theme}/default.nix)
-                            (_: {
-                              settings = {
-                                enable = pkgs.lib.mkDefault true;
-                                uiEnv = pkgs.lib.mkDefault env;
+                          hm.vars = import ./home/users/${user}/vars.nix {
+                            inherit (hm.vars) config;
+                            inherit (pkgs) lib;
+                          };
+                        in {
+                          name = "${user}-${host}-${env}-${theme}";
+                          value = home-manager.lib.homeManagerConfiguration (
+                            hm.config
+                            // {
+                              inherit pkgs;
+                              extraSpecialArgs = {
+                                flake = self;
+                                inherit inputs;
+                                inherit (pkgs) nur;
+                                inherit utilz;
                               };
-                            })
-                            (_: {
-                              # Let Home Manager install and manage itself.
-                              programs.home-manager.enable = true;
+                              modules = [
+                                hm.vars
+                                (import ./home/users/${user}/home.nix)
+                                (import ./hosts/${host}/home-vars.nix)
+                                (_: {
+                                  settings = {
+                                    enable = pkgs.lib.mkDefault true;
+                                    uiEnv = pkgs.lib.mkDefault env;
+                                  };
+                                  themes = {
+                                    ${theme}.enable = true;
+                                  };
+                                })
+                                (_: {
+                                  # Let Home Manager install and manage itself.
+                                  programs.home-manager.enable = true;
 
-                              home.username = user;
-                              home.homeDirectory = hm.vars.config.vars.root;
-                            })
-                          ];
+                                  nix.package = pkgs.nix;
+
+                                  home.username = user;
+                                  home.homeDirectory = hm.vars.config.vars.root;
+                                })
+                              ];
+                            }
+                          );
                         }
-                      );
-                    }
-                  )
+                      )
+                    )
                 )
             )
           )
@@ -229,7 +241,7 @@
       devShells.x86_64-linux.default = (
         with (import nixpkgs {system = "x86_64-linux";});
         with (import ./utils); let
-          inherit (import-module ./vars {}) vars;
+          inherit (import-module ./vars {inherit pkgs;}) vars;
           lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
 
           packages = [

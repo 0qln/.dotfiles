@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  inputs,
   ...
 }:
 with lib; let
@@ -15,14 +16,21 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nixpkgs.overlays = [inputs.cartograph-cf.overlays.default];
+
     fonts.fontconfig.enable = true;
 
     home.packages = with pkgs;
       (optionals cfg.victor-mono.enable [nerd-fonts.victor-mono])
       ++ (optionals cfg.ibm-plex.enable [ibm-plex]);
 
+    home.file.".local/share/fonts/IbmPlex" = mkIf cfg.ibm-plex.enable {
+      source = "${pkgs.ibm-plex}/share/fonts/opentype";
+      recursive = true;
+    };
+
     home.file.".local/share/fonts/CartographCF" = mkIf cfg.cartograph-cf.enable {
-      source = "${import ./cartograph-cf/derivation.nix {inherit pkgs;}}";
+      source = "${pkgs.cartographcf-nerdfont}/share/fonts/opentype";
       recursive = true;
     };
   };

@@ -74,6 +74,26 @@
         "type": "github"
       }
     },
+    "cartograph-cf": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769305617,
+        "narHash": "sha256-0tuCyxc2hYYYuuqBos5akpUcPKPiXDYQJHpGnAjz1Tc=",
+        "owner": "0qln",
+        "repo": "Cartograph",
+        "rev": "0898e4146ce3134227cfc5bf17f1f77d0e610610",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "Cartograph",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -916,6 +936,7 @@
       "inputs": {
         "arion": "arion",
         "bongocat": "bongocat",
+        "cartograph-cf": "cartograph-cf",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "hyprpaper": "hyprpaper",
