@@ -1,14 +1,7 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{...}: {
   imports = [
-    # inputs.private.nixosModules."lif"
-
     ../_common/configuration.nix
 
-    # ./bluetooth.nix
     ./bootloader.nix
     ./keys.nix
     ./bluetooth.nix
@@ -26,11 +19,8 @@
     ../../modules/ydotool
     ../../modules/lid
     ../../modules/pam
+    ../../modules/xdg
   ];
-
-  # temp? because of darkmode stuff
-  # https://home-manager-options.extranix.com/?query=xdg.portal.enable&release=release-25.11
-  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 
   modules = {
     # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
@@ -44,6 +34,7 @@
     };
     pam.enable = true;
     ydotool.enable = true;
+    xdg.enable = true;
   };
 
   sops = {
