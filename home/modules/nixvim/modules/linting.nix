@@ -139,6 +139,8 @@
           csharp_ls.enable = true; # C#
           markdown_oxide.enable = true; # Markdown
           texlab.enable = true; # latex
+
+          elmls.enable = true;
         };
       };
     };
