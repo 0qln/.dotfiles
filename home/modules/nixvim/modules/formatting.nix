@@ -48,7 +48,10 @@ in {
                 "shellcheck"
                 "shfmt"
               ];
-              rust = ["rustfmt"];
+              rust = {
+                __unkeyed-1 = "rustfmt";
+                lsp_format = "fallback";
+              };
               cpp = ["clang_format"];
               c = ["clang_format"];
               nix = {
@@ -71,11 +74,6 @@ in {
               xml = ["xmlstarlet"];
               html = ["djlint"];
               svelte = ["prettierd"];
-            };
-            formatters = {
-              rustfmt = {
-                command = lib.getExe pkgs.rustfmt;
-              };
             };
           };
         };
