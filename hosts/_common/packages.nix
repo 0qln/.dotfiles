@@ -9,5 +9,6 @@
     age
     jq
     openssl
+    zip
   ];
 }
