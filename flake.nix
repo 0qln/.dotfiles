@@ -6,6 +6,8 @@
 
     nixpkgs-stable.url = "nixpkgs/nixos-25.05";
 
+    nixpkgs-hot.url = "nixpkgs/nixos-unstable";
+
     nixpkgs-citrix.url = "nixpkgs/12bd230118a1901a4a5d393f9f56b6ad7e571d01";
 
     nur = {
@@ -70,6 +72,7 @@
     self,
     nixpkgs,
     nixpkgs-stable,
+    nixpkgs-hot,
     nixpkgs-citrix,
     nur,
     home-manager,
@@ -103,6 +106,11 @@
           inherit system;
         };
 
+      pkgs-hot = system:
+        import nixpkgs-hot {
+          inherit system;
+        };
+
       hm = {
         users = utilz.mods.collectMods ./home/users;
         themes = utilz.mods.collectMods ./home/themes;
@@ -129,6 +137,7 @@
                   inherit inputs;
                   pkgs-citrix = pkgs-citrix system;
                   pkgs-stable = pkgs-stable system;
+                  pkgs-hot = pkgs-hot system;
                   flake = self;
                   host-name = utilz.sanitizeHostName host;
                 };
