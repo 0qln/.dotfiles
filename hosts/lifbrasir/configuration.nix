@@ -95,7 +95,7 @@ in {
         acmeHost = fqdns.primary.dn;
       };
       dbpassFile = ./gitea/secrets/dbpass;
-      anubis.enable = true;
+      anubis.enable = false;
     };
 
     immich = {
