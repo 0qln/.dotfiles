@@ -46,25 +46,45 @@ in {
         recommendedProxySettings = true;
         recommendedTlsSettings = true;
 
-        virtualHosts = {
+        virtualHosts = let
+          proxyGitea = "http://localhost:${toString port}";
+          proxyAnubis = "http://unix:/run/anubis/anubis-gitea/anubis.sock:";
+        in {
           "${cfg.fqdn.dn}" = mkMerge [
             # Default
             {
               forceSSL = true;
               useACMEHost = cfg.fqdn.acmeHost;
+              locations."/".extraConfig =
+                # nginx
+                ''
+                  client_max_body_size 512M;
+                '';
             }
 
             # Gitea
             (mkIf (!cfg.anubis.enable) {
               locations."/" = {
-                proxyPass = "http://localhost:${toString port}/";
+                proxyPass = "${proxyGitea}/";
               };
             })
 
             # Anubis
             (mkIf cfg.anubis.enable {
-              locations."/" = {
-                proxyPass = "http://unix:/run/anubis/anubis-gitea/anubis.sock:/";
+              locations = {
+                # api logins
+                "/api/v1/user" = {proxyPass = "${proxyGitea}/api/v1/user";};
+                "/api/v1/user/keys" = {proxyPass = "${proxyGitea}/api/v1/user/keys";};
+
+                # anything else
+                "/" = {
+                  proxyPass = "${proxyAnubis}/";
+                  extraConfig =
+                    # nginx
+                    ''
+                      proxy_set_header X-Real-Ip $remote_addr;
+                    '';
+                };
               };
             })
           ];
@@ -94,6 +114,7 @@ in {
           server = {
             DOMAIN = cfg.fqdn.dn;
             ROOT_URL = "https://${cfg.fqdn.dn}/";
+            LOCAL_ROOT_URL = mkIf cfg.anubis.enable "http://localhost:${toString port}";
             HTTP_PORT = port;
           };
           repository = {
@@ -106,6 +127,9 @@ in {
             LFS_MAX_FILE_SIZE = 1024;
           };
           service.DISABLE_REGISTRATION = true;
+          security = {
+            REVERSE_PROXY_TRUSTED_PROXIES = "127.0.0.0/8,::1/128";
+          };
         };
       };
 
