@@ -174,6 +174,7 @@
                             inherit (pkgs) nur;
                             pkgs-citrix = pkgs-citrix system;
                             pkgs-system = pkgs-system system;
+                            pkgs-hot = pkgs-hot system;
                             config = vars;
                           };
                           hm.vars = import ./home/users/${user}/vars.nix {
