@@ -20,6 +20,11 @@ with lib; {
       description = "domain infos";
     };
 
+    system.default = mkOption {
+      type = types.str;
+      description = "the default system that is assumed in this flake";
+    };
+
     hosts = let
       hostInfoType = types.submodule {
         options = {

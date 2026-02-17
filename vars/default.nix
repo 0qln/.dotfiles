@@ -4,6 +4,8 @@
   ...
 }: {
   config.vars = {
+    system.default = "x86_64-linux";
+
     home.config.backup = {
       extension = "hm-bac";
       command = "${pkgs.lib.getExe pkgs.trashy}";
