@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "Available outputs: "
+nix eval .#meta | alejandra -q
