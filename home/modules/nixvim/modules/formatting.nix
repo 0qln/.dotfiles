@@ -74,6 +74,7 @@ in {
               xml = ["xmlstarlet"];
               html = ["djlint"];
               svelte = ["prettierd"];
+              python = ["black"];
             };
           };
         };
