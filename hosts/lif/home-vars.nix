@@ -1,18 +1,4 @@
 {lib, ...}: {
-  # todo: the worksimple is globally enable for this host such that the setting is enabled
-  # for the odoo dev profile... create a hardcoded profile for home-manager or something
-  # such that this is not forced for all build on this host.
-  settings = {
-    enableWorkSimple = true;
-  };
-
-  private = {
-    secrets.ssh = {
-      work = true;
-      work-devops = true;
-    };
-  };
-
   vars = {
     monitors = rec {
       devices = {

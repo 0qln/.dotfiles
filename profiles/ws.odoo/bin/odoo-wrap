@@ -1,0 +1,32 @@
+#!/bin/bash
+
+WS_DIR="/home/oq/odoo-ws"
+
+ADDONS="$(ls $WS_DIR/*/.git | xargs -n1 dirname)"
+echo "Detected Addons: "
+echo "$ADDONS"
+
+BASE_ADDONS="$(cat <(echo /home/oq/odoo/addons) <(echo /home/oq/enterprise-19.0) <(echo /home/oq/odoo-ws))"
+echo "Base Addons: "
+echo "$BASE_ADDONS"
+
+FULL_ADDONS="$(cat <(echo "$ADDONS") <(echo "$BASE_ADDONS"))"
+echo "Full Addons: "
+echo "$FULL_ADDONS"
+
+JOINED_ADDONS="$(echo "$FULL_ADDONS" | paste -sd, - )"
+echo "Joined Addons: "
+echo "$JOINED_ADDONS"
+
+PLUGINS="$(fd -t d -d 1 . "$WS_DIR" | xargs realpath | xargs -n1 basename)"
+echo "Plugins: "
+echo "$PLUGINS"
+
+JOINED_PLUGINS="$(echo "$PLUGINS" | xargs -n1 basename | paste -sd, - )"
+echo "Joined: $JOINED_PLUGINS"
+
+bin/python3 odoo/odoo-bin $1 \
+    --http-interface=0.0.0.0 \
+    --addons-path="$JOINED_ADDONS" \
+    -u="$JOINED_PLUGINS" \
+    -d db2 -i base

@@ -89,6 +89,8 @@
 
         hosts = utilz.mods.collectMods ./hosts;
 
+        profiles = (utilz.mods.collectMods ./profiles) ++ [""];
+
         hm = {
           users = utilz.mods.collectMods ./home/users;
           themes = utilz.mods.collectMods ./home/themes;
@@ -200,6 +202,21 @@
             )
           );
 
+          # `profile` is option
+          mkHomeName = {
+            user,
+            host,
+            env,
+            theme,
+            profile,
+          }:
+            "${user}-${host}-${env}-${theme}"
+            + (
+              if profile != ""
+              then "-${profile}"
+              else ""
+            );
+
           homeConfigurations = builtins.listToAttrs (
             lib.lists.flatten (
               utilz.mods.eachX hosts (
@@ -212,55 +229,58 @@
                     user:
                       utilz.mods.eachX (hm.envs user) (
                         utilz.mods.eachX hm.themes (
-                          theme: env: let
-                            hm.config = import ./modules/home-manager/config.nix {
-                              inherit utilz;
-                              inherit inputs;
-                              inherit (pkgs) nur;
-                              inherit pkgs;
-                              inherit pkgs-hot;
-                              inherit pkgs-citrix;
-                              inherit pkgs-stable;
-                              config = vars;
-                              flake = self;
-                            };
-                            hm.vars = import ./home/users/${user}/vars.nix {
-                              inherit (hm.vars) config;
-                              inherit lib;
-                            };
-                          in {
-                            name = "${user}-${host}-${env}-${theme}";
-                            value = withSystem (system host) (_:
-                              home-manager.lib.homeManagerConfiguration (
-                                hm.config
-                                // {
-                                  pkgs = (pkgss system).pkgs;
-                                  modules = [
-                                    hm.vars
-                                    (import ./home/users/${user}/home.nix)
-                                    (import ./hosts/${host}/home-vars.nix)
-                                    (_: {
-                                      settings = {
-                                        enable = lib.mkDefault true;
-                                        uiEnv = lib.mkDefault env;
-                                      };
-                                      themes = {
-                                        ${theme}.enable = true;
-                                      };
-                                    })
-                                    (_: {
-                                      # Let Home Manager install and manage itself.
-                                      programs.home-manager.enable = true;
+                          utilz.mods.eachX profiles (
+                            profile: theme: env: let
+                              hm.config = import ./modules/home-manager/config.nix {
+                                inherit utilz;
+                                inherit inputs;
+                                inherit (pkgs) nur;
+                                inherit pkgs;
+                                inherit pkgs-hot;
+                                inherit pkgs-citrix;
+                                inherit pkgs-stable;
+                                config = vars;
+                                flake = self;
+                              };
+                              hm.vars = import ./home/users/${user}/vars.nix {
+                                inherit (hm.vars) config;
+                                inherit lib;
+                              };
+                            in {
+                              name = mkHomeName {inherit user host env theme profile;};
+                              value = withSystem (system host) (_:
+                                home-manager.lib.homeManagerConfiguration (
+                                  hm.config
+                                  // {
+                                    pkgs = (pkgss system).pkgs;
+                                    modules = [
+                                      hm.vars
+                                      (import ./home/users/${user}/home.nix)
+                                      (import ./hosts/${host}/home-vars.nix)
+                                      (import ./profiles/${profile}/home.nix)
+                                      (_: {
+                                        settings = {
+                                          enable = lib.mkDefault true;
+                                          uiEnv = lib.mkDefault env;
+                                        };
+                                        themes = {
+                                          ${theme}.enable = true;
+                                        };
+                                      })
+                                      (_: {
+                                        # Let Home Manager install and manage itself.
+                                        programs.home-manager.enable = true;
 
-                                      nix.package = pkgs.nix;
+                                        nix.package = pkgs.nix;
 
-                                      home.username = user;
-                                      home.homeDirectory = hm.vars.config.vars.root;
-                                    })
-                                  ];
-                                }
-                              ));
-                          }
+                                        home.username = user;
+                                        home.homeDirectory = hm.vars.config.vars.root;
+                                      })
+                                    ];
+                                  }
+                                ));
+                            }
+                          )
                         )
                       )
                   )
