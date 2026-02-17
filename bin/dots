@@ -3,5 +3,11 @@
 action="$1"
 output="$2"
 
+# show info if no action given.
+if [ -z "$action" ]; then
+    meta
+    exit 0
+fi
+
 dots-prepare
 nixos-rebuild "$action" --flake "$HOME/.dotfiles?submodules=1#$output" --impure --show-trace --sudo
