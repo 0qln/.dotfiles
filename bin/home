@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+action="$1"
+output="$2"
+
+# show info if no action given.
+if [ -z "$action" ]; then
+    meta
+    exit 0
+fi
+
+dots-prepare
+home-manager "$action" -b "$HM_BACKUP_EXT" --flake "$HOME/.dotfiles?submodules=1#$output" --impure --show-trace
