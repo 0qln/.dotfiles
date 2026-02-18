@@ -149,6 +149,9 @@
                 inputs.nur.overlays.default
                 inputs.cartograph-cf.overlays.default
               ];
+              config = {
+                allowUnfree = true;
+              };
             };
 
             # this does not evaluate and thus not fetch unless pkgs-citrix is
