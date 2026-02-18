@@ -2,8 +2,6 @@
   imports = [
     ../loki
     ./configuration.nix
-
-    ../../modules/networking
   ];
 
   home-manager = {

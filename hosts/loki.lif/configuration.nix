@@ -1,5 +1,9 @@
-{pkgs, ...}: {
+{inputs, ...}: {
   imports = [
+    inputs.private.nixosModules."lif"
+
     ./mount.nix
+
+    ../../modules/networking
   ];
 }
