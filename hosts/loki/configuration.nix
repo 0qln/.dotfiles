@@ -1,11 +1,8 @@
-{inputs, ...}: {
+{...}: {
   imports = [
-    inputs.private.nixosModules."lif"
-
-    ../_common/configuration.nix
+    ../_common
 
     ../../modules/wsl
-
     ../../modules/sops
     ../../modules/home-manager
 
