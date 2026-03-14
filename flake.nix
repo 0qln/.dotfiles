@@ -55,8 +55,9 @@
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
     };
-
-    nixvim.url = "github:nix-community/nixvim";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+    };
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -145,13 +146,6 @@
           pkgss = system: {
             pkgs = import inputs.nixpkgs {
               inherit system;
-              overlays = [
-                inputs.nur.overlays.default
-                inputs.cartograph-cf.overlays.default
-              ];
-              config = {
-                allowUnfree = true;
-              };
             };
 
             # this does not evaluate and thus not fetch unless pkgs-citrix is
@@ -189,7 +183,6 @@
                 name = host;
                 value = withSystem system (_:
                   inputs.nixpkgs.lib.nixosSystem {
-                    inherit pkgs;
                     modules = [./hosts/${host}];
                     specialArgs = {
                       inherit utilz;

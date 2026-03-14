@@ -1,4 +1,4 @@
-{...}: {
+{inputs, ...}: {
   imports = [
     ../../modules/avahi
     ../../modules/ssh
@@ -14,6 +14,13 @@
     ./app-image.nix
     ./compat.nix
   ];
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [
+      inputs.nur.overlays.default
+      inputs.cartograph-cf.overlays.default
+    ];
+  };
 
   modules = {
     nix = {
