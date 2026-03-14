@@ -3,8 +3,10 @@
   config,
   ...
 }:
-with lib; {
-  config = mkIf config.modules.nixvim.clanker.enable {
+with lib; let
+  cfg = config.modules.nixvim;
+in {
+  config = mkIf cfg.clanker.enable {
     programs.nixvim = {
       # copilot is unfree licensed
       # https://github.com/nix-community/nixvim/issues/2147#issuecomment-2747536904
