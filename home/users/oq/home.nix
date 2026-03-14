@@ -53,7 +53,10 @@ in
 
       modules = mkMerge [
         {
-          nixvim.enable = mkDefault true;
+          nixvim = {
+            enable = mkDefault true;
+            clanker.enable = mkDefault true;
+          };
           bash.enable = mkDefault true;
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;

@@ -50,7 +50,7 @@ in {
         default = [];
         description = "Languages for which to enable line wrapping.";
       };
-      clanker.enable = mkEnableOption "clanker";
+      clanker.enable = mkEnableOption "clanker (github copilot)";
     };
   };
 
