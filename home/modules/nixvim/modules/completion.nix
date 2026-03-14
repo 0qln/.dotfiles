@@ -1,5 +1,11 @@
-{lib, ...}:
-with lib; {
+{
+  lib,
+  config,
+  ...
+}:
+with lib; let
+  cfg = config.modules.nixvim;
+in {
   programs.nixvim = {
     extraConfigLuaPost = ''
       local cmp = require'cmp'
@@ -24,7 +30,7 @@ with lib; {
     # inspiration: https://github.com/dc-tec/nixvim/blob/main/config/plugins/cmp/cmp.nix
     plugins = mkMerge [
       # Github Copilot: https://github.com/zbirenbaum/copilot-cmp/
-      {
+      (mkIf cfg.clanker.enable {
         copilot-cmp.enable = true;
         copilot-lsp.settings = {
           suggestion = {enabled = false;};
@@ -47,7 +53,7 @@ with lib; {
             Copilot = "";
           };
         };
-      }
+      })
 
       # ripgrep source:
       # https://github.com/lukas-reineke/cmp-rg?tab=readme-ov-file
