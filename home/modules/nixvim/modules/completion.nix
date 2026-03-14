@@ -49,6 +49,15 @@ with lib; {
         };
       }
 
+      # ripgrep source:
+      # https://github.com/lukas-reineke/cmp-rg?tab=readme-ov-file
+      {
+        cmp-rg.enable = true;
+        cmp.settings.sources = [
+          {name = "ripgrep";}
+        ];
+      }
+
       # Lspkind: https://github.com/onsails/lspkind.nvim/#option-2-nvim-cmp
       {
         lspkind.enable = true;
@@ -97,7 +106,6 @@ with lib; {
               {name = "buffer";}
               {name = "luasnip";}
               # {name = "ultisnips";}
-              #TODO: https://github.com/lukas-reineke/cmp-rg?tab=readme-ov-file
               {name = "emoji";}
               {name = "cmdline";}
               # { name = "cmp-tw2css"; } # TODO: cmp-tw2css does not exist on nixvim?
