@@ -33,9 +33,9 @@ in
             ["${steam_id}, gapsout:1500 ${gaps_out} ${gaps_out} ${gaps_out}"]
           ];
         windowrule = [
-          "tag +steam_bongocat, class:^(steam_app_${steam_id})$, title:^(BongoCat)$"
-          "workspace ${steam_id}, tag:steam_bongocat"
-          "fullscreenstate 1, tag:steam_bongocat" # maximize
+          "match:class ^(steam_app_${steam_id})$, match:title ^(BongoCat)$, tag +steam_bongocat"
+          "match:tag steam_bongocat, workspace ${steam_id}"
+          "match:tag steam_bongocat, fullscreen_state 1" # maximize
         ];
       };
     };

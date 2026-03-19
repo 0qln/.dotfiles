@@ -55,10 +55,12 @@ in
         settings = {
           # https://github.com/jesseduffield/lazygit/issues/155#issuecomment-2260986940
           git = {
-            paging = {
-              colorArg = "always";
-              pager = "delta --paging=never -s";
-            };
+            pagers = [
+              {
+                colorArg = "always";
+                pager = "delta --paging=never -s";
+              }
+            ];
           };
         };
       };

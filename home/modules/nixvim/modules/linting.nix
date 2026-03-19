@@ -10,7 +10,7 @@
         enable = true;
         lintersByFt = {
           bash = ["shellcheck"];
-          json = ["jsonlint"];
+          json = ["jsonls"];
           # markdown = ["vale"];
           go = ["golangcilint"];
           dockerfile = ["hadolint"];
@@ -27,9 +27,6 @@
           };
           golangcilint = {
             cmd = lib.getExe pkgs.golangci-lint;
-          };
-          jsonlint = {
-            cmd = lib.getExe pkgs.nodePackages.jsonlint;
           };
           luacheck = {
             cmd = lib.getExe pkgs.luaPackages.luacheck;
@@ -116,6 +113,8 @@
             # cmd = ["jdtls" "-configuration" "${config.home.homeDirectory}/.cache/jdtls"];
             # filetypes = ["ant" "java"];
           };
+
+          jsonls.enable = true; # JSON
 
           ts_ls.enable = true; # TS/JS
           cssls.enable = true; # CSS

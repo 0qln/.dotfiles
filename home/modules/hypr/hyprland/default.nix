@@ -160,52 +160,52 @@ in
           mapping = {
             "-" = [];
             "|-|" = [
-              "monitor ${monitors.devices.left.name}, tag:music"
-              "monitor ${monitors.devices.left.name}, tag:zoom"
+              "match:tag music, monitor ${monitors.devices.left.name}, "
+              "match:tag zoom, monitor ${monitors.devices.left.name}"
             ];
           };
         in
           mkMerge [
             mapping.${monitors.arrangement.byPictogram}
             [
-              "float, title:todoist-quick-add"
+              "match:title todoist-quick-add, float 1"
 
-              "float, title:Open Files"
-              "center, title:Open Files"
+              "match:title Open Files, float 1"
+              "match:title Open Files, center 1"
 
-              "tag +music, title:(?i).*youtube[-_ ]?music.*"
-              "size 918 536, tag:music"
-              "pseudo, tag:music"
+              "match:title (?i).*youtube[-_ ]?music.*, tag +music"
+              "match:tag music, size 918 536"
+              "match:tag music, pseudo 1"
 
               # chromium popups
-              "tag +chromium_popup, title: about:blank - Chromium"
-              "float, tag:chromium_popup"
-              "center, tag:chromium_popup"
-              "size 900 900, tag:chromium_popup"
+              "match:title about:blank - Chromium, tag +chromium_popup"
+              "match:tag chromium_popup, float 1"
+              "match:tag chromium_popup, center 1"
+              "match:tag chromium_popup, size 900 900"
 
               # image windows
-              "tag +qimgv, class:qimgv"
-              "float, tag:qimgv"
-              "center, tag:qimgv"
-              "size 900 900, tag:qimgv"
+              "match:class qimgv, tag +qimgv"
+              "match:tag qimgv, float 1"
+              "match:tag qimgv, center 1"
+              "match:tag qimgv, size 900 900"
 
               # dialogs
-              "tag +dialog, class:code, title:Open File"
-              "float, tag:dialog"
-              "center, tag:dialog"
-              "size 900 900, tag:dialog"
+              "match:title Open File, match:class code, tag +dialog"
+              "match:tag dialog, float 1"
+              "match:tag dialog, center 1"
+              "match:tag dialog, size 900 900"
 
               # zoom
-              "tag +zoom, class:zoom"
-              "float, tag:zoom"
+              "match:class zoom, tag +zoom"
+              "match:tag zoom, float 1"
 
               # no animations
-              "tag +no-anim, class:ueberzug.*"
-              "noanim, tag:no-anim"
+              "match:class ueberzug.*, tag +no-anim"
+              "match:tag no-anim, no_anim 1"
 
               # move ueberzug windows off the screen so they don't
               # flicker in the center until ueberzug moves them.
-              "move -10000 -10000, initialClass:ueberzug.*"
+              "match:class ueberzug.*, move -10000 -10000"
             ]
           ];
         # windowrule = [

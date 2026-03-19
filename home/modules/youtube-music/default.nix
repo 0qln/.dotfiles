@@ -23,14 +23,14 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      youtube-music
+      pear-desktop # youtube-music
     ];
 
     #TODO: there is an extension for transparency now. see if that works.
     # nixpkgs.overlays = [
     #   (
     #     final: prev:
-    #       prev.youtube-music.override {
+    #       prev.pear-desktop.override {
     #         patches = [./transparency.patch];
     #       }
     #   )

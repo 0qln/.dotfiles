@@ -1,11 +1,10 @@
 {
-  pkgs-hot,
+  pkgs,
   config,
   lib,
   ...
 }: let
   cfg = config.modules.discord.vesktop;
-  pkgs = pkgs-hot;
 in
   with lib; {
     options.modules.discord.vesktop = {

@@ -65,7 +65,7 @@ in {
       playerctl
       brightnessctl
       wl-clipboard-rs
-      inputs.hyprpaper.packages.${pkgs.system}.hyprpaper
+      inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.hyprpaper
       mako
       libnotify
     ];

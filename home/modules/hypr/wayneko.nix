@@ -5,6 +5,10 @@
   ...
 }: let
   cfg = config.modules.hypr.wayneko;
+
+  # https://github.com/NixOS/nixpkgs/issues/501211
+  oldPkgs = (builtins.getFlake "github:NixOS/nixpkgs/fbcf476f790d8a217c3eab4e12033dc4a0f6d23c").legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  inherit (oldPkgs) wayneko;
 in
   with lib; {
     options.modules.hypr.wayneko = {
@@ -17,7 +21,7 @@ in
     };
 
     config = mkIf cfg.enable {
-      home.packages = with pkgs; [
+      home.packages = [
         wayneko
       ];
 
@@ -32,7 +36,7 @@ in
           Service = {
             ExecStart = "${pkgs.writeShellScript "wayneko-${n}-start" ''
               SLEEPINESS=$(( RANDOM % 5 + 1 )) # random sleepiness between 1-5
-              ${getExe pkgs.wayneko} --layer top --follow-pointer true --type neko --sleepiness $SLEEPINESS
+              ${getExe wayneko} --layer top --follow-pointer true --type neko --sleepiness $SLEEPINESS
             ''}";
           };
 
