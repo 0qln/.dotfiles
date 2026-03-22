@@ -25,6 +25,7 @@ in
       home = {
         packages = with pkgs; [
           vesktop
+          discord
         ];
 
         file.".config/vesktop/themes/${cfg.theme}.css" = {
