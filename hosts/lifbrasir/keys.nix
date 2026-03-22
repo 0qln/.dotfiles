@@ -1,9 +1,9 @@
 {
-  config,
   pkgs,
+  lib,
   ...
-}: let
-in {
+}:
+with lib; {
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "de";
@@ -36,22 +36,18 @@ in {
   '';
 
   # https://nixos.wiki/wiki/Backlight
-  programs.light = {
-    enable = true;
-  };
-
   services.actkbd = {
     enable = true;
     bindings = [
       {
         keys = [224];
         events = ["key"];
-        command = "${pkgs.light}/bin/light -U 10";
+        command = "${getExe pkgs.brightnessctl} set 10%-";
       }
       {
         keys = [225];
         events = ["key"];
-        command = "${pkgs.light}/bin/light -A 10";
+        command = "${getExe pkgs.brightnessctl} set 10%+";
       }
     ];
   };

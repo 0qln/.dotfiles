@@ -7,7 +7,6 @@
 with lib; let
   serviceName = "nextcloud";
   package = pkgs.nextcloud32;
-  packages = pkgs.nextcloud32Packages;
   cfg = config.modules.${serviceName};
 in {
   imports = [
@@ -98,7 +97,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    modules.nextcloud._apps = packages.apps;
+    modules.nextcloud._apps = package.packages.apps;
 
     networking.firewall = {
       allowedTCPPorts = [
