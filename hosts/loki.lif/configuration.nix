@@ -3,7 +3,5 @@
     inputs.private.nixosModules."lif"
 
     ./mount.nix
-
-    ../../modules/networking
   ];
 }
