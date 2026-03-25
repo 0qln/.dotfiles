@@ -1,9 +1,9 @@
 {inputs, ...}: {
   imports = [
+    ../../modules
     ../../modules/avahi
     ../../modules/ssh
     ../../modules/nix
-    ../../modules/devenv
 
     ./localization.nix
     ./networking.nix
@@ -27,6 +27,7 @@
       flakes.enable = true;
     };
     devenv = {
+      enable = true;
       caches.enable = true;
     };
   };
