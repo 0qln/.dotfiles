@@ -17,7 +17,6 @@ in {
     ../../modules/ssh
     ../../modules/todoist-backup
     ../../modules/obsidian-livesync
-    ../../modules/nextcloud
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
     ../../modules/obsidian-livesync
