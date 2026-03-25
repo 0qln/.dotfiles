@@ -19,9 +19,6 @@ in {
     ../../modules/todoist-backup
     ../../modules/obsidian-livesync
     ../../modules/nextcloud
-    ../../modules/dynIp-updater/duckdns.nix
-    ../../modules/dynIp-updater/afraid.nix
-    ../../modules/dynIp-updater/cloudflare.nix
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
     ../../modules/gitea
