@@ -19,7 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/avahi
     ../../modules/flake-upgrader
     ../../modules/home-manager
     ../../modules/hypr

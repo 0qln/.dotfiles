@@ -1,7 +1,6 @@
 {inputs, ...}: {
   imports = [
     ../../modules
-    ../../modules/avahi
     ../../modules/ssh
     ../../modules/nix
 

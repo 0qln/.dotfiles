@@ -12,7 +12,6 @@
     ../../home/users/root
 
     ../../modules/battery
-    ../../modules/avahi
     ../../modules/home-manager
     ../../modules/hypr
     ../../modules/kde
