@@ -28,7 +28,6 @@
     ../../modules/wireguard
     ../../modules/wireguard/unicorns
     ../../modules/ydotool
-    ../../modules/docker
     ../../modules/pam
     ../../modules/xdg
 

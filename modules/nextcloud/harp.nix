@@ -19,10 +19,6 @@ in {
     };
   };
 
-  imports = [
-    ../docker
-  ];
-
   config = mkIf cfg.enable {
     # requires docker.
     # ~ https://github.com/nextcloud/HaRP?tab=readme-ov-file#how-to-install-it

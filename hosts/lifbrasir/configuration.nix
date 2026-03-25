@@ -25,7 +25,6 @@ in {
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
     ../../modules/gitea
-    ../../modules/docker
     ../../modules/mysql
     ../../modules/obsidian-livesync
     ../../modules/nginx
