@@ -20,7 +20,6 @@
     ../../home/users/root
 
     ../../modules/nixpkgs-garbage-disposal
-    ../../modules/sops
     ../../modules/steam
     ../../modules/wireguard
     ../../modules/wireguard/unicorns

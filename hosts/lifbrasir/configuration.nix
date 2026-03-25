@@ -11,7 +11,6 @@ in {
 
     ../../home/users/root/default.nix
 
-    ../../modules/sops
     ../../modules/ssh/service.nix
     ../../modules/vaultwarden
     ../../modules/ssh

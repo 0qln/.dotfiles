@@ -32,7 +32,7 @@ in {
     inputs.sops-nix.nixosModules.sops
   ];
 
-  options.sops = with lib; {
+  options.sops = {
     enable = mkEnableOption "sops";
     enableYubikeyIntegration = mkOption {
       type = types.bool;
@@ -53,112 +53,111 @@ in {
     };
   };
 
-  config = with lib;
-    mkIf cfg.enable {
-      sops = {
-        defaultSopsFormat = "yaml";
-        age.keyFile = identitiesFile;
+  config = mkIf cfg.enable {
+    sops = {
+      defaultSopsFormat = "yaml";
+      age.keyFile = identitiesFile;
+    };
+
+    environment.systemPackages = mkMerge [
+      # smart card daemon
+      (mkIf cfg.enableYubikeyIntegration [pkgs.pcsclite])
+    ];
+
+    # https://github.com/NixOS/nixpkgs/blob/0d00f23f023b7215b3f1035adb5247c8ec180dbc/nixos/modules/system/activation/activation-script.nix
+    system.activationScripts = let
+      # Copy the age identities to somewhere outside of the nix store, since sops
+      # does not allow paths to the nix store.
+      identitiesScript = {
+        name = "setupIdentitiesFile";
+        exec = let
+          appendIdentity = i:
+          #bash
+          ''
+            echo "# === ${i.name} ===" >> "${identitiesFile}"
+            cat ${i.file} >> "${identitiesFile}"
+
+          '';
+        in
+          #bash
+          ''
+            mkdir -p "$(dirname "${identitiesFile}")"
+            echo "" > "${identitiesFile}"
+            # yubiIdentities should come after the normal age identities. this way,
+            # sops will try them last and the activationScript will not fail if
+            # something was not yet set up correctly for the yubi keys.
+            ${strings.concatStrings (
+              map appendIdentity (cfg.identities ++ (optionals cfg.enableYubikeyIntegration cfg.yubiIdentities))
+            )}
+            chmod 400 "${identitiesFile}"
+          '';
       };
 
-      environment.systemPackages = mkMerge [
-        # smart card daemon
-        (mkIf cfg.enableYubikeyIntegration [pkgs.pcsclite])
-      ];
+      yubiScript = {
+        name = "setupYubikeyForSopsNix";
+        exec = with pkgs;
+        #bash
+          ''
+            # idea: https://github.com/Mic92/sops-nix/issues/377#issuecomment-2926579189
+            PATH=$PATH:${makeBinPath [age-plugin-yubikey]}
+            ${runtimeShell} -c "mkdir -p /var/lib/pcsc && ln -sfn ${ccid}/pcsc/drivers /var/lib/pcsc/drivers"
 
-      # https://github.com/NixOS/nixpkgs/blob/0d00f23f023b7215b3f1035adb5247c8ec180dbc/nixos/modules/system/activation/activation-script.nix
-      system.activationScripts = let
-        # Copy the age identities to somewhere outside of the nix store, since sops
-        # does not allow paths to the nix store.
-        identitiesScript = {
-          name = "setupIdentitiesFile";
-          exec = let
-            appendIdentity = i:
-            #bash
-            ''
-              echo "# === ${i.name} ===" >> "${identitiesFile}"
-              cat ${i.file} >> "${identitiesFile}"
+            echo "pcscd: $(${toybox}/bin/pgrep pcscd)"
 
-            '';
-          in
-            #bash
-            ''
-              mkdir -p "$(dirname "${identitiesFile}")"
-              echo "" > "${identitiesFile}"
-              # yubiIdentities should come after the normal age identities. this way,
-              # sops will try them last and the activationScript will not fail if
-              # something was not yet set up correctly for the yubi keys.
-              ${strings.concatStrings (
-                map appendIdentity (cfg.identities ++ (optionals cfg.enableYubikeyIntegration cfg.yubiIdentities))
-              )}
-              chmod 400 "${identitiesFile}"
-            '';
-        };
+            if ! ${toybox}/bin/pgrep pcscd > /dev/null ; then
 
-        yubiScript = {
-          name = "setupYubikeyForSopsNix";
-          exec = with pkgs;
-          #bash
-            ''
-              # idea: https://github.com/Mic92/sops-nix/issues/377#issuecomment-2926579189
-              PATH=$PATH:${makeBinPath [age-plugin-yubikey]}
-              ${runtimeShell} -c "mkdir -p /var/lib/pcsc && ln -sfn ${ccid}/pcsc/drivers /var/lib/pcsc/drivers"
+              # pcscd has some dependencies that sometimes aren't yet loaded when
+              # we start up pcscd, so we will wait a bit ...
+              # https://pcsclite.apdu.fr/
+
+              # TODO: find a better solution, maybe just copy the fucking systemd
+              # service module of nixpkgs in herer idkkkkkk
+
+              echo "waiting for dependencies..."
+              for i in {1..10}
+              do
+               echo "Loop spin:" $i
+                sleep 1
+              done
+              echo "done waiting"
+
+              echo starting pcscd...
+              ${pcsclite}/bin/pcscd
 
               echo "pcscd: $(${toybox}/bin/pgrep pcscd)"
-
-              if ! ${toybox}/bin/pgrep pcscd > /dev/null ; then
-
-                # pcscd has some dependencies that sometimes aren't yet loaded when
-                # we start up pcscd, so we will wait a bit ...
-                # https://pcsclite.apdu.fr/
-
-                # TODO: find a better solution, maybe just copy the fucking systemd
-                # service module of nixpkgs in herer idkkkkkk
-
-                echo "waiting for dependencies..."
-                for i in {1..10}
-                do
-                 echo "Loop spin:" $i
-                  sleep 1
-                done
-                echo "done waiting"
-
-                echo starting pcscd...
-                ${pcsclite}/bin/pcscd
-
-                echo "pcscd: $(${toybox}/bin/pgrep pcscd)"
-              fi
-            '';
-        };
-
-        setupSecretsScript = {
-          name = "setupSecrets";
-          # exec is implemented by the sops-nix module.
-        };
-      in {
-        # idk why but 'deps' does not work anymore so using
-        # alphabetic ordering instead ヽ(‘ー`)ノ
-        "__0_${identitiesScript.name}" = {
-          text = identitiesScript.exec;
-          # deps = [];
-        };
-        "__1_${yubiScript.name}" = mkIf cfg.enableYubikeyIntegration {
-          text = yubiScript.exec;
-          # deps = [identitiesScript.name];
-        };
-        ${setupSecretsScript.name} = {
-          # deps = mkMerge [
-          #   [identitiesScript.name]
-          #   (mkIf cfg.enableYubikeyIntegration [yubiScript.name])
-          # ];
-        };
+            fi
+          '';
       };
 
-      # setting this to false fixes the problem where age-plugin-yubikey does not work, due to there
-      # being either 2 or no pcscd processes running. One could probably modify the systemd service
-      # with some ExecPre thingy to clean up the script above but i currently could not find success
-      # while trying this.
-      services.pcscd = mkIf cfg.enableYubikeyIntegration {
-        enable = mkForce false;
+      setupSecretsScript = {
+        name = "setupSecrets";
+        # exec is implemented by the sops-nix module.
+      };
+    in {
+      # idk why but 'deps' does not work anymore so using
+      # alphabetic ordering instead ヽ(‘ー`)ノ
+      "__0_${identitiesScript.name}" = {
+        text = identitiesScript.exec;
+        # deps = [];
+      };
+      "__1_${yubiScript.name}" = mkIf cfg.enableYubikeyIntegration {
+        text = yubiScript.exec;
+        # deps = [identitiesScript.name];
+      };
+      ${setupSecretsScript.name} = {
+        # deps = mkMerge [
+        #   [identitiesScript.name]
+        #   (mkIf cfg.enableYubikeyIntegration [yubiScript.name])
+        # ];
       };
     };
+
+    # setting this to false fixes the problem where age-plugin-yubikey does not work, due to there
+    # being either 2 or no pcscd processes running. One could probably modify the systemd service
+    # with some ExecPre thingy to clean up the script above but i currently could not find success
+    # while trying this.
+    services.pcscd = mkIf cfg.enableYubikeyIntegration {
+      enable = mkForce false;
+    };
+  };
 }

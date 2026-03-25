@@ -11,7 +11,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/sops
     ../../modules/ydotool
     ../../modules/xdg
   ];

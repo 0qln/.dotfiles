@@ -3,7 +3,6 @@
     ../_common
 
     ../../modules/wsl
-    ../../modules/sops
 
     ../../home/users/oq
     ../../home/users/root
