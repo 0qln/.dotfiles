@@ -16,7 +16,6 @@ in {
     ../../modules/home-manager
     ../../modules/ssh/service.nix
     ../../modules/dashboard
-    ../../modules/acme
     ../../modules/vaultwarden
     ../../modules/ssh
     ../../modules/todoist-backup
