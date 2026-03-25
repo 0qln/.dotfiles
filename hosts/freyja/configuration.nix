@@ -10,9 +10,6 @@
 
     ../../home/users/oq
     ../../home/users/root
-
-    ../../modules/ydotool
-    ../../modules/xdg
   ];
 
   modules = {

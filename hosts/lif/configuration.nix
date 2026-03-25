@@ -19,9 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/ydotool
-    ../../modules/xdg
-
     # todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
     #   ip = "10.100.0.2/32";
