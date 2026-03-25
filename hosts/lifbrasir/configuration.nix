@@ -20,7 +20,6 @@ in {
     ../../modules/nextcloud
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
-    ../../modules/mysql
     ../../modules/obsidian-livesync
     ../../modules/nginx
   ];
