@@ -17,7 +17,6 @@ in {
     ../../modules/ssh
     ../../modules/todoist-backup
     ../../modules/wireguard/service.nix
-    ../../modules/postgresql
   ];
 
   sops = {
