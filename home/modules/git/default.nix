@@ -3,71 +3,89 @@
   config,
   lib,
   ...
-}: let
+}:
+with lib; let
   cfg = config.modules.git;
-in
-  with lib; {
-    options.modules.git = {
-      enable = mkEnableOption "git config";
-      lazygit.enable = config.utils.mkEnableOption "lazygit" cfg.enable;
-      #todo
-      # gitea.enable = config.utils.mkEnableOption "gitea" cfg.enable;
-      # github.enable = config.utils.mkEnableOption "github" cfg.enable;
-      enableWorkSimple = mkEnableOption "worksimple stuff";
-    };
-
-    config = mkIf cfg.enable {
-      home.packages = with pkgs; [
-        git
-        delta
-        tea
-      ];
-
-      programs.git = mkMerge [
-        {
-          enable = true;
-          settings = {
-            user = {
-              name = "0qln";
-              email = "0qln@proton.me";
-            };
-            pull.rebase = false;
-            safe.directory = ["*"];
-            init.defaultBranch = "master";
-            mergetool.prompt = false;
-            mergetool.keepBackup = false;
-          };
-          lfs.enable = true;
-        }
-        (mkIf cfg.enableWorkSimple {
-          includes = [
-            {
-              condition = "gitdir:~/repos/work.devops/**";
-              path = config.sops.secrets."work.config".path;
-            }
-          ];
-        })
-      ];
-
-      programs.lazygit = mkIf cfg.lazygit.enable {
-        enable = true;
-        # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
-        settings = {
-          # https://github.com/jesseduffield/lazygit/issues/155#issuecomment-2260986940
-          git = {
-            pagers = [
-              {
-                colorArg = "always";
-                pager = "delta --paging=never -s";
-              }
-            ];
+in {
+  options.modules.git = {
+    enable = mkEnableOption "git config";
+    lazygit.enable = config.utils.mkEnableOption "lazygit" cfg.enable;
+    #todo
+    # gitea.enable = config.utils.mkEnableOption "gitea" cfg.enable;
+    # github.enable = config.utils.mkEnableOption "github" cfg.enable;
+    enableWorkSimple = mkEnableOption "worksimple stuff";
+    merge = mkOption {
+      default = {};
+      type = types.submodule {
+        options = {
+          tool = mkOption {
+            type = types.str;
+            default =
+              if (config.settings.uiEnv == "gui")
+              then "meld"
+              else "nvimdiff";
+            description = "Git merge tool to use.";
+            example = "nvimdiff";
           };
         };
       };
+    };
+  };
 
-      sops.secrets."work.config" = mkIf cfg.enableWorkSimple {
-        sopsFile = ./work.config.secrets;
-        format = "binary";
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      git
+      delta
+      tea
+      meld
+    ];
+
+    programs.git = mkMerge [
+      {
+        enable = true;
+        settings = {
+          user = {
+            name = "0qln";
+            email = "0qln@proton.me";
+          };
+          pull.rebase = false;
+          safe.directory = ["*"];
+          init.defaultBranch = "master";
+          merge.tool = cfg.merge.tool;
+          mergetool.prompt = false;
+          mergetool.keepBackup = false;
+        };
+        lfs.enable = true;
+      }
+      (mkIf cfg.enableWorkSimple {
+        includes = [
+          {
+            condition = "gitdir:~/repos/work.devops/**";
+            path = config.sops.secrets."work.config".path;
+          }
+        ];
+      })
+    ];
+
+    programs.lazygit = mkIf cfg.lazygit.enable {
+      enable = true;
+      # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+      settings = {
+        # https://github.com/jesseduffield/lazygit/issues/155#issuecomment-2260986940
+        git = {
+          pagers = [
+            {
+              colorArg = "always";
+              pager = "delta --paging=never -s";
+            }
+          ];
+        };
       };
     };
-  }
+
+    sops.secrets."work.config" = mkIf cfg.enableWorkSimple {
+      sopsFile = ./work.config.secrets;
+      format = "binary";
+    };
+  };
+}

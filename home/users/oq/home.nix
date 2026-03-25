@@ -69,7 +69,6 @@ in
           };
           gh.enable = mkDefault true;
           lf.enable = mkDefault true;
-          xdg-utils.enable = mkDefault true;
           yubi.enable = mkDefault true;
           tools.enable = mkDefault true;
           zoxide.enable = mkDefault true;
@@ -77,6 +76,8 @@ in
           starship.enable = mkDefault true;
           bluetooth.client = mkDefault "bluetui";
           pam.enable = mkDefault true;
+          dconf.enable = mkDefault true;
+          xdg.enable = mkDefault true;
         }
 
         # wsl-only modules
@@ -87,6 +88,8 @@ in
 
         # gui-only modules
         (mkIf (cfg.uiEnv == "gui") {
+          qt.enable = mkDefault true;
+          gtk.enable = mkDefault true;
           proton.vpn.enable = mkDefault true;
           audio.enable = mkDefault true;
           terminal.emulator = mkDefault "kitty";

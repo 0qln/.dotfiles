@@ -178,5 +178,10 @@ in {
       active = mkColorOption "active elements" null;
       urgent = mkColorOption "urgent things" null;
     };
+
+    mode = mkOption {
+      type = types.enum ["light" "dark"];
+      default = "dark";
+    };
   };
 }

@@ -5,16 +5,20 @@
   ...
 }:
 with lib; let
-  cfg = config.modules.xdg-utils;
+  cfg = config.modules.xdg;
 in {
-  options.modules.xdg-utils = {
-    enable = mkEnableOption "xdg-utils";
+  options.modules.xdg = {
+    enable = mkEnableOption "xdg stuff";
   };
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       xdg-utils
     ];
+
+    xdg.portal = {
+      enable = mkIf (config.settings.uiEnv == "gui") true;
+    };
 
     # https://wiki.nixos.org/wiki/Default_applications
     xdg.mimeApps = {

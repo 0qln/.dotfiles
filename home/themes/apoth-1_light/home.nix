@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  flake,
   inputs,
   ...
 }:
@@ -11,48 +10,10 @@ with lib; let
 
   cfg = config.themes.${name};
 
-  inherit (config) settings;
   inherit (config.vars) monitors;
   inherit (config.theme) wallpapers;
 in {
   config = mkIf cfg.enable {
-    # stuff to try and get darkmode <
-    gtk = {
-      enable = true;
-      colorScheme = "dark";
-      theme = {
-        package = pkgs.gnome-themes-extra;
-        name = "Adwaita-dark";
-      };
-    };
-
-    home.packages = with pkgs; [
-      dconf
-    ];
-
-    qt = {
-      enable = true;
-      style = {
-        package = pkgs.adwaita-qt;
-        name = "adwaita-dark";
-      };
-    };
-
-    xdg.portal = {
-      enable = mkIf (settings.uiEnv == "gui") true;
-    };
-
-    dconf = {
-      enable = true;
-      settings = {
-        "org/gnome/desktop/interface" = {
-          color-scheme = "prefer-dark";
-          gtk-theme = "Adwaita-dark";
-        };
-      };
-    };
-    # />
-
     modules = {
       cursor = {
         cursor = mkDefault "frieren-winter"; #maomao

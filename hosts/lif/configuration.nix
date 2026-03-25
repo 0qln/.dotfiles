@@ -31,6 +31,7 @@
     ../../modules/ydotool
     ../../modules/docker
     ../../modules/pam
+    ../../modules/xdg
 
     # todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
@@ -53,6 +54,7 @@
     pam.enable = true;
     steam.enable = true;
     ydotool.enable = true;
+    xdg.enable = true;
 
     docker = {
       enable = true;
