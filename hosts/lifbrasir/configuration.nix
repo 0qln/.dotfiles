@@ -12,7 +12,6 @@ in {
     ../../home/users/root/default.nix
 
     ../../modules/vaultwarden
-    ../../modules/todoist-backup
     ../../modules/wireguard/service.nix
   ];
 
