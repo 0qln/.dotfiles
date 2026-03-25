@@ -14,7 +14,6 @@ in {
     ../../modules/sops
     ../../modules/home-manager
     ../../modules/ssh/service.nix
-    ../../modules/dashboard
     ../../modules/vaultwarden
     ../../modules/ssh
     ../../modules/todoist-backup
