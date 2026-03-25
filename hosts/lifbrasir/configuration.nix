@@ -11,9 +11,7 @@ in {
 
     ../../home/users/root/default.nix
 
-    ../../modules/ssh/service.nix
     ../../modules/vaultwarden
-    ../../modules/ssh
     ../../modules/todoist-backup
     ../../modules/wireguard/service.nix
   ];

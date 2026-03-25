@@ -1,7 +1,6 @@
 {inputs, ...}: {
   imports = [
     ../../modules
-    ../../modules/ssh
 
     ./localization.nix
     ./networking.nix
@@ -29,5 +28,6 @@
       enable = true;
       caches.enable = true;
     };
+    ssh.enable = true;
   };
 }
