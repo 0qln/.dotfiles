@@ -19,7 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/flake-upgrader
     ../../modules/home-manager
     ../../modules/hypr
     ../../modules/nixpkgs-garbage-disposal
