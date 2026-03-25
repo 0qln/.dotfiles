@@ -11,7 +11,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/battery
     ../../modules/home-manager
     ../../modules/hypr
     ../../modules/kde

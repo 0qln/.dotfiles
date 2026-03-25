@@ -11,7 +11,6 @@ in {
 
     ../../home/users/root/default.nix
 
-    ../../modules/battery
     ../../modules/sops
     ../../modules/home-manager
     ../../modules/ssh/service.nix
