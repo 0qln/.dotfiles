@@ -13,7 +13,6 @@
 
     ../../modules/sops
     ../../modules/ydotool
-    ../../modules/lid
     ../../modules/pam
     ../../modules/xdg
   ];
@@ -21,8 +20,11 @@
   modules = {
     home-manager.enable = true;
 
-    # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
-    lid.disable = true;
+    lid = {
+      enable = true;
+      # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
+      dontTurnOffWhenClosed = true;
+    };
     battery.enable = !config.modules.kde.enable;
     avahi.enable = true;
     hypr = {

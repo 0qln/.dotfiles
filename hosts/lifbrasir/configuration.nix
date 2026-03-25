@@ -23,7 +23,6 @@ in {
     ../../modules/mysql
     ../../modules/obsidian-livesync
     ../../modules/nginx
-    ../../modules/lid
   ];
 
   sops = {
@@ -49,7 +48,10 @@ in {
 
   modules = {
     home-manager.enable = true;
-    lid.disable = true;
+    lid = {
+      enable = true;
+      dontTurnOffWhenClosed = true;
+    };
     battery.enable = true;
     nginx.enable = true;
     vaultwarden = {
