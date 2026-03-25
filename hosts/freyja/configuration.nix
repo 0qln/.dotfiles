@@ -13,7 +13,6 @@
 
     ../../modules/sops
     ../../modules/ydotool
-    ../../modules/pam
     ../../modules/xdg
   ];
 

@@ -25,7 +25,6 @@
     ../../modules/wireguard
     ../../modules/wireguard/unicorns
     ../../modules/ydotool
-    ../../modules/pam
     ../../modules/xdg
 
     # todo: fix wireguard vpn
