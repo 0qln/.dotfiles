@@ -11,7 +11,6 @@ in {
 
     ../../home/users/root/default.nix
 
-    ../../modules/vaultwarden
     ../../modules/wireguard/service.nix
   ];
 
