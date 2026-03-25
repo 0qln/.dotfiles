@@ -4,7 +4,6 @@
 
     ../../modules/wsl
     ../../modules/sops
-    ../../modules/home-manager
 
     ../../home/users/oq
     ../../home/users/root
@@ -15,6 +14,7 @@
       enable = true;
       defaultUser = "oq";
     };
+    home-manager.enable = true;
   };
 
   home-manager = {

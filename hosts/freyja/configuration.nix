@@ -11,7 +11,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/home-manager
     ../../modules/hypr
     ../../modules/kde
     ../../modules/sops
@@ -22,6 +21,8 @@
   ];
 
   modules = {
+    home-manager.enable = true;
+
     # todo: replace this with an actual fix. (the wlan driver is fucked and prevents sleep/suspend)
     lid.disable = true;
     battery.enable = !config.modules.kde.enable;

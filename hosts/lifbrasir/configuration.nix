@@ -12,7 +12,6 @@ in {
     ../../home/users/root/default.nix
 
     ../../modules/sops
-    ../../modules/home-manager
     ../../modules/ssh/service.nix
     ../../modules/vaultwarden
     ../../modules/ssh
@@ -50,6 +49,7 @@ in {
   };
 
   modules = {
+    home-manager.enable = true;
     lid.disable = true;
     battery.enable = true;
     nginx.enable = true;

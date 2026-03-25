@@ -19,7 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/home-manager
     ../../modules/hypr
     ../../modules/nixpkgs-garbage-disposal
     ../../modules/sops
@@ -41,6 +40,7 @@
   ];
 
   modules = {
+    home-manager.enable = true;
     wireguard.enable = true;
     avahi.enable = true;
     hypr = {
