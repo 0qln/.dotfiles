@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   pkgs-citrix,
   pkgs-hot,
   pkgs-stable,
@@ -9,7 +10,7 @@
   flake,
   ...
 }:
-with pkgs.lib; let
+with lib; let
   cfg = config.modules.home-manager;
 in {
   options.modules.home-manager = {

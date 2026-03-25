@@ -7,7 +7,7 @@ with lib; let
   cfg = config.modules.devenv;
 in {
   options.modules.devenv = {
-    devenv.enable = mkEnableOption "devenv";
+    enable = mkEnableOption "devenv";
     caches.enable = mkEnableOption "devenv caches";
   };
 
