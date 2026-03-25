@@ -19,8 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/nixpkgs-garbage-disposal
-    ../../modules/steam
     ../../modules/wireguard
     ../../modules/wireguard/unicorns
     ../../modules/ydotool
