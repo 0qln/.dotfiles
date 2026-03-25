@@ -19,8 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/wireguard
-    ../../modules/wireguard/unicorns
     ../../modules/ydotool
     ../../modules/xdg
 
@@ -137,7 +135,7 @@
   private = {
     wireguard = {
       enable = true;
-      unicorns = true;
+      unicorns.enable = true;
     };
   };
 

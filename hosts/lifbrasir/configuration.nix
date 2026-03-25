@@ -10,8 +10,6 @@ in {
     ./networking.nix
 
     ../../home/users/root/default.nix
-
-    ../../modules/wireguard/service.nix
   ];
 
   sops = {

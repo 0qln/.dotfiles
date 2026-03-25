@@ -19,5 +19,15 @@ in {
     environment.systemPackages = with pkgs; [
       wireguard-tools
     ];
+
+    environment.shellAliases = mkMerge [
+      (let
+        inherit (config.private.wireguard."unicorns") name enable;
+      in
+        mkIf enable {
+          "unicorns-up" = "wg-quick up ${config.sops.secrets.${name}.path}";
+          "unicorns-down" = "wg-quick down ${config.sops.secrets.${name}.path}";
+        })
+    ];
   };
 }
