@@ -2,7 +2,6 @@
   imports = [
     ../../modules
     ../../modules/ssh
-    ../../modules/nix
 
     ./localization.nix
     ./networking.nix
@@ -23,6 +22,7 @@
 
   modules = {
     nix = {
+      enable = true;
       flakes.enable = true;
     };
     devenv = {

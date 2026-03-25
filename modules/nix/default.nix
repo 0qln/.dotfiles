@@ -7,6 +7,7 @@ with lib; let
   cfg = config.modules.nix;
 in {
   options.modules.nix = {
+    enable = mkEnableOption "nix related stuff";
     caches = mkOption {
       type = types.attrs;
       default = {};
@@ -17,7 +18,7 @@ in {
     flakes.enable = mkEnableOption "flakes stuff";
   };
 
-  config = {
+  config = mkIf cfg.enable {
     nix.settings = mkMerge (
       (let
         mkSubstituter = fqdn: key: {
