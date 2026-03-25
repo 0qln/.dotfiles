@@ -20,7 +20,6 @@ in {
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
     ../../modules/obsidian-livesync
-    ../../modules/nginx
   ];
 
   sops = {
