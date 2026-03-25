@@ -23,7 +23,6 @@ in {
     ../../modules/mysql
     ../../modules/obsidian-livesync
     ../../modules/nginx
-    ../../modules/immich
     ../../modules/lid
   ];
 
