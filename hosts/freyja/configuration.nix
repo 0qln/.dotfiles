@@ -11,7 +11,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/hypr
     ../../modules/kde
     ../../modules/sops
     ../../modules/ydotool

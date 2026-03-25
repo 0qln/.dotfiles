@@ -19,7 +19,6 @@
     ../../home/users/oq
     ../../home/users/root
 
-    ../../modules/hypr
     ../../modules/nixpkgs-garbage-disposal
     ../../modules/sops
     ../../modules/steam
