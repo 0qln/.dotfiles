@@ -2,8 +2,6 @@
   imports = [
     ../_common
 
-    ../../modules/wsl
-
     ../../home/users/oq
     ../../home/users/root
   ];
