@@ -16,10 +16,8 @@ in {
     ../../modules/vaultwarden
     ../../modules/ssh
     ../../modules/todoist-backup
-    ../../modules/obsidian-livesync
     ../../modules/wireguard/service.nix
     ../../modules/postgresql
-    ../../modules/obsidian-livesync
   ];
 
   sops = {
