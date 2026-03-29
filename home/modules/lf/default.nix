@@ -12,6 +12,13 @@ with lib; let
 in {
   options.modules.lf = {
     enable = mkEnableOption "lf fileexplorer";
+    previewer = mkOption {
+      type = types.enum ["ueberzug" "kitty" "chafa"];
+      default =
+        if config.vars.terminal == "kitty"
+        then "kitty"
+        else "chafa";
+    };
   };
 
   imports = [
@@ -20,32 +27,37 @@ in {
   ];
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      dragon-drop
+    home.packages = mkMerge [
+      (with pkgs; [
+        dragon-drop
 
-      unzip
-      mescc-tools-extra # untar
-      gnutar
-      unrar-wrapper
-      p7zip
+        unzip
+        mescc-tools-extra # untar
+        gnutar
+        unrar-wrapper
+        p7zip
 
-      ueberzugpp
+        ueberzugpp
 
-      fzf
+        fzf
 
-      file
+        file
 
-      xdg-utils
+        xdg-utils
 
-      poppler-utils # pdftotext
+        poppler-utils # pdftotext
 
-      highlight
+        highlight
 
-      chafa
+        chafa
 
-      lf-ueberzug
+        pistol
 
-      trashy
+        trashy
+      ])
+      (mkIf (cfg.previewer == "ueberzug") [
+        lf-ueberzug
+      ])
     ];
 
     # https://home-manager-options.extranix.com/?query=lf&release=release-25.05

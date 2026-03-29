@@ -200,8 +200,9 @@ in
               "match:tag zoom, float 1"
 
               # no animations
-              "match:class ueberzug.*, tag +no-anim"
-              "match:tag no-anim, no_anim 1"
+              "match:class ueberzug.*, tag +tool"
+              "match:tag tool, no_anim 1"
+              "match:tag tool, float 1"
 
               # move ueberzug windows off the screen so they don't
               # flicker in the center until ueberzug moves them.
