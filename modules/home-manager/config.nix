@@ -1,7 +1,6 @@
 {
   inputs,
   nur,
-  pkgs-citrix,
   pkgs-hot,
   config,
   utilz,
@@ -13,7 +12,6 @@ in {
   extraSpecialArgs = {
     inherit inputs;
     inherit nur;
-    inherit pkgs-citrix;
     inherit pkgs-hot;
     inherit utilz;
     inherit flake;

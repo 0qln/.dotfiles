@@ -883,21 +883,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-citrix": {
-      "locked": {
-        "lastModified": 1758262103,
-        "narHash": "sha256-aBGl3XEOsjWw6W3AHiKibN7FeoG73dutQQEqnd/etR8=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "12bd230118a1901a4a5d393f9f56b6ad7e571d01",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "rev": "12bd230118a1901a4a5d393f9f56b6ad7e571d01",
-        "type": "indirect"
-      }
-    },
     "nixpkgs-hot": {
       "locked": {
         "lastModified": 1773821835,
@@ -1106,7 +1091,6 @@
         "hyprpaper": "hyprpaper",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
-        "nixpkgs-citrix": "nixpkgs-citrix",
         "nixpkgs-hot": "nixpkgs-hot",
         "nixpkgs-server": "nixpkgs-server",
         "nixpkgs-stable": "nixpkgs-stable",

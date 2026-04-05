@@ -10,8 +10,6 @@
 
     nixpkgs-hot.url = "nixpkgs/nixos-unstable";
 
-    nixpkgs-citrix.url = "nixpkgs/12bd230118a1901a4a5d393f9f56b6ad7e571d01";
-
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -150,23 +148,6 @@
               inherit system;
             };
 
-            # this does not evaluate and thus not fetch unless pkgs-citrix is
-            # being used in the respective output.
-            # see https://discourse.nixos.org/t/nix-flake-inputs-not-lazy/25463/2
-            pkgs-citrix = import inputs.nixpkgs-citrix {
-              inherit system;
-              config = {
-                allowUnfreePredicate = pkg:
-                  builtins.elem (lib.getName pkg) [
-                    "citrix-workspace"
-                  ];
-                permittedInsecurePackages = [
-                  "libxml2-2.13.8"
-                  "libsoup-2.74.3"
-                ];
-              };
-            };
-
             pkgs-stable = import inputs.nixpkgs-stable {
               inherit system;
             };
@@ -180,7 +161,7 @@
             utilz.mods.eachX hosts (
               host: let
                 system = getSystem host;
-                inherit (pkgss system) pkgs-citrix pkgs-stable pkgs-hot pkgs;
+                inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
               in {
                 name = host;
                 value = withSystem system (_:
@@ -189,7 +170,6 @@
                     specialArgs = {
                       inherit utilz;
                       inherit inputs;
-                      inherit pkgs-citrix;
                       inherit pkgs-stable;
                       inherit pkgs-hot;
                       flake = self;
@@ -220,7 +200,7 @@
               utilz.mods.eachX hosts (
                 host: let
                   system = getSystem host;
-                  inherit (pkgss system) pkgs-citrix pkgs-stable pkgs-hot pkgs;
+                  inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
                   vars = import-module ./vars {inherit pkgs;};
                 in
                   utilz.mods.eachX hm.users (
@@ -235,7 +215,6 @@
                                 inherit (pkgs) nur;
                                 inherit pkgs;
                                 inherit pkgs-hot;
-                                inherit pkgs-citrix;
                                 inherit pkgs-stable;
                                 config = vars;
                                 flake = self;

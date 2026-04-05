@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -12,8 +11,11 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      claude-code
-    ];
+    programs.claude-code = {
+      enable = true;
+      settings = {
+        includeCoAuthoredBy = false;
+      };
+    };
   };
 }

@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  pkgs-citrix,
   pkgs-hot,
   pkgs-stable,
   config,
@@ -26,7 +25,6 @@ in {
       configuration = import ./config.nix {
         inherit (pkgs) nur;
         inherit pkgs;
-        inherit pkgs-citrix;
         inherit pkgs-hot;
         inherit pkgs-stable;
         inherit inputs;

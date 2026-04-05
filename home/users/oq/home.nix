@@ -57,6 +57,7 @@ in
             enable = mkDefault true;
             clanker.enable = mkDefault true;
           };
+          clanker.claude.enable = mkDefault true;
           bash.enable = mkDefault true;
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;
@@ -193,7 +194,6 @@ in
         })
 
         (mkIf (cfg.uiEnv == "gui" && cfg.enableWorkSimple) {
-          citrix.enable = mkDefault true;
           browser = {
             chrome.chromium = {
               enable = mkDefault true;
