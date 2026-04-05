@@ -10,7 +10,6 @@
         enable = true;
         lintersByFt = {
           bash = ["shellcheck"];
-          json = ["jsonls"];
           # markdown = ["vale"];
           go = ["golangcilint"];
           dockerfile = ["hadolint"];
