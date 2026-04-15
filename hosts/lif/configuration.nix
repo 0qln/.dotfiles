@@ -16,9 +16,6 @@
     ./networking.nix
     ./nvidia.nix
 
-    ../../home/users/oq
-    ../../home/users/root
-
     # todo: fix wireguard vpn
     # (import ../../modules/wireguard/template.nix {
     #   ip = "10.100.0.2/32";
@@ -28,6 +25,12 @@
     #   vpnName = "0qln";
     # })
   ];
+
+  # todo: add this to other hosts
+  users = {
+    root.enable = true;
+    oq.enable = true;
+  };
 
   modules = {
     home-manager.enable = true;

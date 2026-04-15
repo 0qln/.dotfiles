@@ -2,6 +2,8 @@
   imports = [
     ../../modules
 
+    ../../home/users
+
     ./localization.nix
     ./networking.nix
     ./printing.nix

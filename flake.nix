@@ -219,10 +219,6 @@
                                 config = vars;
                                 flake = self;
                               };
-                              hm.vars = import ./home/users/${user}/vars.nix {
-                                inherit (hm.vars) config;
-                                inherit lib;
-                              };
                             in {
                               name = mkHomeName {inherit user host env theme profile;};
                               value = withSystem (system host) (_:
@@ -231,7 +227,6 @@
                                   // {
                                     pkgs = (pkgss system).pkgs;
                                     modules = [
-                                      hm.vars
                                       (import ./home/users/${user}/home.nix)
                                       (import ./hosts/${host}/home-vars.nix)
                                       (import ./profiles/${profile}/home.nix)
@@ -249,9 +244,6 @@
                                         programs.home-manager.enable = true;
 
                                         nix.package = pkgs.nix;
-
-                                        home.username = user;
-                                        home.homeDirectory = hm.vars.config.vars.root;
                                       })
                                     ];
                                   }

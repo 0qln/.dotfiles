@@ -7,10 +7,12 @@
     ./bluetooth.nix
     ./pen.nix
     ./networking.nix
-
-    ../../home/users/oq
-    ../../home/users/root
   ];
+
+  users = {
+    root.enable = true;
+    oq.enable = true;
+  };
 
   modules = {
     home-manager.enable = true;

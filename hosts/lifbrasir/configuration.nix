@@ -1,16 +1,26 @@
-{config, ...}: let
+{
+  inputs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
   inherit (config.vars.hosts.lifbrasir) fqdns;
 in {
   imports = [
+    inputs.private.nixosModules."lifbrasir"
+
     ../_common/configuration.nix
 
     ./mount.nix
     ./keys.nix
     ./bootloader.nix
     ./networking.nix
-
-    ../../home/users/root/default.nix
   ];
+
+  users = {
+    root.enable = true;
+  };
 
   sops = {
     enable = true;
@@ -35,46 +45,44 @@ in {
 
   modules = {
     home-manager.enable = true;
+
     lid = {
       enable = true;
       dontTurnOffWhenClosed = true;
     };
+
     battery.enable = true;
+
     nginx.enable = true;
+
     vaultwarden = {
       enable = true;
-      environmentFile = ./vaultwarden/secrets/config.env;
       fqdn = {
         dn = "vw.${fqdns.primary.dn}";
         acmeHost = fqdns.primary.dn;
       };
     };
+
     dynIp-updater = {
       duckdns = {
         enable = true;
-        tokenFile = ./duckdns/secrets.token;
         domains = ["0qln"];
       };
       afraid = {
         enable = false;
-        credentialsFile = ./afraid/secrets.credentials.env;
         domains = ["oq.404.mn"];
       };
       cloudflare = {
         enable = true;
-        records = {
-          wildcard = ./cloudflare/secrets/dynIp-updater/wildcard.env;
-          root = ./cloudflare/secrets/dynIp-updater/root.env;
-        };
       };
     };
+
     gitea = {
       enable = true;
       fqdn = {
         dn = "git.${fqdns.primary.dn}";
         acmeHost = fqdns.primary.dn;
       };
-      dbpassFile = ./gitea/secrets/dbpass;
       anubis.enable = false;
     };
 
@@ -84,7 +92,6 @@ in {
         dn = "immich.${fqdns.primary.dn}";
         acmeHost = fqdns.primary.dn;
       };
-      secretsFile = ./immich/secrets/secrets.env;
     };
 
     postgresql = {
@@ -100,11 +107,11 @@ in {
       certs = {
         "0qln.duckdns.org" = {
           registrar = "duckdns";
-          duckdnsInfos.tokenFile = ./duckdns/secrets.token;
+          duckdnsInfos.tokenFile = mkDefault (throw "should be configured in .private");
         };
         "07112025.xyz" = {
           registrar = "cloudflare";
-          cloudflareInfos.tokenFile = ./cloudflare/secrets/acme/token;
+          cloudflareInfos.tokenFile = mkDefault (throw "should be configured in .private");
         };
       };
     };
@@ -130,30 +137,21 @@ in {
 
     todoist-backup = {
       enable = true;
-      secretsEnvFile = ./todoist-backup/secrets.env;
     };
 
     obsidian-livesync = {
       enable = false;
       # admin page: fqdn/_utils/index.html
-      couchdb = {
-        fqdn = fqdns.primary.dn;
-        secretsEnvFile = ./obsidian-livesync/secrets.couchdb.env;
-        configFile = ./obsidian-livesync/secrets.couchdb.local-ini;
-      };
+      couchdb = {fqdn = fqdns.primary.dn;};
     };
 
     wireguard-service = {
       enable = false;
-      privateKeyFile = ./wireguard/0qln/private.key.secrets;
       externalInterface = "wlo1";
     };
 
     nextcloud = {
       enable = true;
-      dbpassFile = ./nextcloud/secrets.dbpassFile;
-      dbpassFileHashed = ./nextcloud/secrets.dbpassFile.hashed;
-      adminpassFile = ./nextcloud/secrets.adminpassFile;
       storagePath = "/mnt/store-1/services/nextcloud";
       primaryFqdn = "nextcloud.${fqdns.primary.dn}";
       acmeHost = fqdns.primary.dn;
@@ -161,7 +159,6 @@ in {
         "lifbrasir"
         "192.168.178.50"
       ];
-      harp.environmentFile = ./nextcloud/secrets.harp;
     };
   };
 

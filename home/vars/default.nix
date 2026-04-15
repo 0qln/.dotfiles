@@ -241,13 +241,14 @@ in
                 };
               };
 
-            "-" = d: with d; {
-              ${center.name} = {
-                x = mkDefault 0;
-                y = mkDefault 0;
-                r = mkDefault 0;
+            "-" = d:
+              with d; {
+                ${center.name} = {
+                  x = mkDefault 0;
+                  y = mkDefault 0;
+                  r = mkDefault 0;
+                };
               };
-            };
           };
         };
       };

@@ -24,6 +24,10 @@ in {
         description = "The rofi config file to use in case the rofi implementation is used.";
       };
     };
+    secrets.tokenFile = mkOption {
+      type = types.path;
+      description = "The sops encrypted file that contains the todoist token.";
+    };
   };
 
   config = let
@@ -40,7 +44,7 @@ in {
 
       sops.secrets."todoist-token" = {
         format = "json";
-        sopsFile = ./secrets.json;
+        sopsFile = cfg.secrets.tokenFile;
         key = "";
         mode = "0600";
       };

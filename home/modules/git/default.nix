@@ -13,7 +13,13 @@ in {
     #todo
     # gitea.enable = config.utils.mkEnableOption "gitea" cfg.enable;
     # github.enable = config.utils.mkEnableOption "github" cfg.enable;
-    enableWorkSimple = mkEnableOption "worksimple stuff";
+    worksimple = {
+      enable = mkEnableOption "worksimple stuff";
+      config = mkOption {
+        type = types.path;
+        description = "The sops encrypted file that contains the git config for work simple.";
+      };
+    };
     merge = mkOption {
       default = {};
       type = types.submodule {
@@ -57,7 +63,7 @@ in {
         };
         lfs.enable = true;
       }
-      (mkIf cfg.enableWorkSimple {
+      (mkIf cfg.worksimple.enable {
         includes = [
           {
             condition = "gitdir:~/repos/work.devops/**";
@@ -83,8 +89,8 @@ in {
       };
     };
 
-    sops.secrets."work.config" = mkIf cfg.enableWorkSimple {
-      sopsFile = ./work.config.secrets;
+    sops.secrets."work.config" = mkIf cfg.worksimple.enable {
+      sopsFile = cfg.worksimple.config;
       format = "binary";
     };
   };

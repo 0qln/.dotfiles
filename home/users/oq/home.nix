@@ -22,9 +22,6 @@ in
         inputs.private.homeModules."oq"
       ]
       ++ [
-        ./vars.nix
-      ]
-      ++ [
         ../../utils
         ../../modules
         ../../vars
@@ -32,6 +29,13 @@ in
       ];
 
     config = mkIf cfg.enable {
+      vars = {
+        root = mkDefault config.home.homeDirectory;
+        cloud.dir = mkDefault "${config.vars.root}/nextcloud";
+        pictures.dir = mkDefault "${config.vars.cloud.dir}/pictures";
+        screenshots.dir = mkDefault "${config.vars.pictures.dir}/screenshots";
+      };
+
       # docs:
       # https://nix-community.github.io/home-manager/index.xhtml#sec-install-nixos-module
       # https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
@@ -39,13 +43,19 @@ in
       # https://home-manager-options.extranix.com/
       nixpkgs.config.allowUnfree = true;
 
-      # This value determines the NixOS release from which the default
-      # settings for stateful data, like file locations and database versions
-      # on your system were taken. It‘s perfectly fine and recommended to leave
-      # this value at the release version of the first install of this system.
-      # Before changing this value read the documentation for this option
-      # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-      home.stateVersion = "25.05"; # Did you read the comment?
+      home = {
+        username = import ./name.nix;
+
+        homeDirectory = mkForce "/home/${config.home.username}/";
+
+        # This value determines the NixOS release from which the default
+        # settings for stateful data, like file locations and database versions
+        # on your system were taken. It‘s perfectly fine and recommended to leave
+        # this value at the release version of the first install of this system.
+        # Before changing this value read the documentation for this option
+        # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+        stateVersion = "25.05"; # Did you read the comment?
+      };
 
       private = {
         secrets.gh.hostsYml = mkDefault true;
@@ -66,7 +76,6 @@ in
           dev = {
             direnv.enable = mkDefault true;
             devenv.enable = mkDefault true;
-            accessTokens.configFile = mkDefault ./secrets/nix/accessTokens.conf.enc;
           };
           gh.enable = mkDefault true;
           lf.enable = mkDefault true;
@@ -190,7 +199,7 @@ in
 
         (mkIf cfg.enableWorkSimple {
           ssh.enableWorkSimple = true;
-          git.enableWorkSimple = mkDefault true;
+          git.worksimple.enable = mkDefault true;
         })
 
         (mkIf (cfg.uiEnv == "gui" && cfg.enableWorkSimple) {

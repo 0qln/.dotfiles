@@ -1,10 +1,12 @@
 {...}: {
   imports = [
     ../_common
-
-    ../../home/users/oq
-    ../../home/users/root
   ];
+
+  users = {
+    root.enable = true;
+    oq.enable = true;
+  };
 
   modules = {
     wsl = {
