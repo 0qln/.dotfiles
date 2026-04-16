@@ -13,6 +13,7 @@ in {
     ./profiles/kimai.nix
     ./profiles/odoo.nix
     ./profiles/odoo.kanagawa.nix
+    ./profiles/clanker.kanagawa.nix
     ./fixes/mutability.nix
   ];
 

@@ -43,6 +43,8 @@
     pam.enable = true;
     ydotool.enable = true;
     xdg.enable = true;
+
+    steam.enable = true;
   };
 
   sops = {
@@ -76,7 +78,8 @@
       };
 
       themes.cogecha-1_uneasy-flowers.enable = false;
-      themes.cogecha-2_oni.enable = true;
+      themes.cogecha-2_oni.enable = false;
+      themes.idekanymore.enable = true;
 
       modules = {
         input = {

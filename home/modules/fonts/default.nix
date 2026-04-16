@@ -13,6 +13,7 @@ in {
     cartograph-cf.enable = mkEnableOption "cartograph-cf (nerd-font)";
     ibm-plex.enable = mkEnableOption "ibm-plex";
     victor-mono.enable = mkEnableOption "victor-mono (nerd-font)";
+    jetbrains-mono.enable = mkEnableOption "jetbrains-mono (nerd-font)";
   };
 
   config = mkIf cfg.enable {
@@ -22,6 +23,7 @@ in {
 
     home.packages = with pkgs;
       (optionals cfg.victor-mono.enable [nerd-fonts.victor-mono])
+      ++ (optionals cfg.jetbrains-mono.enable [nerd-fonts.jetbrains-mono])
       ++ (optionals cfg.ibm-plex.enable [ibm-plex]);
 
     home.file.".local/share/fonts/IbmPlex" = mkIf cfg.ibm-plex.enable {

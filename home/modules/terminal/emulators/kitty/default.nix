@@ -22,6 +22,9 @@ in {
       default = null;
       description = "The kitty theme conf to use.";
     };
+    # font = mkOption {
+    #   type = types.nullOr types.
+    # }
   };
 
   config = mkIf (cfg.emulator == "kitty") {
@@ -60,8 +63,13 @@ in {
 
           # theme options
           (mkIf (cursor != null) "cursor ${cursor}")
+          (mkIf (cursor_text_color != null) "cursor_text_color ${cursor_text_color}")
           (mkIf (background != null) "background ${background}")
           (mkIf (foreground != null) "foreground ${foreground}")
+          (mkIf (active_tab_background != null) "active_tab_background ${active_tab_background}")
+          (mkIf (active_tab_foreground != null) "active_tab_foreground ${active_tab_foreground}")
+          (mkIf (inactive_tab_background != null) "inactive_tab_background ${inactive_tab_background}")
+          (mkIf (inactive_tab_foreground != null) "inactive_tab_foreground ${inactive_tab_foreground}")
           (mkIf (selection_background != null) "selection_background ${selection_background}")
           (mkIf (selection_foreground != null) "selection_foreground ${selection_foreground}")
           (mkIf (color0 != null) "color0 ${color0}")
@@ -80,6 +88,7 @@ in {
           (mkIf (color14 != null) "color14 ${color14}")
           (mkIf (color7 != null) "color7 ${color7}")
           (mkIf (color15 != null) "color15 ${color15}")
+          (mkIf (url_color != null) "url_color ${url_color}")
         ];
     };
   };

@@ -146,8 +146,13 @@ in {
       };
 
       cursor = mkColorOption "terminal cursor" null;
+      cursor_text_color = mkColorOption "terminal cursor text color" null;
       background = mkColorOption "terminal background" null;
       foreground = mkColorOption "terminal foreground" null;
+      active_tab_background = mkColorOption "active tab background" null;
+      active_tab_foreground = mkColorOption "active tab foreground" null;
+      inactive_tab_background = mkColorOption "inactive tab background" null;
+      inactive_tab_foreground = mkColorOption "inactive tab foreground" null;
       selection_background = mkColorOption "terminal selection_background" null;
       selection_foreground = mkColorOption "terminal selection_foreground" null;
       color0 = mkColorOption "terminal color0" null;
@@ -166,6 +171,7 @@ in {
       color14 = mkColorOption "terminal color14" null;
       color7 = mkColorOption "terminal color7" null;
       color15 = mkColorOption "terminal color15" null;
+      url_color = mkColorOption "terminal url color" null;
     };
 
     launcher = {

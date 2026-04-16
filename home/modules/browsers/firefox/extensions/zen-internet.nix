@@ -19,10 +19,10 @@
 # https://github.com/sameerasw/zeninternet/blob/master/manifest.json
 config.utils.buildFirefoxXpiAddon {
   pname = "transparent-zen";
-  version = "2.7.0";
+  version = "3.1.2";
   addonId = "{91aa3897-2634-4a8a-9092-279db23a7689}";
-  url = "https://addons.mozilla.org/firefox/downloads/file/4537733/zen_internet-2.7.0.xpi";
-  sha256 = "sha256-PEPoQRNjiO6lSjv5yZNIK16qYgJaeJWoUquqbEZR01o=";
+  url = "https://addons.mozilla.org/firefox/downloads/file/4741120/zen_internet-3.1.2.xpi";
+  sha256 = "sha256-eSkeDaPOn+ozKjmZPGKx9xEGzFoGL4Ipe70/LQyHOmg=";
   meta = with lib; {
     description = "Make the internet feel native and elegant. Zen Internet is a browser extension that enhances your browsing experience by providing a clean and minimalistic interface with transparency and a focus on content. Customize the features in the addon popup.";
     license = licenses.mit;
