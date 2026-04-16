@@ -1,8 +1,7 @@
 {inputs, ...}: {
   imports = [
     ../../modules
-
-    ../../home/users
+    ../../users
 
     ./localization.nix
     ./networking.nix
@@ -13,6 +12,7 @@
     ./app-image.nix
     ./compat.nix
   ];
+
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
