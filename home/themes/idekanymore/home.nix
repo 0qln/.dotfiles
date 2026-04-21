@@ -46,9 +46,9 @@ in {
       rofi = {
         enable = mkDefault true;
         themeFile = let
-          walName = "wallhaven-jxkjj5.jpg";
+          walName = "wpe-3620156165.png";
           img = pkgs.stdenv.mkDerivation {
-            src = utils.genWpeScreenshot {wallpaperId = "3620156165";};
+            src = ./wpe-3620156165.png;
             dontUnpack = true;
             name = walName;
             buildInputs = [pkgs.imagemagick];
@@ -105,15 +105,12 @@ in {
       };
 
       discord.vesktop = {
-        theme = "system24-tokyo-night";
+        theme = "midnight-vencord";
       };
 
       wallust = {
         enable = true;
-        wallpaper = pkgs.fetchurl {
-          url = "https://w.wallhaven.cc/full/v9/wallhaven-v9yjel.jpg";
-          hash = "sha256-a/+GJfyD4b2qarXuj1kvL2iHzZLJeq9skNrt5/lwsBs=";
-        };
+        wallpaper = ./wpe-3620156165.png;
         settings = {
           backend = "fastresize";
           color_space = "lch";

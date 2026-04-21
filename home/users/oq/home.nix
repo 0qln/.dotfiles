@@ -153,17 +153,17 @@ in
           cursor.enable = mkDefault true;
           fonts.enable = mkDefault true;
           obsidian.enable = mkDefault true;
-          rofi.enable = mkDefault true;
+          # rofi.enable = mkDefault true;
           vscode.enable = mkDefault true;
           ytm.enable = mkDefault true;
           spotify.enable = mkDefault true;
           todoist = {
             enable = mkDefault true;
             cliProgram.enable = mkDefault true;
-            quickAdd = {
-              enable = mkDefault true;
-              impl = "rofi";
-            };
+            # quickAdd = {
+            #   enable = mkDefault true;
+            #   impl = "rofi";
+            # };
           };
           starship.enable = mkDefault true;
           zathura = {
