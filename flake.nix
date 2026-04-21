@@ -148,6 +148,8 @@
               inherit system;
             };
 
+            pkgs-server = import inputs.nixpkgs-server {inherit system;};
+
             pkgs-stable = import inputs.nixpkgs-stable {
               inherit system;
             };
@@ -161,7 +163,7 @@
             utilz.mods.eachX hosts (
               host: let
                 system = getSystem host;
-                inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
+                inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
               in {
                 name = host;
                 value = withSystem system (_:
@@ -171,6 +173,7 @@
                       inherit utilz;
                       inherit inputs;
                       inherit pkgs-stable;
+                      inherit pkgs-server;
                       inherit pkgs-hot;
                       flake = self;
                       host-name = utilz.sanitizeHostName host;

@@ -1,8 +1,10 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
-}: {
+}:
+with lib; {
   imports = [
     inputs.private.nixosModules."lif"
 
@@ -105,8 +107,13 @@
         kooha.enable = true;
         jetbrains = {
           enable = true;
-          tools = with pkgs.jetbrains; [
-            rider
+          tools = mkMerge [
+            (with pkgs.jetbrains; [
+              # rider
+            ])
+            (with pkgs; [
+              jetbrains-toolbox
+            ])
           ];
         };
         minecraft = {

@@ -1,12 +1,12 @@
 {
   config,
-  pkgs,
+  pkgs-server,
   lib,
   ...
 }:
 with lib; let
   serviceName = "nextcloud";
-  package = pkgs.nextcloud32;
+  package = pkgs-server.nextcloud33;
   cfg = config.modules.${serviceName};
 in {
   imports = [
