@@ -915,11 +915,11 @@
     },
     "nixpkgs-server": {
       "locked": {
-        "lastModified": 1773821835,
-        "narHash": "sha256-TJ3lSQtW0E2JrznGVm8hOQGVpXjJyXY2guAxku2O9A4=",
+        "lastModified": 1776548001,
+        "narHash": "sha256-ZSK0NL4a1BwVbbTBoSnWgbJy9HeZFXLYQizjb2DPF24=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b40629efe5d6ec48dd1efba650c797ddbd39ace0",
+        "rev": "b12141ef619e0a9c1c84dc8c684040326f27cdcc",
         "type": "github"
       },
       "original": {
@@ -1067,11 +1067,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776270431,
-        "narHash": "sha256-7PEASjJB1qr6nokxnnZ7tR4sw8Zj/r5+f5GBYawduhk=",
+        "lastModified": 1776788135,
+        "narHash": "sha256-HiyQL8JcnRIoR5ssSqbSdsNHlPy/o3RzK0fn+j3JDvw=",
         "ref": "refs/heads/master",
-        "rev": "96dd23318dedfad18e1d59705ff2e1fbc93ca982",
-        "revCount": 22,
+        "rev": "cbee0f09975ed24a09b32a4aef407eea9f32126c",
+        "revCount": 26,
         "type": "git",
         "url": "ssh://gitea@git.07112025.xyz/0qln/.private.git"
       },

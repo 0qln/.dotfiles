@@ -160,6 +160,13 @@ in {
         "192.168.178.50"
       ];
     };
+
+    vikunja = {
+      enable = true;
+      serviceDataDir = "/mnt/store-1/services/vikunja";
+      primaryFqdn = "vikunja.${fqdns.primary.dn}";
+      acmeHost = fqdns.primary.dn;
+    };
   };
 
   # This value determines the NixOS release from which the default
