@@ -118,7 +118,7 @@
 
         systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
 
-        imports = [hosts/lif/default.nix];
+        imports = [hosts/${"lif?dendrite"}/default.nix];
 
         perSystem = {pkgs, ...}: {
           devShells.default = with pkgs;
@@ -222,7 +222,7 @@
                                     modules = [
                                       (import ./home/users/${user}/home.nix)
                                       (import ./hosts/${host}/home-vars.nix)
-                                      (import ./profiles/${profile}/home.nix)
+                                      # (import ./profiles/${profile}/home.nix)
                                       (_: {
                                         settings = {
                                           enable = lib.mkDefault true;
@@ -250,7 +250,7 @@
             )
           );
         in {
-          # inherit nixosConfigurations;
+          inherit nixosConfigurations;
           inherit homeConfigurations;
 
           meta = {
@@ -267,7 +267,7 @@
             };
 
             outputs = {
-              # nixosConfigurations = builtins.attrNames nixosConfigurations;
+              nixosConfigurations = builtins.attrNames nixosConfigurations;
               homeConfigurations = builtins.attrNames homeConfigurations;
             };
           };
