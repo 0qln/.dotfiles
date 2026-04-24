@@ -12,11 +12,17 @@
     };
   };
 
-  flake.homeModules.nix = {...}: {
+  flake.homeModules.nix = {pkgs, ...}: {
     imports = [
       inputs.nix-index-database.homeModules.default
     ];
 
-    programs.nix-index-database.comma.enable = true;
+    config = {
+      programs.nix-index-database.comma.enable = true;
+
+      home.packages = with pkgs; [
+        nurl
+      ];
+    };
   };
 }
