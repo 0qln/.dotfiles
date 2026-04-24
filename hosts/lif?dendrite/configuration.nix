@@ -9,6 +9,8 @@
       imports = [
         inputs.private.nixosModules."lif"
 
+        self.nixosModules.hyprlock
+
         # self.nixosModules.common.configuration
         ../_common/configuration.nix
 
@@ -40,10 +42,11 @@
         home-manager.enable = true;
         wireguard.enable = true;
         avahi.enable = true;
-        hypr = {
+        hypr.enable = true;
+        hyprlock = {
           enable = true;
           defaultUser = "oq";
-          lock.replaceLogin = false;
+          replaceLogin = false;
         };
         pam.enable = true;
         steam.enable = true;

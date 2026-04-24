@@ -117,7 +117,14 @@
 
         systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
 
-        imports = [hosts/${"lif?dendrite"}/default.nix];
+        imports = let
+          dendrites =
+            builtins.readDir ./dendrites
+            |> inputs.nixpkgs.lib.attrsets.filterAttrs (f: t: t == "directory")
+            |> builtins.attrNames
+            |> builtins.map (x: ./dendrites/${x});
+        in
+          [hosts/${"lif?dendrite"}/default.nix] ++ dendrites;
 
         perSystem = {pkgs, ...}: {
           devShells.default = with pkgs;

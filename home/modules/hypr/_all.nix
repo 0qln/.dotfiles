@@ -1,6 +1,5 @@
-_: {
+{flake, ...}: {
   imports = [
-    ./lock.nix
     ./hyprpicker.nix
     ./hyprland
     ./hyprpaper
@@ -9,5 +8,7 @@ _: {
     ./wayneko.nix
     ./wlsunset.nix
     ./bongocat.nix
+
+    flake.homeModules.hyprlock
   ];
 }
