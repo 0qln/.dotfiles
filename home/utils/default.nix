@@ -10,6 +10,7 @@ with lib; {
     ./sops.nix
     ./cursors.nix
     ./mutability.nix
+    ./theme.nix
   ];
 
   options.utils = mkOption {

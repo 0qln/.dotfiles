@@ -78,11 +78,7 @@
     home-manager,
     ...
   }:
-    flake-parts.lib.mkFlake {inherit inputs;} ({
-      config,
-      withSystem,
-      ...
-    }:
+    flake-parts.lib.mkFlake {inherit inputs;} ({withSystem, ...}:
       with import ./utils; let
         inherit (inputs.nixpkgs) lib;
 
@@ -97,15 +93,40 @@
           themes = utilz.mods.collectMods ./home/themes;
           envs = user: (import ./home/users/${user}/envs.nix);
         };
-      in {
-        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
-        imports = [];
-        perSystem = {
-          pkgs,
-          lib,
-          ...
-        }: let
+
+        pkgss = system: {
+          pkgs = import inputs.nixpkgs {inherit system;};
+          pkgs-server = import inputs.nixpkgs-server {inherit system;};
+          pkgs-stable = import inputs.nixpkgs-stable {inherit system;};
+          pkgs-hot = import inputs.nixpkgs-hot {inherit system;};
+        };
+
+        mkHostArgs = host: system: let
+          inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
         in {
+          inherit utilz;
+          inherit inputs;
+          inherit pkgs-stable;
+          inherit pkgs-server;
+          inherit pkgs-hot;
+          flake = self;
+          host-name = utilz.sanitizeHostName host;
+        };
+      in {
+        _module.args = {inherit mkHostArgs;};
+
+        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+
+        imports = let
+          dendrites =
+            builtins.readDir ./dendrites
+            |> inputs.nixpkgs.lib.attrsets.filterAttrs (f: t: t == "directory")
+            |> builtins.attrNames
+            |> builtins.map (x: ./dendrites/${x});
+        in
+          [hosts/${"lif?dendrite"}/default.nix] ++ dendrites;
+
+        perSystem = {pkgs, ...}: {
           devShells.default = with pkgs;
           with (import ./utils); let
             inherit (import-module ./vars {inherit pkgs;}) vars;
@@ -143,41 +164,16 @@
             then (import systemPath)
             else fallback;
 
-          pkgss = system: {
-            pkgs = import inputs.nixpkgs {
-              inherit system;
-            };
-
-            pkgs-server = import inputs.nixpkgs-server {inherit system;};
-
-            pkgs-stable = import inputs.nixpkgs-stable {
-              inherit system;
-            };
-
-            pkgs-hot = import inputs.nixpkgs-hot {
-              inherit system;
-            };
-          };
-
           nixosConfigurations = builtins.listToAttrs (
             utilz.mods.eachX hosts (
               host: let
                 system = getSystem host;
-                inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
               in {
                 name = host;
                 value = withSystem system (_:
                   inputs.nixpkgs.lib.nixosSystem {
                     modules = [./hosts/${host}];
-                    specialArgs = {
-                      inherit utilz;
-                      inherit inputs;
-                      inherit pkgs-stable;
-                      inherit pkgs-server;
-                      inherit pkgs-hot;
-                      flake = self;
-                      host-name = utilz.sanitizeHostName host;
-                    };
+                    specialArgs = mkHostArgs host system;
                   });
               }
             )
@@ -232,7 +228,7 @@
                                     modules = [
                                       (import ./home/users/${user}/home.nix)
                                       (import ./hosts/${host}/home-vars.nix)
-                                      (import ./profiles/${profile}/home.nix)
+                                      # (import ./profiles/${profile}/home.nix)
                                       (_: {
                                         settings = {
                                           enable = lib.mkDefault true;

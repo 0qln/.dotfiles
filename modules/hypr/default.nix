@@ -10,25 +10,6 @@ with lib; let
 in {
   options.modules.hypr = {
     enable = mkEnableOption "hypr.* stuff";
-    defaultUser = mkOption {
-      type = types.str;
-      description = "The default user.";
-    };
-    lock = {
-      enable = mkOption {
-        description = "Whether to enable hyprlock.";
-        type = types.bool;
-        default = true;
-      };
-      # if you use this, gnome-keyring will not unlock automatically on login.
-      # todo: find a solution for that.
-      replaceLogin = mkOption {
-        description = "Whether to replace the login screen with hyprlock.";
-        type = types.bool;
-        default = true;
-      };
-    };
-    # autologin = mkEnableOption "Enable auto login. (e.g. use this when you want to replace the login screen with hyprlock)";
   };
 
   config = mkIf cfg.enable {
@@ -41,23 +22,8 @@ in {
 
     # Logins screen
     services.displayManager.sddm = {
-      # Enable the X11 windowing system.
-
       wayland.enable = true;
       enable = true;
-
-      settings = mkIf cfg.lock.replaceLogin {
-        Autologin = {
-          Session = "hyprland";
-          User = cfg.defaultUser;
-        };
-      };
-    };
-
-    home-manager = mkIf cfg.lock.replaceLogin {
-      users.${cfg.defaultUser} = _: {
-        modules.hypr.lock.autostart = true;
-      };
     };
 
     environment.systemPackages = with pkgs; [
@@ -99,12 +65,6 @@ in {
 
     services.pipewire.wireplumber = {
       enable = true;
-    };
-
-    # needed for hyprlock
-    # (https://home-manager-options.extranix.com/?query=programs.hyprlock.enable&release=release-25.11)
-    security.pam.services.hyprlock = mkIf cfg.lock.enable {
-      enableGnomeKeyring = true;
     };
   };
 }
