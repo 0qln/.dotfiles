@@ -1,7 +1,7 @@
 {inputs, ...}: {
   imports = [
     ../../modules
-    ../../users
+    ../../home/users
 
     ./localization.nix
     ./networking.nix
