@@ -23,7 +23,6 @@
     };
 
     private = {
-      # todo: merge main into this branch and remove the pin
       url = "git+ssh://gitea@git.07112025.xyz/0qln/.private.git";
       inputs = {
         nixpkgs.follows = "nixpkgs";
