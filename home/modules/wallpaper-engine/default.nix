@@ -22,12 +22,6 @@ in
 
       services.linux-wallpaperengine = {
         enable = true;
-        wallpapers = [
-          {
-            monitor = monitors.center.name;
-            wallpaperId = "3549235003";
-          }
-        ];
       };
     };
   }

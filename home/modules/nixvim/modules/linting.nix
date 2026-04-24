@@ -109,8 +109,11 @@
           # Java
           jdtls = {
             enable = true;
-            # cmd = ["jdtls" "-configuration" "${config.home.homeDirectory}/.cache/jdtls"];
-            # filetypes = ["ant" "java"];
+            cmd = [
+              "jdtls"
+              "--jvm-arg=-javaagent:${pkgs.lombok}/share/java/lombok.jar"
+              "--jvm-arg=-Xbootclasspath/a:${pkgs.lombok}/share/java/lombok.jar"
+            ];
           };
 
           jsonls.enable = true; # JSON

@@ -8,6 +8,7 @@ pkgs: {
   worksimple-xwiki = import ./worksimple-xwiki.nix {};
   tenor = import ./tenor.nix {};
   github = import ./github.nix {};
+  chess-programming-wiki = import ./chess-programming-wiki.nix {};
   bing.metaData.hidden = true;
   google.metaData.alias = "@g"; # builtin engines only support specifying one additional alias
 }
