@@ -22,6 +22,7 @@
 
       home.packages = with pkgs; [
         nurl
+        nix-init
       ];
     };
   };
