@@ -1076,7 +1076,6 @@
         "url": "ssh://gitea@git.07112025.xyz/0qln/.private.git"
       },
       "original": {
-        "rev": "c9f4e4ee75bad0ff3bea3c4a58cb465a94fb9769",
         "type": "git",
         "url": "ssh://gitea@git.07112025.xyz/0qln/.private.git"
       }
