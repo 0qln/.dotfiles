@@ -15,6 +15,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
@@ -113,9 +118,13 @@
           host-name = utilz.sanitizeHostName host;
         };
       in {
-        _module.args = {inherit mkHostArgs;};
-
-        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+        options = {
+          flake.homeModules = lib.mkOption {
+            type = lib.types.lazyAttrsOf lib.types.unspecified;
+            default = {};
+            description = "Home Manager modules exported by the flake.";
+          };
+        };
 
         imports = let
           dendrites =
@@ -126,155 +135,161 @@
         in
           [hosts/${"lif?dendrite"}/default.nix] ++ dendrites;
 
-        perSystem = {pkgs, ...}: {
-          devShells.default = with pkgs;
-          with (import ./utils); let
-            inherit (import-module ./vars {inherit pkgs;}) vars;
-            lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
+        config = {
+          _module.args = {inherit mkHostArgs;};
 
-            var-ensure = key: val:
-            # bash
-            ''[ -z "''$${key}" ] && export ${key}="${val}"'';
-          in
-            pkgs.mkShell {
-              name = "dotfiles";
-              packages = [
-                alejandra
-                fd
-                sops
-                age-plugin-yubikey
-              ];
+          systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
 
-              shellHook =
-                # bash
-                ''
-                  ${var-ensure "lifbrasir" lifbrasir}
-                  ${var-ensure "HM_BACKUP_EXT" vars.home.config.backup.extension}
-                  export PATH="$PWD/bin:$PATH"
-                '';
-            };
-        };
+          perSystem = {pkgs, ...}: {
+            devShells.default = with pkgs;
+            with (import ./utils); let
+              inherit (import-module ./vars {inherit pkgs;}) vars;
+              lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
 
-        flake = let
-          getSystem = host: let
-            fallback = (import-module ./vars {pkgs = {};}).vars.system.default;
-            systemPath = ./hosts/${host}/system.nix;
-          in
-            if builtins.pathExists systemPath
-            then (import systemPath)
-            else fallback;
+              var-ensure = key: val:
+              # bash
+              ''[ -z "''$${key}" ] && export ${key}="${val}"'';
+            in
+              pkgs.mkShell {
+                name = "dotfiles";
+                packages = [
+                  alejandra
+                  fd
+                  sops
+                  age-plugin-yubikey
+                ];
 
-          nixosConfigurations = builtins.listToAttrs (
-            utilz.mods.eachX hosts (
-              host: let
-                system = getSystem host;
-              in {
-                name = host;
-                value = withSystem system (_:
-                  inputs.nixpkgs.lib.nixosSystem {
-                    modules = [./hosts/${host}];
-                    specialArgs = mkHostArgs host system;
-                  });
-              }
-            )
-          );
+                shellHook =
+                  # bash
+                  ''
+                    ${var-ensure "lifbrasir" lifbrasir}
+                    ${var-ensure "HM_BACKUP_EXT" vars.home.config.backup.extension}
+                    export PATH="$PWD/bin:$PATH"
+                  '';
+              };
+          };
 
-          # `profile` is option
-          mkHomeName = {
-            user,
-            host,
-            env,
-            theme,
-            profile,
-          }:
-            "${user}-${host}-${env}-${theme}"
-            + (
-              if profile != ""
-              then "-${profile}"
-              else ""
-            );
+          flake = let
+            getSystem = host: let
+              fallback = (import-module ./vars {pkgs = {};}).vars.system.default;
+              systemPath = ./hosts/${host}/system.nix;
+            in
+              if builtins.pathExists systemPath
+              then (import systemPath)
+              else fallback;
 
-          homeConfigurations = builtins.listToAttrs (
-            lib.lists.flatten (
+            nixosConfigurations = builtins.listToAttrs (
               utilz.mods.eachX hosts (
                 host: let
                   system = getSystem host;
-                  inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
-                  vars = import-module ./vars {inherit pkgs;};
-                in
-                  utilz.mods.eachX hm.users (
-                    user:
-                      utilz.mods.eachX (hm.envs user) (
-                        utilz.mods.eachX hm.themes (
-                          utilz.mods.eachX profiles (
-                            profile: theme: env: let
-                              hm.config = import ./modules/home-manager/config.nix {
-                                inherit utilz;
-                                inherit inputs;
-                                inherit (pkgs) nur;
-                                inherit pkgs;
-                                inherit pkgs-hot;
-                                inherit pkgs-stable;
-                                config = vars;
-                                flake = self;
-                              };
-                            in {
-                              name = mkHomeName {inherit user host env theme profile;};
-                              value = withSystem (system host) (_:
-                                home-manager.lib.homeManagerConfiguration (
-                                  hm.config
-                                  // {
-                                    pkgs = (pkgss system).pkgs;
-                                    modules = [
-                                      (import ./home/users/${user}/home.nix)
-                                      (import ./hosts/${host}/home-vars.nix)
-                                      # (import ./profiles/${profile}/home.nix)
-                                      (_: {
-                                        settings = {
-                                          enable = lib.mkDefault true;
-                                          uiEnv = lib.mkDefault env;
-                                        };
-                                        themes = {
-                                          ${theme}.enable = true;
-                                        };
-                                      })
-                                      (_: {
-                                        # Let Home Manager install and manage itself.
-                                        programs.home-manager.enable = true;
+                in {
+                  name = host;
+                  value = withSystem system (_:
+                    inputs.nixpkgs.lib.nixosSystem {
+                      modules = [./hosts/${host}];
+                      specialArgs = mkHostArgs host system;
+                    });
+                }
+              )
+            );
 
-                                        nix.package = pkgs.nix;
-                                      })
-                                    ];
-                                  }
-                                ));
-                            }
+            # `profile` is option
+            mkHomeName = {
+              user,
+              host,
+              env,
+              theme,
+              profile,
+            }:
+              "${user}-${host}-${env}-${theme}"
+              + (
+                if profile != ""
+                then "-${profile}"
+                else ""
+              );
+
+            homeConfigurations = builtins.listToAttrs (
+              lib.lists.flatten (
+                utilz.mods.eachX hosts (
+                  host: let
+                    system = getSystem host;
+                    inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
+                    vars = import-module ./vars {inherit pkgs;};
+                  in
+                    utilz.mods.eachX hm.users (
+                      user:
+                        utilz.mods.eachX (hm.envs user) (
+                          utilz.mods.eachX hm.themes (
+                            utilz.mods.eachX profiles (
+                              profile: theme: env: let
+                                hm.config = import ./modules/home-manager/config.nix {
+                                  inherit utilz;
+                                  inherit inputs;
+                                  inherit (pkgs) nur;
+                                  inherit pkgs;
+                                  inherit pkgs-hot;
+                                  inherit pkgs-stable;
+                                  config = vars;
+                                  flake = self;
+                                };
+                              in {
+                                name = mkHomeName {inherit user host env theme profile;};
+                                value = withSystem (system host) (_:
+                                  home-manager.lib.homeManagerConfiguration (
+                                    hm.config
+                                    // {
+                                      pkgs = (pkgss system).pkgs;
+                                      modules = [
+                                        (import ./home/users/${user}/home.nix)
+                                        (import ./hosts/${host}/home-vars.nix)
+                                        # (import ./profiles/${profile}/home.nix)
+                                        (_: {
+                                          settings = {
+                                            enable = lib.mkDefault true;
+                                            uiEnv = lib.mkDefault env;
+                                          };
+                                          themes = {
+                                            ${theme}.enable = true;
+                                          };
+                                        })
+                                        (_: {
+                                          # Let Home Manager install and manage itself.
+                                          programs.home-manager.enable = true;
+
+                                          nix.package = pkgs.nix;
+                                        })
+                                      ];
+                                    }
+                                  ));
+                              }
+                            )
                           )
                         )
-                      )
-                  )
+                    )
+                )
               )
-            )
-          );
-        in {
-          inherit nixosConfigurations;
-          inherit homeConfigurations;
+            );
+          in {
+            inherit nixosConfigurations;
+            inherit homeConfigurations;
 
-          meta = {
-            inherit hosts;
-            hm = rec {
-              inherit (hm) users themes;
-              envs = builtins.listToAttrs (
-                map (u: {
-                  name = u;
-                  value = hm.envs u;
-                })
-                users
-              );
-            };
+            meta = {
+              inherit hosts;
+              hm = rec {
+                inherit (hm) users themes;
+                envs = builtins.listToAttrs (
+                  map (u: {
+                    name = u;
+                    value = hm.envs u;
+                  })
+                  users
+                );
+              };
 
-            outputs = {
-              nixosConfigurations = builtins.attrNames nixosConfigurations;
-              homeConfigurations = builtins.attrNames homeConfigurations;
+              outputs = {
+                nixosConfigurations = builtins.attrNames nixosConfigurations;
+                homeConfigurations = builtins.attrNames homeConfigurations;
+              };
             };
           };
         };

@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  flake,
+  ...
+}: {
   imports = [
     ../../modules
     ../../home/users
@@ -11,6 +15,8 @@
     ./smart-card-daemon.nix
     ./app-image.nix
     ./compat.nix
+
+    flake.nixosModules.nix
   ];
 
   nixpkgs = {
@@ -22,10 +28,6 @@
   };
 
   modules = {
-    nix = {
-      enable = true;
-      flakes.enable = true;
-    };
     devenv = {
       enable = true;
       caches.enable = true;

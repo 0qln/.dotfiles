@@ -2,6 +2,7 @@
   config,
   lib,
   inputs,
+  flake,
   ...
 }: let
   cfg = config.settings;
@@ -20,6 +21,7 @@ in
     imports =
       [
         inputs.private.homeModules."oq"
+        flake.homeModules.nix
       ]
       ++ [
         ../../utils
