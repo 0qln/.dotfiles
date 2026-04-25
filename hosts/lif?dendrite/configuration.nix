@@ -10,11 +10,11 @@
         inputs.private.nixosModules."lif"
 
         self.nixosModules.hyprlock
+        self.nixosModules.bluetooth
 
         # self.nixosModules.common.configuration
         ../_common/configuration.nix
 
-        ./bluetooth.nix
         ./bootloader.nix
         ./glorious-model-o.nix
         ./intel.nix
@@ -39,6 +39,7 @@
       };
 
       modules = {
+        bluetooth.enable = true;
         home-manager.enable = true;
         wireguard.enable = true;
         avahi.enable = true;

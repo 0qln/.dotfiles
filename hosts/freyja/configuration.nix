@@ -7,10 +7,10 @@
     ../_common/configuration.nix
 
     flake.nixosModules.hyprlock
+    flake.nixosModules.bluetooth
 
     ./bootloader.nix
     ./keys.nix
-    ./bluetooth.nix
     ./pen.nix
     ./networking.nix
   ];
@@ -22,6 +22,8 @@
 
   modules = {
     home-manager.enable = true;
+
+    bluetooth.enable = true;
 
     lid = {
       enable = true;

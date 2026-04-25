@@ -21,7 +21,10 @@ in
     imports =
       [
         inputs.private.homeModules."oq"
+      ]
+      ++ [
         flake.homeModules.nix
+        flake.homeModules.bluetooth
       ]
       ++ [
         ../../utils
