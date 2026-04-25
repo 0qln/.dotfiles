@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  flake,
   inputs,
   ...
 }:
@@ -11,7 +10,7 @@ with lib; let
 
   cfg = config.themes.${name};
 
-  inherit (config) settings utils;
+  inherit (config) utils;
   inherit (config.vars) monitors;
   inherit (config.theme) wallpapers;
 in {
