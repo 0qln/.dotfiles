@@ -8,6 +8,7 @@
 
     flake.nixosModules.hyprlock
     flake.nixosModules.bluetooth
+    flake.nixosModules.theme_idekanymore
 
     ./bootloader.nix
     ./keys.nix
@@ -57,8 +58,6 @@
     pam.enable = true;
     ydotool.enable = true;
     xdg.enable = true;
-
-    steam.enable = true;
   };
 
   sops = {
@@ -83,6 +82,10 @@
     ];
   };
 
+  themes = {
+    idekanymore.enable = true;
+  };
+
   home-manager = {
     users.oq = _: {
       imports = [./home-vars.nix];
@@ -91,8 +94,11 @@
         uiEnv = "gui";
       };
 
+      # todo: is this still needed?
       themes.cogecha-1_uneasy-flowers.enable = false;
+      # todo: is this still needed?
       themes.cogecha-2_oni.enable = false;
+
       themes.idekanymore.enable = true;
 
       modules = {
