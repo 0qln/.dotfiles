@@ -132,6 +132,7 @@ in
                   reset = true;
                 }) (lists.range 0 9);
               };
+              # todo: waybar indicator whether a submap is currently active
               "resize" = {
                 key = "R";
                 binds = [
