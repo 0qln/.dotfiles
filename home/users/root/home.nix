@@ -1,4 +1,5 @@
 {
+  flake,
   config,
   lib,
   ...
@@ -15,12 +16,15 @@ in
       };
     };
 
-    imports = [
-      ../../utils
-      ../../vars
-      ../../modules
-      ../../themes
-    ];
+    imports =
+      [
+        flake.homeModules.utils
+      ]
+      ++ [
+        ../../vars
+        ../../modules
+        ../../themes
+      ];
 
     config = mkIf cfg.enable {
       vars = {

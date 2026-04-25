@@ -83,215 +83,224 @@
     home-manager,
     ...
   }:
-    flake-parts.lib.mkFlake {inherit inputs;} ({withSystem, ...}:
-      with import ./utils; let
-        inherit (inputs.nixpkgs) lib;
+    flake-parts.lib.mkFlake {inherit inputs;} ({withSystem, ...}: let
+      inherit (inputs.nixpkgs) lib;
 
-        utilz = (import-module ./utils/module.nix {inherit lib;}).utils;
+      utilz = let
+        dendrite = import ./dendrites/utils/default.nix {inherit inputs;};
+        module = dendrite.flake.nixosModules.utils;
+      in
+        (lib.modules.evalModules {modules = [module];}).config.utils;
 
-        hosts = utilz.mods.collectMods ./hosts;
+      hosts = utilz.mods.collectMods ./hosts;
 
-        profiles = (utilz.mods.collectMods ./profiles) ++ [""];
+      profiles = (utilz.mods.collectMods ./profiles) ++ [""];
 
-        hm = {
-          users = utilz.mods.collectMods ./home/users;
-          themes = utilz.mods.collectMods ./home/themes;
-          envs = user: (import ./home/users/${user}/envs.nix);
-        };
+      hm = {
+        users = utilz.mods.collectMods ./home/users;
+        themes = utilz.mods.collectMods ./home/themes;
+        envs = user: (import ./home/users/${user}/envs.nix);
+      };
 
-        pkgss = system: {
-          pkgs = import inputs.nixpkgs {inherit system;};
-          pkgs-server = import inputs.nixpkgs-server {inherit system;};
-          pkgs-stable = import inputs.nixpkgs-stable {inherit system;};
-          pkgs-hot = import inputs.nixpkgs-hot {inherit system;};
-        };
+      pkgss = system: {
+        pkgs = import inputs.nixpkgs {inherit system;};
+        pkgs-server = import inputs.nixpkgs-server {inherit system;};
+        pkgs-stable = import inputs.nixpkgs-stable {inherit system;};
+        pkgs-hot = import inputs.nixpkgs-hot {inherit system;};
+      };
 
-        mkHostArgs = host: system: let
-          inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
-        in {
-          inherit utilz;
-          inherit inputs;
-          inherit pkgs-stable;
-          inherit pkgs-server;
-          inherit pkgs-hot;
-          flake = self;
-          host-name = utilz.sanitizeHostName host;
-        };
+      mkHostArgs = host: system: let
+        inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
       in {
-        options = {
-          flake.homeModules = lib.mkOption {
-            type = lib.types.lazyAttrsOf lib.types.unspecified;
-            default = {};
-            description = "Home Manager modules exported by the flake.";
-          };
+        inherit utilz;
+        inherit inputs;
+        inherit pkgs-stable;
+        inherit pkgs-server;
+        inherit pkgs-hot;
+        flake = self;
+        host-name = utilz.sanitizeHostName host;
+      };
+    in {
+      options = {
+        flake.homeModules = lib.mkOption {
+          type = lib.types.lazyAttrsOf lib.types.unspecified;
+          default = {};
+          description = "Home Manager modules exported by the flake.";
+        };
+      };
+
+      imports = let
+        dendrites =
+          builtins.readDir ./dendrites
+          |> inputs.nixpkgs.lib.attrsets.filterAttrs (f: t: t == "directory")
+          |> builtins.attrNames
+          |> builtins.map (x: ./dendrites/${x});
+      in
+        [hosts/${"lif?dendrite"}/default.nix] ++ dendrites;
+
+      config = {
+        _module.args = {inherit mkHostArgs;};
+
+        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+
+        perSystem = {pkgs, ...}: {
+          devShells.default = with pkgs; let
+            inherit
+              ((lib.modules.evalModules {
+                modules = [./vars];
+                specialArgs = {inherit pkgs;};
+              }).config)
+              vars
+              ;
+            lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
+
+            var-ensure = key: val:
+            # bash
+            ''[ -z "''$${key}" ] && export ${key}="${val}"'';
+          in
+            pkgs.mkShell {
+              name = "dotfiles";
+              packages = [
+                alejandra
+                fd
+                sops
+                age-plugin-yubikey
+              ];
+
+              shellHook =
+                # bash
+                ''
+                  ${var-ensure "lifbrasir" lifbrasir}
+                  ${var-ensure "HM_BACKUP_EXT" vars.home.config.backup.extension}
+                  export PATH="$PWD/bin:$PATH"
+                '';
+            };
         };
 
-        imports = let
-          dendrites =
-            builtins.readDir ./dendrites
-            |> inputs.nixpkgs.lib.attrsets.filterAttrs (f: t: t == "directory")
-            |> builtins.attrNames
-            |> builtins.map (x: ./dendrites/${x});
-        in
-          [hosts/${"lif?dendrite"}/default.nix] ++ dendrites;
+        flake = let
+          getSystem = host: let
+            inherit ((lib.modules.evalModules {modules = [./vars];}).config) vars;
+            fallback = vars.system.default;
+            systemPath = ./hosts/${host}/system.nix;
+          in
+            if builtins.pathExists systemPath
+            then (import systemPath)
+            else fallback;
 
-        config = {
-          _module.args = {inherit mkHostArgs;};
+          nixosConfigurations = builtins.listToAttrs (
+            utilz.mods.eachX hosts (
+              host: let
+                system = getSystem host;
+              in {
+                name = host;
+                value = withSystem system (_:
+                  inputs.nixpkgs.lib.nixosSystem {
+                    modules = [./hosts/${host}];
+                    specialArgs = mkHostArgs host system;
+                  });
+              }
+            )
+          );
 
-          systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+          # `profile` is option
+          mkHomeName = {
+            user,
+            host,
+            env,
+            theme,
+            profile,
+          }:
+            "${user}-${host}-${env}-${theme}"
+            + (
+              if profile != ""
+              then "-${profile}"
+              else ""
+            );
 
-          perSystem = {pkgs, ...}: {
-            devShells.default = with pkgs;
-            with (import ./utils); let
-              inherit (import-module ./vars {inherit pkgs;}) vars;
-              lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
-
-              var-ensure = key: val:
-              # bash
-              ''[ -z "''$${key}" ] && export ${key}="${val}"'';
-            in
-              pkgs.mkShell {
-                name = "dotfiles";
-                packages = [
-                  alejandra
-                  fd
-                  sops
-                  age-plugin-yubikey
-                ];
-
-                shellHook =
-                  # bash
-                  ''
-                    ${var-ensure "lifbrasir" lifbrasir}
-                    ${var-ensure "HM_BACKUP_EXT" vars.home.config.backup.extension}
-                    export PATH="$PWD/bin:$PATH"
-                  '';
-              };
-          };
-
-          flake = let
-            getSystem = host: let
-              fallback = (import-module ./vars {pkgs = {};}).vars.system.default;
-              systemPath = ./hosts/${host}/system.nix;
-            in
-              if builtins.pathExists systemPath
-              then (import systemPath)
-              else fallback;
-
-            nixosConfigurations = builtins.listToAttrs (
+          homeConfigurations = builtins.listToAttrs (
+            lib.lists.flatten (
               utilz.mods.eachX hosts (
                 host: let
                   system = getSystem host;
-                in {
-                  name = host;
-                  value = withSystem system (_:
-                    inputs.nixpkgs.lib.nixosSystem {
-                      modules = [./hosts/${host}];
-                      specialArgs = mkHostArgs host system;
-                    });
-                }
-              )
-            );
+                  inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
+                  inherit ((lib.modules.evalModules {modules = [./vars];}).config) vars;
+                in
+                  utilz.mods.eachX hm.users (
+                    user:
+                      utilz.mods.eachX (hm.envs user) (
+                        utilz.mods.eachX hm.themes (
+                          utilz.mods.eachX profiles (
+                            profile: theme: env: let
+                              hm.config = import ./modules/home-manager/config.nix {
+                                inherit utilz;
+                                inherit inputs;
+                                inherit (pkgs) nur;
+                                inherit pkgs;
+                                inherit pkgs-hot;
+                                inherit pkgs-stable;
+                                config = vars;
+                                flake = self;
+                              };
+                            in {
+                              name = mkHomeName {inherit user host env theme profile;};
+                              value = withSystem (system host) (_:
+                                home-manager.lib.homeManagerConfiguration (
+                                  hm.config
+                                  // {
+                                    pkgs = (pkgss system).pkgs;
+                                    modules = [
+                                      (import ./home/users/${user}/home.nix)
+                                      (import ./hosts/${host}/home-vars.nix)
+                                      # (import ./profiles/${profile}/home.nix)
+                                      (_: {
+                                        settings = {
+                                          enable = lib.mkDefault true;
+                                          uiEnv = lib.mkDefault env;
+                                        };
+                                        themes = {
+                                          ${theme}.enable = true;
+                                        };
+                                      })
+                                      (_: {
+                                        # Let Home Manager install and manage itself.
+                                        programs.home-manager.enable = true;
 
-            # `profile` is option
-            mkHomeName = {
-              user,
-              host,
-              env,
-              theme,
-              profile,
-            }:
-              "${user}-${host}-${env}-${theme}"
-              + (
-                if profile != ""
-                then "-${profile}"
-                else ""
-              );
-
-            homeConfigurations = builtins.listToAttrs (
-              lib.lists.flatten (
-                utilz.mods.eachX hosts (
-                  host: let
-                    system = getSystem host;
-                    inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
-                    vars = import-module ./vars {inherit pkgs;};
-                  in
-                    utilz.mods.eachX hm.users (
-                      user:
-                        utilz.mods.eachX (hm.envs user) (
-                          utilz.mods.eachX hm.themes (
-                            utilz.mods.eachX profiles (
-                              profile: theme: env: let
-                                hm.config = import ./modules/home-manager/config.nix {
-                                  inherit utilz;
-                                  inherit inputs;
-                                  inherit (pkgs) nur;
-                                  inherit pkgs;
-                                  inherit pkgs-hot;
-                                  inherit pkgs-stable;
-                                  config = vars;
-                                  flake = self;
-                                };
-                              in {
-                                name = mkHomeName {inherit user host env theme profile;};
-                                value = withSystem (system host) (_:
-                                  home-manager.lib.homeManagerConfiguration (
-                                    hm.config
-                                    // {
-                                      pkgs = (pkgss system).pkgs;
-                                      modules = [
-                                        (import ./home/users/${user}/home.nix)
-                                        (import ./hosts/${host}/home-vars.nix)
-                                        # (import ./profiles/${profile}/home.nix)
-                                        (_: {
-                                          settings = {
-                                            enable = lib.mkDefault true;
-                                            uiEnv = lib.mkDefault env;
-                                          };
-                                          themes = {
-                                            ${theme}.enable = true;
-                                          };
-                                        })
-                                        (_: {
-                                          # Let Home Manager install and manage itself.
-                                          programs.home-manager.enable = true;
-
-                                          nix.package = pkgs.nix;
-                                        })
-                                      ];
-                                    }
-                                  ));
-                              }
-                            )
+                                        nix.package = pkgs.nix;
+                                      })
+                                    ];
+                                  }
+                                ));
+                            }
                           )
                         )
-                    )
-                )
+                      )
+                  )
               )
-            );
-          in {
-            inherit nixosConfigurations;
-            inherit homeConfigurations;
+            )
+          );
+        in {
+          inherit nixosConfigurations;
+          inherit homeConfigurations;
 
-            meta = {
-              inherit hosts;
-              hm = rec {
-                inherit (hm) users themes;
-                envs = builtins.listToAttrs (
-                  map (u: {
-                    name = u;
-                    value = hm.envs u;
-                  })
-                  users
-                );
-              };
+          meta = {
+            inherit hosts;
+            hm = rec {
+              inherit (hm) users themes;
+              envs = builtins.listToAttrs (
+                map (u: {
+                  name = u;
+                  value = hm.envs u;
+                })
+                users
+              );
+            };
 
-              outputs = {
-                nixosConfigurations = builtins.attrNames nixosConfigurations;
-                homeConfigurations = builtins.attrNames homeConfigurations;
-              };
+            outputs = {
+              nixosConfigurations = builtins.attrNames nixosConfigurations;
+              homeConfigurations = builtins.attrNames homeConfigurations;
             };
           };
         };
-      });
+      };
+    });
 }

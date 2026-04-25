@@ -17,6 +17,7 @@
     ./compat.nix
 
     flake.nixosModules.nix
+    flake.nixosModules.utils
   ];
 
   nixpkgs = {

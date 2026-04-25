@@ -25,9 +25,9 @@ in
       ++ [
         flake.homeModules.nix
         flake.homeModules.bluetooth
+        flake.homeModules.utils
       ]
       ++ [
-        ../../utils
         ../../modules
         ../../vars
         ../../themes

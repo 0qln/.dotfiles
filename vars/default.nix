@@ -3,6 +3,10 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ./opts.nix
+  ];
+
   config.vars = {
     system.default = "x86_64-linux";
 

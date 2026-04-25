@@ -5,9 +5,9 @@
     ...
   }:
     with lib; let
-      cfg = config.modules.themes.idekanymore;
+      cfg = config.themes.idekanymore;
     in {
-      options.modules.themes.idekanymore = {
+      options.themes.idekanymore = {
         enable = mkEnableOption "[Theme] idekanymore";
       };
 
