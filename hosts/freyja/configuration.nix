@@ -1,6 +1,12 @@
-{config, ...}: {
+{
+  config,
+  flake,
+  ...
+}: {
   imports = [
     ../_common/configuration.nix
+
+    flake.nixosModules.hyprlock
 
     ./bootloader.nix
     ./keys.nix
@@ -26,9 +32,13 @@
     avahi.enable = true;
     hypr = {
       enable = true;
-      defaultUser = "oq";
-      lock.replaceLogin = false;
     };
+    hyprlock = {
+      enable = true;
+      defaultUser = "oq";
+      replaceLogin = false;
+    };
+
     # enable kde x11 sessions aswell, since the hp stylus pen's configuration via wacom
     # drivers and libwacom in not supported under wayland.
     # see:

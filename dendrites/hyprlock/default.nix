@@ -28,9 +28,9 @@
         };
       };
 
-      config = {
+      config = mkIf cfg.enable {
         # https://home-manager-options.extranix.com/?query=programs.hyprlock.enable&release=release-25.11
-        security.pam.services.hyprlock = mkIf cfg.enable {
+        security.pam.services.hyprlock = {
           enableGnomeKeyring = true;
         };
 
