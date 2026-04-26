@@ -2,13 +2,15 @@
   config,
   flake,
   ...
-}: {
+}: let
+  theme = "idekanymore";
+in {
   imports = [
     ../_common/configuration.nix
 
     flake.nixosModules.hyprlock
     flake.nixosModules.bluetooth
-    flake.nixosModules."themes/idekanymore"
+    flake.nixosModules."themes/${theme}"
 
     ./bootloader.nix
     ./keys.nix
@@ -83,14 +85,14 @@
   };
 
   themes = {
-    idekanymore.enable = true;
+    ${theme}.enable = true;
   };
 
   home-manager = {
     users.oq = _: {
       imports = [
         ./home-vars.nix
-        flake.homeModules."themes/idekanymore"
+        flake.homeModules."themes/${theme}"
       ];
       settings = {
         enable = true;
@@ -98,11 +100,11 @@
       };
 
       # todo: is this still needed?
-      themes.cogecha-1_uneasy-flowers.enable = false;
+      # themes.cogecha-1_uneasy-flowers.enable = false;
       # todo: is this still needed?
-      themes.cogecha-2_oni.enable = false;
+      # themes.cogecha-2_oni.enable = false;
 
-      themes.idekanymore.enable = true;
+      themes.${theme}.enable = true;
 
       modules = {
         input = {
