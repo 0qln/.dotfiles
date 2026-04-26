@@ -11,6 +11,7 @@
 
         self.nixosModules.hyprlock
         self.nixosModules.bluetooth
+        self.nixosModules.android
 
         # self.nixosModules.common.configuration
         ../_common/configuration.nix
@@ -39,6 +40,11 @@
       };
 
       modules = {
+        android = {
+          enable = true;
+          users = ["oq"];
+          android-studio.enable = true;
+        };
         bluetooth.enable = true;
         home-manager.enable = true;
         wireguard.enable = true;
