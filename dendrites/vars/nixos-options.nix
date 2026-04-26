@@ -1,25 +1,24 @@
 {lib, ...}:
 with lib; {
-  options.vars = {
-    domains = let
-      domainInfoType = types.submodule {
-        options = {
-          registrar = mkOption {
-            type = types.str;
-            description = "The registrar (e.g. cloudflare, duckdns)";
-          };
-          dn = mkOption {
-            type = types.str;
-            example = "e.g. example.com";
-          };
+  options.vars = let
+    domainInfoType = types.submodule {
+      options = {
+        registrar = mkOption {
+          type = types.str;
+          description = "The registrar (e.g. cloudflare, duckdns)";
+        };
+        dn = mkOption {
+          type = types.str;
+          example = "e.g. example.com";
         };
       };
-    in
-      mkOption {
-        type = types.attrsOf domainInfoType;
-        default = {};
-        description = "domain infos";
-      };
+    };
+  in {
+    domains = mkOption {
+      type = types.attrsOf domainInfoType;
+      default = {};
+      description = "domain infos";
+    };
 
     system = mkOption {
       type = types.str;

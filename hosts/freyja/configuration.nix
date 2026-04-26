@@ -8,7 +8,7 @@
 
     flake.nixosModules.hyprlock
     flake.nixosModules.bluetooth
-    flake.nixosModules.theme_idekanymore
+    flake.nixosModules."themes/idekanymore"
 
     ./bootloader.nix
     ./keys.nix
@@ -88,7 +88,10 @@
 
   home-manager = {
     users.oq = _: {
-      imports = [./home-vars.nix];
+      imports = [
+        ./home-vars.nix
+        flake.homeModules."themes/idekanymore"
+      ];
       settings = {
         enable = true;
         uiEnv = "gui";

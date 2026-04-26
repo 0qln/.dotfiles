@@ -152,13 +152,21 @@
       };
 
       imports = let
-        dendrites =
-          builtins.readDir ./dendrites
-          |> inputs.nixpkgs.lib.attrsets.filterAttrs (f: t: t == "directory")
+        isDirectory = f: t: t == "directory";
+        hasDefaultNix = dir: f: t: (
+          builtins.readDir ./${dir}/${f}
+          |> builtins.hasAttr "default.nix"
+        );
+        collectDendrites = dir:
+          builtins.readDir ./${dir}
+          |> inputs.nixpkgs.lib.attrsets.filterAttrs isDirectory
+          |> inputs.nixpkgs.lib.attrsets.filterAttrs (hasDefaultNix dir)
           |> builtins.attrNames
-          |> builtins.map (x: ./dendrites/${x});
+          |> builtins.map (x: ./${dir}/${x});
       in
-        [hosts/${"lif?dendrite"}/default.nix] ++ dendrites;
+        [hosts/${"lif?dendrite"}/default.nix]
+        ++ (collectDendrites "dendrites")
+        ++ (collectDendrites "dendrites/themes");
 
       config = {
         _module.args = {inherit mkHostArgs;};
