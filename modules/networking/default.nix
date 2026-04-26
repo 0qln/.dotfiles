@@ -1,11 +1,11 @@
 {
   config,
   lib,
-  utilz,
   ...
 }:
 with lib; let
   cfg = config.modules.networking;
+  utilz = config.utils;
 in {
   options.modules.networking = {
     enable = mkEnableOption "networking module";
