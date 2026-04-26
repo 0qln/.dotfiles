@@ -19,9 +19,9 @@ in
     imports =
       [
         flake.homeModules.utils
+        flake.homeModules.vars
       ]
       ++ [
-        ../../vars
         ../../modules
         ../../themes
       ];

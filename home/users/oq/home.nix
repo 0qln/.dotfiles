@@ -26,10 +26,10 @@ in
         flake.homeModules.nix
         flake.homeModules.bluetooth
         flake.homeModules.utils
+        flake.homeModules.vars
       ]
       ++ [
         ../../modules
-        ../../vars
         ../../themes
       ];
 
