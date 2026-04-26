@@ -11,13 +11,13 @@
     ./networking.nix
     ./printing.nix
     ./packages.nix
-    ./vars.nix
     ./smart-card-daemon.nix
     ./app-image.nix
     ./compat.nix
 
     flake.nixosModules.nix
     flake.nixosModules.utils
+    flake.nixosModules.vars
   ];
 
   nixpkgs = {

@@ -86,11 +86,32 @@
     flake-parts.lib.mkFlake {inherit inputs;} ({withSystem, ...}: let
       inherit (inputs.nixpkgs) lib;
 
-      utilz = let
-        dendrite = import ./dendrites/utils/default.nix {inherit inputs;};
-        module = dendrite.flake.nixosModules.utils;
+      # todo: maybe if needed use flake-parts.lib.mkFlake here
+      evalDendrite = {
+        path,
+        attrPath,
+        specialArgs ? {},
+      }: let
+        dendrite = import path {inherit inputs;};
+        module = lib.attrByPath attrPath {} dendrite;
       in
-        (lib.modules.evalModules {modules = [module];}).config.utils;
+        lib.evalModules {
+          modules = [module];
+          inherit specialArgs;
+        };
+
+      utilz =
+        (evalDendrite {
+          path = ./dendrites/utils;
+          attrPath = ["flake" "nixosModules" "utils"];
+        }).config.utils;
+
+      vars = pkgs:
+        (evalDendrite {
+          path = ./dendrites/vars;
+          attrPath = ["flake" "nixosModules" "vars"];
+          specialArgs = {inherit pkgs;};
+        }).config.vars;
 
       hosts = utilz.mods.collectMods ./hosts;
 
@@ -112,6 +133,7 @@
       mkHostArgs = host: system: let
         inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
       in {
+        # todo: utilz shouldn't be needed here anymore
         inherit utilz;
         inherit inputs;
         inherit pkgs-stable;
@@ -145,14 +167,7 @@
 
         perSystem = {pkgs, ...}: {
           devShells.default = with pkgs; let
-            inherit
-              ((lib.modules.evalModules {
-                modules = [./vars];
-                specialArgs = {inherit pkgs;};
-              }).config)
-              vars
-              ;
-            lifbrasir = vars.hosts.lifbrasir.fqdns.primary.dn;
+            lifbrasir = (vars pkgs).hosts.lifbrasir.fqdns.primary.dn;
 
             var-ensure = key: val:
             # bash
@@ -171,7 +186,7 @@
                 # bash
                 ''
                   ${var-ensure "lifbrasir" lifbrasir}
-                  ${var-ensure "HM_BACKUP_EXT" vars.home.config.backup.extension}
+                  ${var-ensure "HM_BACKUP_EXT" (vars pkgs).home.config.backup.extension}
                   export PATH="$PWD/bin:$PATH"
                 '';
             };
@@ -179,8 +194,7 @@
 
         flake = let
           getSystem = host: let
-            inherit ((lib.modules.evalModules {modules = [./vars];}).config) vars;
-            fallback = vars.system.default;
+            fallback = (vars {}).system.default;
             systemPath = ./hosts/${host}/system.nix;
           in
             if builtins.pathExists systemPath
@@ -223,7 +237,6 @@
                 host: let
                   system = getSystem host;
                   inherit (pkgss system) pkgs-stable pkgs-hot pkgs;
-                  inherit ((lib.modules.evalModules {modules = [./vars];}).config) vars;
                 in
                   utilz.mods.eachX hm.users (
                     user:
@@ -238,7 +251,7 @@
                                 inherit pkgs;
                                 inherit pkgs-hot;
                                 inherit pkgs-stable;
-                                config = vars;
+                                config = vars {};
                                 flake = self;
                               };
                             in {
