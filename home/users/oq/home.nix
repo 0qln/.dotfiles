@@ -72,7 +72,7 @@ in
             enable = mkDefault true;
             clanker.enable = mkDefault true;
           };
-          clanker.claude.enable = mkDefault true;
+          clanker.claude.enable = mkDefault false;
           bash.enable = mkDefault true;
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;

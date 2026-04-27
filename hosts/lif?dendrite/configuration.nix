@@ -119,13 +119,13 @@
             zoom.enable = true;
             kooha.enable = true;
             jetbrains = {
-              enable = true;
+              enable = false;
               tools = mkMerge [
                 (with pkgs.jetbrains; [
                   # rider
                 ])
                 (with pkgs; [
-                  jetbrains-toolbox
+                  # jetbrains-toolbox
                 ])
               ];
             };
