@@ -7,9 +7,9 @@
 with lib; let
   todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix {};
   inherit (config.vars) terminal fileexplorer;
-  cfg = config.modules.hypr.land.input;
+  cfg = config.modules.hyprland.input;
 in {
-  options.modules.hypr.land.input = {
+  options.modules.hyprland.input = {
     submaps = mkOption {
       type = types.attrsOf (types.submodule {
         options = {

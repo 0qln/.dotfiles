@@ -113,7 +113,7 @@ in
               enable = mkDefault true;
             };
           };
-          hypr.land = {
+          hyprland = {
             modules = {
               # todo: maybe ein waybar toggle ding womit ich das dann togglen kann idk (📝)
               "scratchpad" = {

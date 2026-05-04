@@ -1,16 +1,28 @@
-{inputs, ...}: let
+{
+  inputs,
+  self,
+  ...
+}: let
   name = "cogecha-1_uneasy-flowers";
 in
   with inputs.nixpkgs.lib; {
     flake.nixosModules."themes/${name}" = {config, ...}: let
       cfg = config.themes.${name};
     in {
+      imports = [
+        self.nixosModules.hyprland
+        self.nixosModules.hyprlock
+      ];
+
       options.themes.${name} = {
         enable = mkEnableOption "[Theme] ${name}";
       };
 
       config = mkIf cfg.enable {
-        #
+        modules = {
+          hyprland.enable = true;
+          hyprlock.enable = true;
+        };
       };
     };
 
@@ -24,6 +36,14 @@ in
       inherit (config.vars) monitors;
       inherit (config.theme) wallpapers;
     in {
+      imports = [
+        self.homeModules.hyprland
+        self.homeModules.waybar
+        self.homeModules.hyprshot
+        self.homeModules.hyprpicker
+        self.homeModules.hyprlock
+      ];
+
       options.themes.${name} = {
         enable = mkEnableOption "[Theme] ${name}";
       };
@@ -31,6 +51,12 @@ in
       config = mkIf cfg.enable {
         modules = {
           #TODO: zen background rgba(45,53,59,0.7)
+
+          waybar.enable = mkDefault true;
+          hyprshot.enable = mkDefault true;
+          hyprpicker.enable = mkDefault true;
+          hyprlock.enable = mkDefault true;
+          hyprland.enable = mkDefault true;
 
           cursor = {
             cursor = mkDefault "maomao"; #maomao

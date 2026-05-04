@@ -115,7 +115,6 @@ in {
         };
         krita.enable = true;
         nixvim.wayland.enable = true;
-        hypr.enable = true;
         browser = {
           firefox = {
             tor.enable = false;

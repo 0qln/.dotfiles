@@ -11,7 +11,6 @@ in {
       imports = [
         inputs.private.nixosModules."lif"
 
-        self.nixosModules.hyprlock
         self.nixosModules.bluetooth
         self.nixosModules.android
         self.nixosModules."themes/${theme}"
@@ -55,9 +54,7 @@ in {
         home-manager.enable = true;
         wireguard.enable = true;
         avahi.enable = true;
-        hypr.enable = true;
         hyprlock = {
-          enable = true;
           defaultUser = "oq";
           replaceLogin = false;
         };
@@ -111,7 +108,6 @@ in {
 
           modules = {
             nixvim.wayland.enable = true;
-            hypr.enable = true;
             browser = {
               firefox = {
                 tor.enable = true;

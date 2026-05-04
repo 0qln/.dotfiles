@@ -145,10 +145,10 @@ in
             };
           };
 
-          hypr.paper.enable = false;
+          hyprpaper.enable = false;
           wallpaperengine.enable = true;
 
-          hypr.land.modules = {
+          hyprland.modules = {
             # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
             # is this any better / even relevant?
             "rotate-screen".conf = let
@@ -694,7 +694,7 @@ in
                 };
                 "custom/rotate-screen" = {
                   format = "⟳";
-                  on-click = config.modules.hypr.land.modules."rotate-screen".scripts.toggle;
+                  on-click = config.modules.hyprland.modules."rotate-screen".scripts.toggle;
                   tooltip = true;
                   tooltip-format = "Flip screen upside down.";
                 };

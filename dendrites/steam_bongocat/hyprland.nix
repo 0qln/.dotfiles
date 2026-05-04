@@ -3,14 +3,14 @@
   config,
   ...
 }: let
-  cfg = config.modules.hypr.land;
+  cfg = config.modules.hyprland;
   steam_id = import ./steam_id.nix;
   inherit (config.vars) monitors;
   gaps_out = toString config.theme.win.layout.gaps_out;
 in
   with lib; {
     config = mkIf cfg.enable {
-      modules.hypr.land.input = {
+      modules.hyprland.input = {
         submaps = {
           "workspace".binds = [
             {

@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  cfg = config.modules.hypr.land;
+  cfg = config.modules.hyprland;
 
   modulesConf = ".config/hypr/modules.conf";
   moduleXConf = x: ".config/hypr/modules/${x}/hyprland.conf";
@@ -69,7 +69,7 @@ with lib; let
     }
   );
 in {
-  options.modules.hypr.land = {
+  options.modules.hyprland = {
     modules = mkOption {
       type = types.attrsOf moduleType;
       default = {};

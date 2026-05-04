@@ -3,11 +3,11 @@
   lib,
   ...
 }: let
-  cfg = config.modules.hypr.paper;
+  cfg = config.modules.hyprpaper;
 in
   with lib; {
-    options.modules.hypr.paper = {
-      enable = config.utils.mkEnableOption "hypr.paper" config.modules.hypr.enable;
+    options.modules.hyprpaper = {
+      enable = mkEnableOption "hyprpaper";
       autostart = config.utils.mkEnableOption "automatically execute on startup" cfg.enable;
     };
 

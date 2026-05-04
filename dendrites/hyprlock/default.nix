@@ -45,7 +45,7 @@
 
         home-manager = mkIf cfg.replaceLogin {
           users.${cfg.defaultUser} = _: {
-            modules.hypr.lock.autostart = true;
+            modules.hyprlock.autostart = true;
           };
         };
       };
@@ -57,15 +57,15 @@
     ...
   }:
     with lib; let
-      cfg = config.modules.hypr.lock;
+      cfg = config.modules.hyprlock;
     in {
-      options.modules.hypr.lock = {
-        enable = config.utils.mkEnableOption "hypr.lock" config.modules.hypr.enable;
+      options.modules.hyprlock = {
+        enable = mkEnableOption "hyprlock";
         autostart = mkEnableOption "automatically execute on startup";
       };
 
       config = let
-        inherit (config.modules.hypr.land.input) mainMod;
+        inherit (config.modules.hyprland.input) mainMod;
         inherit (config.vars) monitors;
       in
         mkIf cfg.enable {

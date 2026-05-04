@@ -12,7 +12,7 @@ in {
   config = mkIf cfg.wayland.enable {
     programs.nixvim = {
       clipboard = {
-        providers.wl-copy.enable = config.modules.hypr.enable;
+        providers.wl-copy.enable = config.modules.hyprland.enable;
       };
     };
   };
