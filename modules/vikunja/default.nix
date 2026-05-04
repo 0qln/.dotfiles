@@ -79,6 +79,18 @@ in {
           migration.todoist = {
             enable = true;
           };
+
+          auth = {
+            # https://vikunja.io/docs/openid/#step-2-configure-vikunja
+            openid = {
+              enabled = true;
+            };
+
+            # https://vikunja.io/docs/openid/#login-existing-local-user-with-openid
+            local = {
+              enabled = true;
+            };
+          };
         };
 
         environmentFiles = [
