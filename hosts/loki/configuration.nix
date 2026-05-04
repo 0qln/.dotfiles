@@ -1,6 +1,7 @@
-{...}: {
+{flake, ...}: {
   imports = [
     ../_common
+    flake.nixosModules."wsl"
   ];
 
   users = {
@@ -18,7 +19,9 @@
 
   home-manager = {
     users.oq = _: {
-      imports = [./home-vars.nix];
+      imports = [
+        ./home-vars.nix
+      ];
       settings = {
         enable = true;
         uiEnv = "wsl";
