@@ -1,4 +1,6 @@
-{self, ...}: {
+{self, ...}: let
+  theme = "cogecha-1_uneasy-flowers";
+in {
   flake.nixosModules.lif = {
     pkgs,
     inputs,
@@ -12,6 +14,7 @@
         self.nixosModules.hyprlock
         self.nixosModules.bluetooth
         self.nixosModules.android
+        self.nixosModules."themes/${theme}"
 
         # self.nixosModules.common.configuration
         ../_common/configuration.nix
@@ -33,10 +36,13 @@
         # })
       ];
 
-      # todo: add this to other hosts
       users = {
         root.enable = true;
         oq.enable = true;
+      };
+
+      themes = {
+        ${theme}.enable = true;
       };
 
       modules = {
@@ -90,7 +96,10 @@
 
       home-manager = {
         users.oq = _: {
-          imports = [./home-vars.nix];
+          imports = [
+            ./home-vars.nix
+            self.homeModules."themes/${theme}"
+          ];
 
           settings = {
             enable = true;
@@ -98,7 +107,7 @@
             enableWorkSimple = true;
           };
 
-          themes.cogecha-1_uneasy-flowers.enable = true;
+          themes.${theme}.enable = true;
 
           modules = {
             nixvim.wayland.enable = true;

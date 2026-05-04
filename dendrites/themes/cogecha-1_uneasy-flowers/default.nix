@@ -1,5 +1,5 @@
 {inputs, ...}: let
-  name = "idekanymore";
+  name = "cogecha-1_uneasy-flowers";
 in
   with inputs.nixpkgs.lib; {
     flake.nixosModules."themes/${name}" = {config, ...}: let
@@ -10,8 +10,7 @@ in
       };
 
       config = mkIf cfg.enable {
-        # wallpaperengine
-        modules.steam.enable = true;
+        #
       };
     };
 
@@ -22,7 +21,6 @@ in
     }: let
       cfg = config.themes.${name};
 
-      inherit (config) utils;
       inherit (config.vars) monitors;
       inherit (config.theme) wallpapers;
     in {
@@ -31,31 +29,15 @@ in
       };
 
       config = mkIf cfg.enable {
-        vars = {
-          editor = mkDefault "nvim";
-          sysfetcher = mkDefault "fastfetch";
-          terminal = mkDefault "kitty";
-        };
-
-        services.linux-wallpaperengine = {
-          wallpapers = [
-            {
-              monitor = monitors.devices.center.name;
-              wallpaperId = "3620156165";
-              scaling = "fill";
-              audio.silent = true;
-            }
-          ];
-        };
-
         modules = {
+          #TODO: zen background rgba(45,53,59,0.7)
+
           cursor = {
-            cursor = mkDefault "maomao";
+            cursor = mkDefault "maomao"; #maomao
           };
 
           fonts = {
             cartograph-cf.enable = mkDefault true; # general monospace
-            jetbrains-mono.enable = mkDefault true;
             ibm-plex.enable = mkDefault true; # obsidian
           };
 
@@ -67,22 +49,14 @@ in
           rofi = {
             enable = mkDefault true;
             themeFile = let
-              walName = "wpe-3620156165.png";
-              img = pkgs.stdenv.mkDerivation {
-                src = ./wpe-3620156165.png;
-                dontUnpack = true;
-                name = walName;
-                buildInputs = [pkgs.imagemagick];
-                buildPhase = ''
-                  mkdir -p $out/share/
-                  # todo: figure out exact size we need
-                  # scaling down the bg image, otherwise it takes like 500ms to load
-                  convert $src -resize 1000x1000 $out/share/${walName}
-                '';
+              womenInChair = pkgs.fetchurl {
+                url = "https://github.com/adi1090x/rofi/raw/093c1a79f58daab358199c4246de50357e5bf462/files/images/e.jpg";
+                hash = "sha256-KyA/KpARKAF8XQWmGnOnJLkXM1/pT39DGjguZz4AZcw=";
               };
+              wallhaven-xe59v3 = ./rofi/wallhaven-xe59v3-cropped.png;
               rasi =
                 import ./rofi/theme.nix
-                "${img}/share/${walName}"
+                wallhaven-xe59v3
                 config.theme.launcher
                 "${config.theme.fonts.monospace} Italic 11";
             in
@@ -103,7 +77,7 @@ in
               # zathurarc
               ''
                 set recolor "true"
-                set default-bg rgba(41,37,34,${toString config.theme.win.opacity.background})
+                set default-bg rgba(45,53,59,0.7)
                 set recolor-lightcolor rgba(0,0,0,0)
                 set adjust-open "width"
               '';
@@ -111,7 +85,7 @@ in
 
           nixvim = {
             transparency.enable = mkDefault true;
-            colors.theme = "gruvbox-material";
+            colors.theme = "everforest";
           };
 
           starship = {
@@ -126,12 +100,15 @@ in
           };
 
           discord.vesktop = {
-            theme = "midnight-vencord";
+            theme = "system24-everforest";
           };
 
           wallust = {
             enable = true;
-            wallpaper = ./wpe-3620156165.png;
+            wallpaper = pkgs.fetchurl {
+              url = "https://w.wallhaven.cc/full/p9/wallhaven-p9vyz3.jpg";
+              hash = "sha256-bo2omvgTQ8oOoAbuxXTiRLSVAevUA4Tu60IUHCM99bA=";
+            };
             settings = {
               backend = "fastresize";
               color_space = "lch";
@@ -143,39 +120,6 @@ in
                 };
               };
             };
-          };
-
-          hypr.paper.enable = false;
-          wallpaperengine.enable = true;
-
-          hypr.land.modules = {
-            # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
-            # is this any better / even relevant?
-            "rotate-screen".conf = let
-              n = "center";
-              v = monitors.devices.${n};
-              formatted =
-                config.utils.fmtMonitor_device
-                n
-                v
-                (monitors.arrangement.byName.${v.name} // {r = 2;});
-            in
-              #hyprlang
-              ''
-                monitor = ${formatted}
-                input {
-                  touchdevice {
-                    transform = 2
-                  }
-                  tablet {
-                    transform = 2
-                  }
-                  touchpad {
-                    flip_x = true
-                    flip_y = true
-                  }
-                }
-              '';
           };
         };
 
@@ -343,11 +287,6 @@ in
                     ))
                     bars)
                   + "unreachable");
-
-              bgColor = "rgba(41,37,34,${toString config.theme.win.opacity.background})";
-
-              gaps_in = toString config.theme.win.layout.gaps_in;
-              gaps_out = toString config.theme.win.layout.gaps_out;
             in "${pkgs.writeText "waybar.css"
               #css
               ''
@@ -363,55 +302,54 @@ in
 
                 ${selectBarsIfEnabled "modules-left"} {
                     padding:7px;
-                    margin: ${gaps_out} ${gaps_in} 0 ${gaps_out};
+                    margin:10 0 5 10;
                     border-radius:10px;
                     background: alpha(@background, ${toString config.theme.win.opacity.background});
-                    box-shadow: 0px 0px 2px ${bgColor};
+                    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
                 }
                 ${selectBarsIfEnabled "modules-center"} {
                     padding:7px;
                     margin:10 0 5 0;
-                    margin: ${gaps_out} ${gaps_in} 0 ${gaps_in};
                     border-radius:10px;
                     background: alpha(@background, ${toString config.theme.win.opacity.background});
-                    box-shadow: 0px 0px 2px ${bgColor};
+                    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
                 }
                 ${selectBarsIfEnabled "modules-right"}
                  {
                     padding:7px;
-                    margin: ${gaps_out} ${gaps_out} 0 ${gaps_in};
+                    margin: 10 10 5 0;
                     border-radius:10px;
                     background: alpha(@background, ${toString config.theme.win.opacity.background});
-                    box-shadow: 0px 0px 2px ${bgColor};
+                    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
                 }
 
                 tooltip {
                     background:@background;
-                    color: @foreground;
+                    color: @color7;
                 }
-                #clock:hover, #custom-pacman:hover, #custom-nixpkgs:hover, #custom-rotate-screen:hover, #custom-notification:hover,#bluetooth:hover,#network:hover,#battery:hover, #cpu:hover,#memory:hover,#temperature:hover{
+                #clock:hover, #custom-pacman:hover, #custom-nixpkgs:hover, #custom-notification:hover,#bluetooth:hover,#network:hover,#battery:hover, #cpu:hover,#memory:hover,#temperature:hover{
                     transition: all .3s ease;
                     color:@color9;
                 }
                 #custom-notification {
                     padding: 0px 5px;
                     transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
                 }
                 #clock{
                     padding: 0px 5px;
-                    color:@foreground;
+                    color:@color7;
                     transition: all .3s ease;
                 }
                 #custom-pacman {
                     padding: 0px 5px;
                     transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
                 }
                 #custom-nixpkgs {
                     padding: 0px 5px;
                     transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
                 }
                 #workspaces {
                     padding: 0px 5px;
@@ -449,31 +387,25 @@ in
                     border: none;
                     text-shadow: 0px 0px 2px rgba(0, 0, 0, .5);
                 }
-                #custom-rotate-screen {
-                    padding: 0px 5px;
-                    transition: all .3s ease;
-                    color:@foreground;
-                }
                 #bluetooth{
                     padding: 0px 5px;
                     transition: all .3s ease;
-                    color:@foreground;
-                }
-                #pulseaudio{
-                    padding: 0px 5px;
-                    transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
+
                 }
                 #network{
                     padding: 0px 5px;
                     margin-right: 5px;
                     transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
+
                 }
                 #battery{
                     padding: 0px 5px;
                     transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
+
+
                 }
                 #battery.charging {
                     color: #26A65B;
@@ -508,7 +440,7 @@ in
                 #cpu,#memory,#temperature{
                     padding: 0px 5px;
                     transition: all .3s ease;
-                    color:@foreground;
+                    color:@color7;
 
                 }
                 #custom-endpoint{
@@ -535,7 +467,7 @@ in
             settings = let
               default = {
                 left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
-                center = ["hyprland/workspaces" "custom/rotate-screen"];
+                center = ["hyprland/workspaces"];
                 right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
                 bar = monitor: (
                   {
@@ -631,11 +563,13 @@ in
                   "format" = "{icon}";
                   "tooltip-format" = "{volume}%";
                   "format-muted" = "×";
-                  "format-icons" = [
-                    " "
-                    " "
-                    " "
-                  ];
+                  "format-icons" = {
+                    "default" = [
+                      " "
+                      " "
+                      " "
+                    ];
+                  };
                   "on-click" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
                 };
                 "battery" = {
@@ -692,12 +626,6 @@ in
                   tooltip = true;
                   tooltip-format = "{} Nix updates available\nLeft-click: Update flake\nRight-click: Rebuild system";
                 };
-                "custom/rotate-screen" = {
-                  format = "⟳";
-                  on-click = config.modules.hypr.land.modules."rotate-screen".scripts.toggle;
-                  tooltip = true;
-                  tooltip-format = "Flip screen upside down.";
-                };
                 "custom/expand" = {
                   "format" = "";
                   "tooltip" = false;
@@ -737,7 +665,7 @@ in
         };
         theme = {
           fonts = {
-            monospace = "Jetbrains Mono Nerd Font";
+            monospace = "CartographCF Nerd Font";
             reading = "IBM Plex";
           };
           launcher = {
@@ -745,77 +673,221 @@ in
             background = mkDefault "#272E33";
             border = mkDefault "#7A8478";
             background-alt = mkDefault "#2E383C";
-            foreground = mkDefault "#ECE1D7";
-            foreground-selected = mkDefault config.theme.term.selection_foreground; # todo ?
-            selected = mkDefault "#7F91B2";
-            active = mkDefault "#78997A";
-            urgent = mkDefault "#BD8183";
+            foreground = mkDefault "#D3C6AA";
+            foreground-selected = mkDefault "#272E33";
+            selected = mkDefault "#7FBBB3";
+            active = mkDefault "#A7C080";
+            urgent = mkDefault "#E67E80";
           };
           win = {
             border = {
-              active = "${config.theme.term.color2}ff";
-              inactive = "${config.theme.term.color6}ff";
-              size = 2;
+              active = "#9da9a000";
+              inactive = "#85928900";
+              size = 0;
             };
             shadow = {
-              active = "#11111100";
-              inactive = "#00000000";
-              range = 7;
+              active = "#8d78909f";
+              inactive = "#33333390";
+              range = 5;
               render_power = 3;
             };
             opacity = {
               active = 1.0;
               inactive = 1.0;
-              background = 0.9;
+              background = 0.7;
             };
             corners = {
               rounding = 12;
               rounding_power = 2;
             };
             blur = {
-              size = 6;
-              passes = 3;
-              vibrancy = 2.0;
+              size = 20;
+              passes = 4;
+              vibrancy = 1.0;
             };
             layout = {
               gaps_in = 10;
               gaps_out = 15;
             };
           };
-          term = let
-            conf = builtins.readFile ./kitty/${"Gruvbox Material Dark Medium.conf"};
-            theme = utils.importKittyTheme conf;
-          in
-            theme // {padding = 4;};
+          term = {
+            padding = 4;
+
+            foreground = "#d3c6aa";
+            background = "#2d353b";
+            selection_foreground = "#9da9a0";
+            selection_background = "#505a60";
+
+            cursor = "#d3c6aa";
+            # cursor_text_color = "#343f44";
+
+            # url_color = "#7fbbb3";
+
+            # active_border_color = "#a7c080";
+            # inactive_border_color = "#56635f";
+            # bell_border_color = "#e69875";
+            # visual_bell_color = "none";
+
+            # wayland_titlebar_color = "system";
+            # macos_titlebar_color = "system";
+
+            # active_tab_background = "#2d353b";
+            # active_tab_foreground = "#d3c6aa";
+            # inactive_tab_background = "#3d484d";
+            # inactive_tab_foreground = "#9da9a0";
+            # tab_bar_background = "#343f44";
+            # tab_bar_margin_color = "none";
+
+            # mark1_foreground = "#2d353b";
+            # mark1_background = "#7fbbb3";
+            # mark2_foreground = "#2d353b";
+            # mark2_background = "#d3c6aa";
+            # mark3_foreground = "#2d353b";
+            # mark3_background = "#d699b6";
+
+            #: = "black";
+            color0 = "#343f44";
+            color8 = "#868d80";
+
+            #: = "red";
+            color1 = "#e67e80";
+            color9 = "#e67e80";
+
+            #: = "green";
+            color2 = "#a7c080";
+            color10 = "#a7c080";
+
+            #: = "yellow";
+            color3 = "#dbbc7f";
+            color11 = "#dbbc7f";
+
+            #: = "blue";
+            color4 = "#7fbbb3";
+            color12 = "#7fbbb3";
+
+            #: = "magenta";
+            color5 = "#d699b6";
+            color13 = "#d699b6";
+
+            #: = "cyan";
+            color6 = "#83c092";
+            color14 = "#83c092";
+
+            #: = "white";
+            color7 = "#859289";
+            color15 = "#9da9a0";
+          };
 
           wallpapers = rec {
             arrangements = with images; {
               "|-|" = {
-                left = vert1;
+                left = horz2;
                 center = horz1;
-                right = vert2;
+                right = horz2;
               };
               "-" = {
                 center = horz1;
               };
             };
-            # todo: screenshot the live wallpaper using linux-wallpaperengine and use that as fallback
             images = {
-              vert1 = "${pkgs.fetchurl {
+              vert1 = pkgs.fetchurl {
                 url = "https://w.wallhaven.cc/full/ex/wallhaven-exj8jl.jpg";
                 hash = "sha256-sC6gYIAgTlFNFdn9dbvPj3ZQ6u6KGX5ImyHRU/BZ2bw=";
-              }}";
-              vert2 = "${pkgs.fetchurl {
+              };
+              vert2 = pkgs.fetchurl {
                 url = "https://w.wallhaven.cc/full/o3/wallhaven-o3k6ol.jpg";
                 hash = "sha256-g5XH8n+rZnr1fw2YifqzxWJto8UeBo3VBOPYyrGxgtg=";
-              }}";
-              horz1 = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/p9/wallhaven-p9vyz3.jpg";
-                hash = "sha256-bo2omvgTQ8oOoAbuxXTiRLSVAevUA4Tu60IUHCM99bA=";
-              }}";
+              };
+              horz1 = pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/qr/wallhaven-qr2dxr.jpg";
+                hash = "sha256-Sca+LBBAVS7xFjhO24dwsAHs9vqoqMZb6Ce4yF15BqM=";
+              };
+              horz2 = pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/6l/wallhaven-6lo8w6.png";
+                hash = "sha256-tGHSZEPIRagf1IG4henexc+HJ1vnZWWdE5Fc3n6LUt0=";
+              };
             };
           };
         };
       };
     };
   }
+#
+#TODO: add a hardcoded workspace config with this:
+#
+# Window 564604f32650 -> clearfetch:
+#         mapped: 1
+#         hidden: 0
+#         at: 42,585
+#         size: 976,468
+#         workspace: 1 (1)
+#         floating: 1
+#         pseudo: 0
+#         monitor: 0
+#         class: kitty
+#         title: clearfetch
+#         initialClass: kitty
+#         initialTitle: kitty
+#         pid: 106965
+#         xwayland: 0
+#         pinned: 0
+#         fullscreen: 0
+#         fullscreenClient: 0
+#         grouped: 0
+#         tags:
+#         swallowing: 0
+#         focusHistoryID: 1
+#         inhibitingIdle: 0
+#         xdgTag:
+#         xdgDescription:
+# Window 564604f37720 -> lf:
+#         mapped: 1
+#         hidden: 0
+#         at: 1488,580
+#         size: 409,1020
+#         workspace: 1 (1)
+#         floating: 1
+#         pseudo: 0
+#         monitor: 0
+#         class: kitty
+#         title: lf
+#         initialClass: kitty
+#         initialTitle: kitty
+#         pid: 107926
+#         xwayland: 0
+#         pinned: 0
+#         fullscreen: 0
+#         fullscreenClient: 0
+#         grouped: 0
+#         tags:
+#         swallowing: 0
+#         focusHistoryID: 2
+#         inhibitingIdle: 0
+#         xdgTag:
+#         xdgDescription:
+# Window 5646055c5dc0 -> tmux:
+#         mapped: 1
+#         hidden: 0
+#         at: 39,1101
+#         size: 1386,507
+#         workspace: 1 (1)
+#         floating: 1
+#         pseudo: 0
+#         monitor: 0
+#         class: kitty
+#         title: tmux
+#         initialClass: kitty
+#         initialTitle: kitty
+#         pid: 108556
+#         xwayland: 0
+#         pinned: 0
+#         fullscreen: 0
+#         fullscreenClient: 0
+#         grouped: 0
+#         tags:
+#         swallowing: 0
+#         focusHistoryID: 0
+#         inhibitingIdle: 0
+#         xdgTag:
+#         xdgDescription:
+
