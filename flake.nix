@@ -202,7 +202,7 @@
 
         flake = let
           getSystem = host: let
-            fallback = (vars {}).system.default;
+            fallback = (vars {}).system;
             systemPath = ./hosts/${host}/system.nix;
           in
             if builtins.pathExists systemPath
