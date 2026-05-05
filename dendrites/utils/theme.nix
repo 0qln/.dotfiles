@@ -52,5 +52,19 @@
         #   --scene "${workshopPath}/${wallpaperId}/scene.pkg" \
         #   --output "$out"
       '';
+
+    resizeImage = width: height: src: name: let
+      w = toString width;
+      h = toString height;
+    in
+      pkgs.stdenv.mkDerivation {
+        inherit src name;
+        dontUnpack = true;
+        buildInputs = [pkgs.imagemagick];
+        buildPhase = ''
+          mkdir -p $out/share/
+          convert $src -resize ${w}x${h} $out/share/${name}
+        '';
+      };
   };
 }
