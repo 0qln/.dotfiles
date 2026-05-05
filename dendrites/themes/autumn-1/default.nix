@@ -81,7 +81,7 @@ in
           hyprland.enable = mkDefault true;
 
           cursor = {
-            cursor = mkDefault "maomao";
+            cursor = mkDefault "frieren-winter";
           };
 
           fonts = {
@@ -98,10 +98,14 @@ in
           rofi = {
             enable = mkDefault true;
             themeFile = let
-              walName = "wpe-3620156165.png";
+              walName = "wallhaven-e83378.jpg";
+              rawImg = "${pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/e8/${walName}";
+                hash = "sha256-ms2DG7koNAjbnR6nDVFrDfhokErcHeMv7lvuSMvDsTU=";
+              }}";
               # todo: figure out exact size we need
               # scaling down the bg image, otherwise it takes like 500ms to load
-              img = utils.resizeImage 1000 1000 ./wpe-3620156165.png walName;
+              img = utils.resizeImage 1000 1000 rawImg walName;
               rasi =
                 import ./rofi/theme.nix
                 "${img}/share/${walName}"
@@ -153,7 +157,7 @@ in
 
           wallust = {
             enable = true;
-            wallpaper = ./wpe-3620156165.png;
+            wallpaper = ./pywal/wpe-1512181248.png;
             settings = {
               backend = "fastresize";
               color_space = "lch";
@@ -261,7 +265,6 @@ in
                 font_family = "${config.theme.fonts.monospace}";
                 placeholder_text = ''<i><span foreground="#${config.theme.launcher.foreground}">🔒 Enter Pass</span></i>'';
                 hide_input = false;
-                # position = "0, -210";
                 halign = "center";
                 valign = "center";
               }
@@ -810,30 +813,19 @@ in
             theme // {padding = 4;};
 
           wallpapers = rec {
-            arrangements = with images; {
+            arrangements = {
               "|-|" = {
-                left = vert1;
-                center = horz1;
-                right = vert2;
+                inherit (images) left center right;
               };
               "-" = {
-                center = horz1;
+                center = images.normal;
               };
             };
-            # todo: screenshot the live wallpaper using linux-wallpaperengine and use that as fallback
             images = {
-              vert1 = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/ex/wallhaven-exj8jl.jpg";
-                hash = "sha256-sC6gYIAgTlFNFdn9dbvPj3ZQ6u6KGX5ImyHRU/BZ2bw=";
-              }}";
-              vert2 = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/o3/wallhaven-o3k6ol.jpg";
-                hash = "sha256-g5XH8n+rZnr1fw2YifqzxWJto8UeBo3VBOPYyrGxgtg=";
-              }}";
-              horz1 = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/p9/wallhaven-p9vyz3.jpg";
-                hash = "sha256-bo2omvgTQ8oOoAbuxXTiRLSVAevUA4Tu60IUHCM99bA=";
-              }}";
+              left = "${./wpe-1512181248_left.png}";
+              right = "${./wpe-1512181248_right.png}";
+              center = "${./wpe-1512181248_center.png}";
+              normal = "${./wpe-1512181248.png}";
             };
           };
         };
