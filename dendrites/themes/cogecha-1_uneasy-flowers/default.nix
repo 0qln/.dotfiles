@@ -42,6 +42,7 @@ in
         self.homeModules.hyprshot
         self.homeModules.hyprpicker
         self.homeModules.hyprlock
+        self.homeModules.hyprpaper
       ];
 
       options.themes.${name} = {
@@ -57,6 +58,7 @@ in
           hyprpicker.enable = mkDefault true;
           hyprlock.enable = mkDefault true;
           hyprland.enable = mkDefault true;
+          hyprpaper.enable = mkDefault true;
 
           cursor = {
             cursor = mkDefault "maomao"; #maomao
