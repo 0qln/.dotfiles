@@ -1,5 +1,5 @@
 {self, ...}: let
-  theme = "cogecha-1_uneasy-flowers";
+  theme = "autumn-1";
 in {
   flake.nixosModules.lif = {
     pkgs,
