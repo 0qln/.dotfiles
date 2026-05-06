@@ -722,7 +722,7 @@ in
                     '';
                   in "${updateScript}";
                   exec-if = "test -d ${flake}";
-                  on-click = "${config.vars.terminal} sh -c 'cd ${flake} && nix flake update --commit-lock-file lg ${inputsStr} && echo \"Flake updated!\"; echo \"Press enter to exit\"; read'";
+                  on-click = "${config.vars.terminal} sh -c 'cd ${flake} && nix flake update --commit-lock-file ${inputsStr} && echo \"Flake updated!\"; echo \"Press enter to exit\"; read'";
                   on-click-right = "${config.vars.terminal} sh -c 'cd ${flake} && sudo nixos-rebuild switch --flake .; echo \"Press enter to exit\"; read'"; #TODO: do we need to provide the host?
                   signal = 8;
                   tooltip = true;
