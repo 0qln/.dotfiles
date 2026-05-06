@@ -1,0 +1,4 @@
+{...}: {
+  "format" = "󰻠";
+  "tooltip" = true;
+}

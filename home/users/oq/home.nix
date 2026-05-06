@@ -27,6 +27,7 @@ in
         flake.homeModules.bluetooth
         flake.homeModules.utils
         flake.homeModules.vars
+        flake.homeModules.fonts
       ]
       ++ [
         ../../modules

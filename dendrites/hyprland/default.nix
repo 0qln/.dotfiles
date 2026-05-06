@@ -32,7 +32,6 @@ with inputs.nixpkgs.lib; {
         brightnessctl
         wl-clipboard-rs
         inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.hyprpaper
-        mako
         libnotify
       ];
       programs.hyprland = {

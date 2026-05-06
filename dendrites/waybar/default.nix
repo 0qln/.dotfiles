@@ -9,6 +9,9 @@
     in {
       options.modules.waybar = {
         enable = mkEnableOption "waybar";
+        modules = mkOption {
+          type = types.attrs;
+        };
       };
 
       # docs:

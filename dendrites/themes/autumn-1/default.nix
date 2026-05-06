@@ -27,7 +27,7 @@ in
       };
     };
 
-    flake.homeModules."themes/${name}" = {
+    flake.homeModules."themes/${name}" = args @ {
       config,
       pkgs,
       ...
@@ -44,6 +44,7 @@ in
         self.homeModules.hyprshot
         self.homeModules.hyprpicker
         self.homeModules.hyprlock
+        self.homeModules.dunst
         self.homeModules.linux-wallpaperengine
       ];
 
@@ -79,6 +80,16 @@ in
           hyprpicker.enable = mkDefault true;
           hyprlock.enable = mkDefault true;
           hyprland.enable = mkDefault true;
+
+          dunst = {
+            enable = mkDefault true;
+            settings = {
+              global = {
+                transparency = 0;
+                font = "${config.theme.fonts.monospace} 11";
+              };
+            };
+          };
 
           cursor = {
             cursor = mkDefault "frieren-winter";
@@ -166,6 +177,10 @@ in
                 waybar = {
                   template = "waybar.css";
                   target = "~/.config/waybar/colors.css";
+                };
+                dunst = {
+                  template = "dunstrc";
+                  target = "~/.config/dunst/dunstrc.d/00_wallust.conf";
                 };
               };
             };
@@ -569,9 +584,30 @@ in
                     output = [monitors.devices.${monitor}.name];
                     reload_style_on_change = true;
                   }
-                  // (modules monitor)
+                  // (let
+                    importModule = name: import ../../waybar/modules/${name}.nix ({inherit monitor;} // args);
+                  in {
+                    "hyprland/workspaces" = importModule "hyprland/workspaces";
+                    "custom/notification" = importModule "custom/notification";
+                    "clock" = importModule "clock";
+                    "network" = importModule "network";
+                    "bluetooth" = importModule "bluetooth";
+                    "pulseaudio" = importModule "pulseaudio";
+                    "battery" = importModule "battery";
+                    "custom/pacman" = importModule "custom/pacman";
+                    "custom/nixpkgs" = importModule "custom/nixpkgs";
+                    "custom/rotate-screen" = importModule "custom/rotate-screen";
+                    "custom/expand" = importModule "custom/expand";
+                    "custom/endpoint" = importModule "custom/endpoint";
+                    "group/expand" = importModule "group/expand";
+                    "cpu" = importModule "cpu";
+                    "memory" = importModule "memory";
+                    "temperature" = importModule "temperature";
+                    "tray" = importModule "tray";
+                  })
                 );
               };
+
               mapping = {
                 "-" = {
                   barCenter =
@@ -579,7 +615,7 @@ in
                     // {
                       modules-left = default.left;
                       modules-center = default.center;
-                      modules-right = default.right;
+                      modules-right = default.right ++ ["hyprland/workspaces"];
                     };
                 };
                 "|-|" = {
@@ -593,178 +629,6 @@ in
                     // {
                       modules-center = default.left;
                     };
-                };
-              };
-
-              modules = monitor: {
-                "hyprland/workspaces" = {
-                  "format" = "{icon}";
-                  "format-icons" = {
-                    "active" = "";
-                    "default" = "";
-                    "empty" = "";
-                  };
-                  "persistent-workspaces" = {
-                    "*" = monitors.devices.${monitor}.workspaces;
-                  };
-                };
-                "custom/notification" = {
-                  "tooltip" = false;
-                  "format" = " ";
-                  "on-click" = "#TODO: notification client";
-                  "escape" = true;
-                };
-                "clock" = {
-                  "format" = "{:%I:%M:%S %p} ";
-                  "interval" = 1;
-                  "tooltip-format" = "<tt>{calendar}</tt>";
-                  "calendar" = {
-                    "format" = {
-                      "today" = "<span color='#fAfBfC'><b>{}</b></span>";
-                    };
-                  };
-                  "actions" = {
-                    "on-click-right" = "shift_down";
-                    "on-click" = "shift_up";
-                  };
-                };
-                "network" = {
-                  "format-wifi" = "";
-                  "format-ethernet" = "";
-                  "format-disconnected" = "";
-                  "tooltip-format-disconnected" = "Error";
-                  "tooltip-format-wifi" = "{essid} ({signalStrength}%) ";
-                  "tooltip-format-ethernet" = "{ifname} 🖧 ";
-                  "on-click" = "kitty nmtui";
-                };
-                "bluetooth" = {
-                  "format-on" = "󰂯";
-                  "format-off" = "BT-off";
-                  "format-disabled" = "󰂲";
-                  "format-connected-battery" = "{device_battery_percentage}% 󰂯";
-                  "format-alt" = "{device_alias} 󰂯";
-                  "tooltip-format" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
-                  "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
-                  "tooltip-format-enumerate-connected" = "{device_alias}\n{device_address}";
-                  "tooltip-format-enumerate-connected-battery" = "{device_alias}\n{device_address}\n{device_battery_percentage}%";
-                  "on-click-right" = config.modules.bluetooth.app;
-                };
-                "pulseaudio" = {
-                  "max-volume" = 100;
-                  "scroll-step" = 10;
-                  "format" = "{icon}";
-                  "tooltip-format" = "{volume}%";
-                  "format-muted" = "×";
-                  "format-icons" = [
-                    " "
-                    " "
-                    " "
-                  ];
-                  "on-click" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-                };
-                "battery" = {
-                  "interval" = 30;
-                  "states" = {
-                    "good" = 95;
-                    "warning" = 30;
-                    "critical" = 20;
-                  };
-                  "format" = "{capacity}% {icon}";
-                  "format-charging" = "{capacity}% 󰂄";
-                  "format-plugged" = "{capacity}% 󰂄 ";
-                  "format-alt" = "{time} {icon}";
-                  "format-icons" = [
-                    "󰁻"
-                    "󰁼"
-                    "󰁾"
-                    "󰂀"
-                    "󰂂"
-                    "󰁹"
-                  ];
-                };
-                "custom/pacman" = {
-                  "format" = "󰅢 {}";
-                  "interval" = 30;
-                  "exec" = "checkupdates | wc -l";
-                  "exec-if" = "exit 0";
-                  "on-click" = "${config.vars.terminal} sh -c 'yay -Syu; echo Done - Press enter to exit; read'; pkill -SIGRTMIN+8 waybar";
-                  "signal" = 8;
-                  "tooltip" = false;
-                };
-                "custom/nixpkgs" = let
-                  flakeInputsToUpdate = lists.subtractLists ["private" "self"] (builtins.attrNames inputs);
-                  inputsStr = concatStringsSep " " flakeInputsToUpdate;
-                  flake = config.vars.flake.dir;
-                in {
-                  format = "󰅢  {}";
-                  interval = 300;
-                  exec = let
-                    updateScript = pkgs.writeShellScript "check-nix-updates" ''
-                      if [[ -d ${flake} ]]; then
-                        cd ${flake} || return
-
-                        if [[ -z "$(git status --porcelain)" ]]; then
-
-                          # not using --reference-lock-file "$in" --output-lock-file "$out" bc then nix doesn't tell us about what was updated :shrug:
-                          updates=$(nix flake update \
-                            ${inputsStr} 2>&1 \
-                            | grep -c "Updated input"
-                          )
-
-                          git reset --hard > /dev/null 2>&1
-
-                          echo "$updates"
-                          exit 0
-                        fi
-                      fi
-
-                      echo "?"
-                    '';
-                  in "${updateScript}";
-                  exec-if = "test -d ${flake}";
-                  on-click = "${config.vars.terminal} sh -c 'cd ${flake} && nix flake update --commit-lock-file ${inputsStr} && echo \"Flake updated!\"; echo \"Press enter to exit\"; read'";
-                  on-click-right = "${config.vars.terminal} sh -c 'cd ${flake} && sudo nixos-rebuild switch --flake .; echo \"Press enter to exit\"; read'"; #TODO: do we need to provide the host?
-                  signal = 8;
-                  tooltip = true;
-                  tooltip-format = "{} Nix updates available\nLeft-click: Update flake\nRight-click: Rebuild system";
-                };
-                "custom/rotate-screen" = {
-                  format = "⟳";
-                  on-click = config.modules.hyprland.modules."rotate-screen".scripts.toggle;
-                  tooltip = true;
-                  tooltip-format = "Flip screen upside down.";
-                };
-                "custom/expand" = {
-                  "format" = "";
-                  "tooltip" = false;
-                };
-                "custom/endpoint" = {
-                  "format" = "|";
-                  "tooltip" = false;
-                };
-                "group/expand" = {
-                  "orientation" = "horizontal";
-                  "drawer" = {
-                    "transition-duration" = 600;
-                    "transition-to-left" = true;
-                    "click-to-reveal" = true;
-                  };
-                  "modules" = ["custom/expand" "cpu" "memory" "temperature" "custom/endpoint"];
-                };
-                "cpu" = {
-                  "format" = "󰻠";
-                  "tooltip" = true;
-                };
-                "memory" = {
-                  "format" = "";
-                };
-                "temperature" = {
-                  "critical-threshold" = 80;
-                  "format" = "";
-                };
-                "tray" = {
-                  "icon-size" = 14;
-                  "spacing" = 10;
                 };
               };
             in
