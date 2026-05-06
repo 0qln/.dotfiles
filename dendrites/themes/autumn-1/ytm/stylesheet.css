@@ -15,6 +15,8 @@ ytmusic-nav-bar {
     transition: opacity 0.5s ease-in-out !important;
 }
 
+body:hover .ytmusic-guide-renderer,
+body:hover ytmusic-nav-bar,
 .ytmusic-guide-renderer:hover,
 ytmusic-nav-bar:hover {
     opacity: 1 !important;
@@ -40,6 +42,7 @@ ytmusic-chip-cloud-renderer.style-scope.ytmusic-section-list-renderer {
     transition: all 0.3s ease-in-out !important;
 }
 
+body:hover ytmusic-chip-cloud-renderer.style-scope.ytmusic-section-list-renderer,
 ytmusic-chip-cloud-renderer.style-scope.ytmusic-section-list-renderer:hover {
     opacity: 1 !important;
 }
@@ -176,6 +179,7 @@ ytmusic-player[player-ui-state="MINIPLAYER"] {
     transition: all 0.3s ease-in-out !important;
 }
 
+body:hover #av-id:has(ytmusic-av-toggle),
 #av-id:has(ytmusic-av-toggle):hover {
     opacity: 1 !important;
 }
