@@ -696,7 +696,7 @@ in
                   inputsStr = concatStringsSep " " flakeInputsToUpdate;
                   flake = config.vars.flake.dir;
                 in {
-                  format = "󰅢 {}";
+                  format = "󰅢  {}";
                   interval = 300;
                   exec = let
                     updateScript = pkgs.writeShellScript "check-nix-updates" ''
@@ -713,12 +713,12 @@ in
 
                           git reset --hard > /dev/null 2>&1
 
-                          echo " $updates"
+                          echo "$updates"
                           exit 0
                         fi
                       fi
 
-                      echo " ?"
+                      echo "?"
                     '';
                   in "${updateScript}";
                   exec-if = "test -d ${flake}";
