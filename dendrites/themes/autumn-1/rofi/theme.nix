@@ -37,15 +37,13 @@ image: colors: font:
       location:                    center;
       anchor:                      center;
       fullscreen:                  false;
-      width:                       1000px;
+      width:                       400px;
       x-offset:                    0px;
       y-offset:                    0px;
 
       /* properties for all widgets */
       enabled:                     true;
-      border:                      1px solid;
-      border-color:                @border;
-      border-radius:               15px;
+      border-radius:               20px;
       cursor:                      "default";
       background-color:            @background;
   }
@@ -55,16 +53,8 @@ image: colors: font:
       enabled:                     true;
       spacing:                     0px;
       background-color:            transparent;
-      orientation:                 horizontal;
-      children:                    [ "imagebox", "listbox" ];
-  }
-
-  imagebox {
-      padding:                     20px;
-      background-color:            transparent;
-      background-image:            url("${image}", height);
       orientation:                 vertical;
-      children:                    [ "inputbar", "dummy", "mode-switcher" ];
+      children:                    [ "inputbar", "listbox" ];
   }
 
   listbox {
@@ -72,34 +62,36 @@ image: colors: font:
       padding:                     20px;
       background-color:            transparent;
       orientation:                 vertical;
-      children:                    [ "message", "listview" ];
-  }
-
-  dummy {
-      background-color:            transparent;
+      children:                    [ "message", "listview", "mode-switcher" ];
   }
 
   /*****----- Inputbar -----*****/
   inputbar {
       enabled:                     true;
       spacing:                     10px;
-      padding:                     15px;
-      border-radius:               10px;
-      background-color:            @background-alt;
+      padding:                     100px 40px;
+      background-color:            transparent;
+      background-image:            url("${image}", width);
       text-color:                  @foreground;
+      orientation:                 horizontal;
       children:                    [ "textbox-prompt-colon", "entry" ];
   }
   textbox-prompt-colon {
       enabled:                     true;
       expand:                      false;
-      str:                         "";
-      padding:                     0px 5px;
-      background-color:            inherit;
+      str:                         "     ";
+      horizontal-align:            0.5;
+      vertical-align:              0.5;
+      border-radius:               100%;
+      background-color:            @background-alt;
       text-color:                  inherit;
   }
   entry {
       enabled:                     true;
-      background-color:            inherit;
+      expand:                      true;
+      padding:                     12px 16px;
+      border-radius:               100%;
+      background-color:            @background-alt;
       text-color:                  inherit;
       cursor:                      text;
       placeholder:                 "Search";
@@ -107,15 +99,15 @@ image: colors: font:
   }
 
   /*****----- Mode Switcher -----*****/
-  mode-switcher {
+  mode-switcher{
       enabled:                     true;
-      spacing:                     20px;
+      spacing:                     10px;
       background-color:            transparent;
       text-color:                  @foreground;
   }
   button {
-      padding:                     15px;
-      border-radius:               10px;
+      padding:                     12px;
+      border-radius:               100%;
       background-color:            @background-alt;
       text-color:                  inherit;
       cursor:                      pointer;
@@ -129,7 +121,7 @@ image: colors: font:
   listview {
       enabled:                     true;
       columns:                     1;
-      lines:                       8;
+      lines:                       5;
       cycle:                       true;
       dynamic:                     true;
       scrollbar:                   false;
@@ -147,36 +139,36 @@ image: colors: font:
   /*****----- Elements -----*****/
   element {
       enabled:                     true;
-      spacing:                     15px;
-      padding:                     8px;
-      border-radius:               10px;
+      spacing:                     10px;
+      padding:                     12px;
+      border-radius:               100%;
       background-color:            transparent;
       text-color:                  @foreground;
       cursor:                      pointer;
   }
   element normal.normal {
-      background-color:            inherit;
-      text-color:                  inherit;
+      background-color:            @background;
+      text-color:                  @foreground;
   }
   element normal.urgent {
       background-color:            @urgent;
-      text-color:                  @foreground-selected;
+      text-color:                  @foreground;
   }
   element normal.active {
       background-color:            @active;
-      text-color:                  @foreground-selected;
+      text-color:                  @foreground;
   }
   element selected.normal {
-      background-color:            @selected;
-      text-color:                  @foreground-selected;
+      background-color:            @background-alt;
+      text-color:                  @foreground;
   }
   element selected.urgent {
       background-color:            @urgent;
-      text-color:                  @foreground-selected;
+      text-color:                  @foreground;
   }
   element selected.active {
       background-color:            @urgent;
-      text-color:                  @foreground-selected;
+      text-color:                  @foreground;
   }
   element-icon {
       background-color:            transparent;
@@ -197,8 +189,8 @@ image: colors: font:
       background-color:            transparent;
   }
   textbox {
-      padding:                     15px;
-      border-radius:               10px;
+      padding:                     12px;
+      border-radius:               100%;
       background-color:            @background-alt;
       text-color:                  @foreground;
       vertical-align:              0.5;
@@ -206,7 +198,7 @@ image: colors: font:
   }
   error-message {
       padding:                     15px;
-      border-radius:               20px;
+      border-radius:               0px;
       background-color:            @background;
       text-color:                  @foreground;
   }

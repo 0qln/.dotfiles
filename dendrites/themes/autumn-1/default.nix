@@ -765,21 +765,20 @@ in
             reading = "IBM Plex";
           };
           launcher = {
-            # https://github.com/rebelot/kanagawa.nvim/blob/aef7f5cec0a40dbe7f3304214850c472e2264b10/lua/kanagawa/colors.lua
-            background = mkDefault "#272E33";
-            border = mkDefault "#7A8478";
-            background-alt = mkDefault "#2E383C";
-            foreground = mkDefault "#ECE1D7";
-            foreground-selected = mkDefault config.theme.term.selection_foreground; # todo ?
-            selected = mkDefault "#7F91B2";
-            active = mkDefault "#78997A";
-            urgent = mkDefault "#BD8183";
+            background = mkDefault config.theme.term.selection_background;
+            border = mkDefault config.theme.win.border.active;
+            background-alt = mkDefault config.theme.term.color4;
+            foreground = mkDefault config.theme.term.selection_foreground;
+            foreground-selected = mkDefault config.theme.term.foreground;
+            selected = mkDefault config.theme.term.background;
+            active = mkDefault config.theme.term.color2;
+            urgent = mkDefault config.theme.term.color1;
           };
           win = {
             border = {
-              active = "${config.theme.term.color2}ff";
-              inactive = "${config.theme.term.color6}ff";
-              size = 2;
+              active = "${config.theme.term.color12}ff";
+              inactive = "${config.theme.term.color4}ff";
+              size = 1;
             };
             shadow = {
               active = "#11111100";
@@ -790,16 +789,16 @@ in
             opacity = {
               active = 1.0;
               inactive = 1.0;
-              background = 0.9;
+              background = 0.75;
             };
             corners = {
-              rounding = 12;
+              rounding = 10;
               rounding_power = 2;
             };
             blur = {
               size = 6;
               passes = 3;
-              vibrancy = 2.0;
+              vibrancy = 1.0;
             };
             layout = {
               gaps_in = 10;
@@ -807,10 +806,10 @@ in
             };
           };
           term = let
-            conf = builtins.readFile ./kitty/${"Gruvbox Material Dark Medium.conf"};
+            conf = builtins.readFile ./kitty/${"Gruvbox Material Dark Soft.conf"};
             theme = utils.importKittyTheme conf;
           in
-            theme // {padding = 4;};
+            theme // {padding = 2;};
 
           wallpapers = rec {
             arrangements = {
