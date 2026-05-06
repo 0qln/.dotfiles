@@ -116,6 +116,34 @@ in
           };
           hyprland = {
             modules = {
+              "rotate-screen".conf = let
+                inherit (config.vars) monitors;
+                n = "center";
+                v = monitors.devices.${n};
+                formatted =
+                  config.utils.fmtMonitor_device
+                  n
+                  v
+                  (monitors.arrangement.byName.${v.name} // {r = 2;});
+              in
+                #hyprlang
+                ''
+                  monitor = ${formatted}
+
+                  input {
+                    touchdevice {
+                      transform = 2
+                    }
+                    tablet {
+                      transform = 2
+                    }
+                    touchpad {
+                      flip_x = true
+                      flip_y = true
+                    }
+                  }
+                '';
+
               # todo: maybe ein waybar toggle ding womit ich das dann togglen kann idk (📝)
               "scratchpad" = {
                 # mutable config file / scratchpad
@@ -123,6 +151,7 @@ in
                 mutable = true;
               };
             };
+
             input.submaps = {
               "workspace" = {
                 key = "W";

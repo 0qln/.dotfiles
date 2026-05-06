@@ -187,43 +187,16 @@ in
           };
 
           wallpaperengine.enable = true;
-
-          hyprland.modules = {
-            # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
-            # is this any better / even relevant?
-            "rotate-screen".conf = let
-              n = "center";
-              v = monitors.devices.${n};
-              formatted =
-                config.utils.fmtMonitor_device
-                n
-                v
-                (monitors.arrangement.byName.${v.name} // {r = 2;});
-            in
-              #hyprlang
-              ''
-                monitor = ${formatted}
-                input {
-                  touchdevice {
-                    transform = 2
-                  }
-                  tablet {
-                    transform = 2
-                  }
-                  touchpad {
-                    flip_x = true
-                    flip_y = true
-                  }
-                }
-              '';
-          };
         };
 
         programs.hyprlock = let
           fmtColor = config.utils.fmtColor_rgbaFn;
           fmtColorWO = config.utils.fmtColorWithOpacity_rgbaFn;
           inherit (config.utils) ftop ftoi;
-          escape = replaceStrings ["#" ''"''] ["##" ''\"''];
+          escape =
+            replaceStrings
+            ["#" ''"'']
+            ["##" ''\"''];
         in {
           # inspiration: https://www.hyprflux.dev/features/hyprlock.html#features
           settings = {
@@ -653,7 +626,7 @@ in
           win = {
             border = {
               active = "${config.theme.term.color12}ff";
-              inactive = "${config.theme.term.color4}ff";
+              inactive = "${config.theme.term.color4}aa";
               size = 1;
             };
             shadow = {
