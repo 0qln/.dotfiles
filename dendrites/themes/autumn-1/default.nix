@@ -711,7 +711,7 @@ in
                             | grep -c "Updated input"
                           )
 
-                          git reset --hard 2>&1
+                          git reset --hard > /dev/null 2>&1
 
                           echo " $updates"
                           exit 0
