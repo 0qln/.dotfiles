@@ -21,7 +21,6 @@
   ];
 
   nixpkgs = {
-    config.allowUnfree = true;
     overlays = [
       inputs.nur.overlays.default
       inputs.cartograph-cf.overlays.default

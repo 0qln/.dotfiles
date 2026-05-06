@@ -47,7 +47,6 @@ in
       # https://nix-community.github.io/home-manager/options.xhtml#opt-home.activation
       # https://github.com/nix-community/home-manager/blob/master/modules/home-environment.nix
       # https://home-manager-options.extranix.com/
-      nixpkgs.config.allowUnfree = true;
 
       home = {
         username = import ./name.nix;
