@@ -27,6 +27,19 @@ in {
       description = "Home directory path";
     };
 
+    flake = lib.mkOption {
+      type = lib.types.submodule {
+        options = {
+          dir = lib.mkOption {
+            type = lib.types.str;
+            description = "Dotfiles flake location";
+          };
+        };
+      };
+      default = {};
+      description = "Dotfiles flake vars";
+    };
+
     cloud = lib.mkOption {
       type = lib.types.submodule {
         options = {

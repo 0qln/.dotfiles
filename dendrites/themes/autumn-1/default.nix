@@ -694,19 +694,31 @@ in
                 "custom/nixpkgs" = let
                   flakeInputsToUpdate = lists.subtractLists ["private" "self"] (builtins.attrNames inputs);
                   inputsStr = concatStringsSep " " flakeInputsToUpdate;
-                  flake = inputs.self;
+                  flake = config.vars.flake.dir;
                 in {
                   format = "󰅢 {}";
                   interval = 300;
                   exec = let
                     updateScript = pkgs.writeShellScript "check-nix-updates" ''
                       if [[ -d ${flake} ]]; then
-                        cd ${flake}
-                        UPDATES=$(nix flake update --output-lock-file <(cat flake.nix) ${inputsStr} 2>&1 | grep -E "(→|↓)" | wc -l)
-                        echo "$UPDATES"
-                      else
-                        echo "0"
+                        cd ${flake} || return
+
+                        if [[ -z "$(git status --porcelain)" ]]; then
+
+                          # not using --reference-lock-file "$in" --output-lock-file "$out" bc then nix doesn't tell us about what was updated :shrug:
+                          updates=$(nix flake update \
+                            ${inputsStr} 2>&1 \
+                            | grep -c "Updated input"
+                          )
+
+                          git reset --hard
+
+                          echo " $updates"
+                          exit 0
+                        fi
                       fi
+
+                      echo " ?"
                     '';
                   in "${updateScript}";
                   exec-if = "test -d ${flake}";
