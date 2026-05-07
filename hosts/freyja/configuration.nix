@@ -35,9 +35,6 @@ in {
     };
     battery.enable = !config.modules.kde.enable;
     avahi.enable = true;
-    hypr = {
-      enable = true;
-    };
     hyprlock = {
       enable = true;
       defaultUser = "oq";

@@ -1,10 +1,18 @@
-{inputs, ...}: let
+{
+  inputs,
+  self,
+  ...
+}: let
   name = "idekanymore";
 in
   with inputs.nixpkgs.lib; {
     flake.nixosModules."themes/${name}" = {config, ...}: let
       cfg = config.themes.${name};
     in {
+      imports = [
+        self.nixosModules.hyprland
+      ];
+
       options.themes.${name} = {
         enable = mkEnableOption "[Theme] ${name}";
       };
@@ -12,10 +20,12 @@ in
       config = mkIf cfg.enable {
         # wallpaperengine
         modules.steam.enable = true;
+        modules.hyprland.enable = true;
+        modules.hyprlock.enable = true;
       };
     };
 
-    flake.homeModules."themes/${name}" = {
+    flake.homeModules."themes/${name}" = args @ {
       config,
       pkgs,
       ...
@@ -26,6 +36,16 @@ in
       inherit (config.vars) monitors;
       inherit (config.theme) wallpapers;
     in {
+      imports = [
+        self.homeModules.hyprland
+        self.homeModules.waybar
+        self.homeModules.hyprshot
+        self.homeModules.hyprpicker
+        self.homeModules.hyprlock
+        self.homeModules.dunst
+        self.homeModules.linux-wallpaperengine
+      ];
+
       options.themes.${name} = {
         enable = mkEnableOption "[Theme] ${name}";
       };
@@ -49,6 +69,12 @@ in
         };
 
         modules = {
+          waybar.enable = mkDefault true;
+          hyprshot.enable = mkDefault true;
+          hyprpicker.enable = mkDefault true;
+          hyprlock.enable = mkDefault true;
+          hyprland.enable = mkDefault true;
+
           cursor = {
             cursor = mkDefault "maomao";
           };
@@ -67,19 +93,12 @@ in
           rofi = {
             enable = mkDefault true;
             themeFile = let
-              walName = "wpe-3620156165.png";
-              img = pkgs.stdenv.mkDerivation {
-                src = ./wpe-3620156165.png;
-                dontUnpack = true;
-                name = walName;
-                buildInputs = [pkgs.imagemagick];
-                buildPhase = ''
-                  mkdir -p $out/share/
-                  # todo: figure out exact size we need
-                  # scaling down the bg image, otherwise it takes like 500ms to load
-                  convert $src -resize 1000x1000 $out/share/${walName}
-                '';
-              };
+              walName = "wallhaven-y8622k.jpg";
+              rawImg = "${pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/y8/${walName}";
+                hash = "sha256-jM8uWatQehi5YntaYfQGQ9VFoqOpMr8ZkoInvunQmu8=";
+              }}";
+              img = utils.resizeImage 1000 1000 rawImg walName;
               rasi =
                 import ./rofi/theme.nix
                 "${img}/share/${walName}"
@@ -145,38 +164,7 @@ in
             };
           };
 
-          hyprpaper.enable = false;
           wallpaperengine.enable = true;
-
-          hyprland.modules = {
-            # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
-            # is this any better / even relevant?
-            "rotate-screen".conf = let
-              n = "center";
-              v = monitors.devices.${n};
-              formatted =
-                config.utils.fmtMonitor_device
-                n
-                v
-                (monitors.arrangement.byName.${v.name} // {r = 2;});
-            in
-              #hyprlang
-              ''
-                monitor = ${formatted}
-                input {
-                  touchdevice {
-                    transform = 2
-                  }
-                  tablet {
-                    transform = 2
-                  }
-                  touchpad {
-                    flip_x = true
-                    flip_y = true
-                  }
-                }
-              '';
-          };
         };
 
         programs.hyprlock = let
@@ -545,9 +533,30 @@ in
                     output = [monitors.devices.${monitor}.name];
                     reload_style_on_change = true;
                   }
-                  // (modules monitor)
+                  // (let
+                    importModule = name: import ../../waybar/modules/${name}.nix ({inherit monitor;} // args);
+                  in {
+                    "hyprland/workspaces" = importModule "hyprland/workspaces";
+                    "custom/notification" = importModule "custom/notification";
+                    "clock" = importModule "clock";
+                    "network" = importModule "network";
+                    "bluetooth" = importModule "bluetooth";
+                    "pulseaudio" = importModule "pulseaudio";
+                    "battery" = importModule "battery";
+                    "custom/pacman" = importModule "custom/pacman";
+                    "custom/nixpkgs" = importModule "custom/nixpkgs";
+                    "custom/rotate-screen" = importModule "custom/rotate-screen";
+                    "custom/expand" = importModule "custom/expand";
+                    "custom/endpoint" = importModule "custom/endpoint";
+                    "group/expand" = importModule "group/expand";
+                    "cpu" = importModule "cpu";
+                    "memory" = importModule "memory";
+                    "temperature" = importModule "temperature";
+                    "tray" = importModule "tray";
+                  })
                 );
               };
+
               mapping = {
                 "-" = {
                   barCenter =
@@ -569,166 +578,6 @@ in
                     // {
                       modules-center = default.left;
                     };
-                };
-              };
-
-              modules = monitor: {
-                "hyprland/workspaces" = {
-                  "format" = "{icon}";
-                  "format-icons" = {
-                    "active" = "";
-                    "default" = "";
-                    "empty" = "";
-                  };
-                  "persistent-workspaces" = {
-                    "*" = monitors.devices.${monitor}.workspaces;
-                  };
-                };
-                "custom/notification" = {
-                  "tooltip" = false;
-                  "format" = " ";
-                  "on-click" = "#TODO: notification client";
-                  "escape" = true;
-                };
-                "clock" = {
-                  "format" = "{:%I:%M:%S %p} ";
-                  "interval" = 1;
-                  "tooltip-format" = "<tt>{calendar}</tt>";
-                  "calendar" = {
-                    "format" = {
-                      "today" = "<span color='#fAfBfC'><b>{}</b></span>";
-                    };
-                  };
-                  "actions" = {
-                    "on-click-right" = "shift_down";
-                    "on-click" = "shift_up";
-                  };
-                };
-                "network" = {
-                  "format-wifi" = "";
-                  "format-ethernet" = "";
-                  "format-disconnected" = "";
-                  "tooltip-format-disconnected" = "Error";
-                  "tooltip-format-wifi" = "{essid} ({signalStrength}%) ";
-                  "tooltip-format-ethernet" = "{ifname} 🖧 ";
-                  "on-click" = "kitty nmtui";
-                };
-                "bluetooth" = {
-                  "format-on" = "󰂯";
-                  "format-off" = "BT-off";
-                  "format-disabled" = "󰂲";
-                  "format-connected-battery" = "{device_battery_percentage}% 󰂯";
-                  "format-alt" = "{device_alias} 󰂯";
-                  "tooltip-format" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
-                  "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
-                  "tooltip-format-enumerate-connected" = "{device_alias}\n{device_address}";
-                  "tooltip-format-enumerate-connected-battery" = "{device_alias}\n{device_address}\n{device_battery_percentage}%";
-                  "on-click-right" = config.modules.bluetooth.app;
-                };
-                "pulseaudio" = {
-                  "max-volume" = 100;
-                  "scroll-step" = 10;
-                  "format" = "{icon}";
-                  "tooltip-format" = "{volume}%";
-                  "format-muted" = "×";
-                  "format-icons" = [
-                    " "
-                    " "
-                    " "
-                  ];
-                  "on-click" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-                };
-                "battery" = {
-                  "interval" = 30;
-                  "states" = {
-                    "good" = 95;
-                    "warning" = 30;
-                    "critical" = 20;
-                  };
-                  "format" = "{capacity}% {icon}";
-                  "format-charging" = "{capacity}% 󰂄";
-                  "format-plugged" = "{capacity}% 󰂄 ";
-                  "format-alt" = "{time} {icon}";
-                  "format-icons" = [
-                    "󰁻"
-                    "󰁼"
-                    "󰁾"
-                    "󰂀"
-                    "󰂂"
-                    "󰁹"
-                  ];
-                };
-                "custom/pacman" = {
-                  "format" = "󰅢 {}";
-                  "interval" = 30;
-                  "exec" = "checkupdates | wc -l";
-                  "exec-if" = "exit 0";
-                  "on-click" = "${config.vars.terminal} sh -c 'yay -Syu; echo Done - Press enter to exit; read'; pkill -SIGRTMIN+8 waybar";
-                  "signal" = 8;
-                  "tooltip" = false;
-                };
-                "custom/nixpkgs" = let
-                  flakeInputsToUpdate = lists.subtractLists ["private" "self"] (builtins.attrNames inputs);
-                  inputsStr = concatStringsSep " " flakeInputsToUpdate;
-                  flake = inputs.self;
-                in {
-                  format = "󰅢 {}";
-                  interval = 300;
-                  exec = let
-                    updateScript = pkgs.writeShellScript "check-nix-updates" ''
-                      if [[ -d ${flake} ]]; then
-                        cd ${flake}
-                        UPDATES=$(nix flake update --output-lock-file <(cat flake.nix) ${inputsStr} 2>&1 | grep -E "(→|↓)" | wc -l)
-                        echo "$UPDATES"
-                      else
-                        echo "0"
-                      fi
-                    '';
-                  in "${updateScript}";
-                  exec-if = "test -d ${flake}";
-                  on-click = "${config.vars.terminal} sh -c 'cd ${flake} && nix flake update ${inputsStr} && echo \"Flake updated! && echo \"Press enter to exit\"; read'";
-                  on-click-right = "${config.vars.terminal} sh -c 'cd ${flake} && sudo nixos-rebuild switch --flake .; echo \"Press enter to exit\"; read'"; #TODO: do we need to provide the host?
-                  signal = 8;
-                  tooltip = true;
-                  tooltip-format = "{} Nix updates available\nLeft-click: Update flake\nRight-click: Rebuild system";
-                };
-                "custom/rotate-screen" = {
-                  format = "⟳";
-                  on-click = config.modules.hyprland.modules."rotate-screen".scripts.toggle;
-                  tooltip = true;
-                  tooltip-format = "Flip screen upside down.";
-                };
-                "custom/expand" = {
-                  "format" = "";
-                  "tooltip" = false;
-                };
-                "custom/endpoint" = {
-                  "format" = "|";
-                  "tooltip" = false;
-                };
-                "group/expand" = {
-                  "orientation" = "horizontal";
-                  "drawer" = {
-                    "transition-duration" = 600;
-                    "transition-to-left" = true;
-                    "click-to-reveal" = true;
-                  };
-                  "modules" = ["custom/expand" "cpu" "memory" "temperature" "custom/endpoint"];
-                };
-                "cpu" = {
-                  "format" = "󰻠";
-                  "tooltip" = true;
-                };
-                "memory" = {
-                  "format" = "";
-                };
-                "temperature" = {
-                  "critical-threshold" = 80;
-                  "format" = "";
-                };
-                "tray" = {
-                  "icon-size" = 14;
-                  "spacing" = 10;
                 };
               };
             in
