@@ -588,14 +588,14 @@ in
                     // {
                       modules-left = default.left;
                       modules-center = default.center;
-                      modules-right = default.right ++ ["hyprland/workspaces"];
+                      modules-right = default.right;
                     };
                 };
                 "|-|" = {
                   barRight =
                     (default.bar "right")
                     // {
-                      modules-center = default.right;
+                      modules-center = default.right ++ ["hyprland/workspaces"];
                     };
                   barLeft =
                     (default.bar "left")
