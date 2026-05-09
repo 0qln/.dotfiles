@@ -70,6 +70,9 @@ in
               wallpaperId = "1512181248";
               scaling = "fill";
               audio.silent = true;
+
+              # don't pause on fullscreen if we have more than just the center monitor
+              fullscreen.pause = monitors.arrangement.byPictogram == "-";
             }
           ];
         };
