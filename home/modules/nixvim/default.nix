@@ -29,6 +29,7 @@ in {
     ./modules/wsl.nix
     ./modules/system-clipboard.nix
     ./modules/clanker.nix
+    ./modules/scroll-comments.nix
 
     ./langs/_all.nix
 
