@@ -8,6 +8,9 @@ in {
 
       # key = "gc/gcc"
       commentary.enable = true;
+
+      # folding
+      ufo.enable = true;
     };
     keymaps = [
       # improved > <
