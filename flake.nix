@@ -74,6 +74,10 @@
       url = "github:hercules-ci/arion";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nephrid = {
+      url = "github:0qln/Nephrid";
+    };
   };
 
   outputs = inputs @ {

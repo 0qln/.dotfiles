@@ -68,6 +68,7 @@ in
                   wallpaperId = "1512181248";
                   scaling = "fill";
                   audio.silent = true;
+                  fullscreen.pause = true;
                 }
               ];
               "|-|" = [
@@ -80,6 +81,8 @@ in
                   wallpaperId = "1512181248";
                   scaling = "fill";
                   audio.silent = true;
+                  # don't pause on fullscreen if we have more than just the center monitor
+                  fullscreen.pause = false;
                 }
               ];
             };
@@ -261,10 +264,10 @@ in
                 rounding = 0;
 
                 inner_color = fmtColorWO config.theme.term.background "BB";
-                font_color = fmtColor config.theme.launcher.foreground;
+                font_color = fmtColor config.theme.term.foreground;
                 fade_on_empty = false;
                 font_family = "${config.theme.fonts.monospace}";
-                placeholder_text = ''<i><span foreground="#${config.theme.launcher.foreground}">🔒 Enter Pass</span></i>'';
+                placeholder_text = ''<i><span foreground="#${config.theme.term.foreground}">🔒 Enter Pass</span></i>'';
                 hide_input = false;
                 halign = "center";
                 valign = "center";
@@ -276,7 +279,7 @@ in
               {
                 monitor = monitors.devices.center.name;
                 text = ''cmd[update:1000] echo -e "$(LC_TIME=en_US.UTF-8 date +"%A, %B %d")"'';
-                color = fmtColor config.theme.launcher.foreground;
+                color = fmtColor config.theme.term.foreground;
                 font_size = 25;
                 font_family = "${config.theme.fonts.monospace}";
                 position = "0, 350";
@@ -288,7 +291,7 @@ in
               {
                 monitor = monitors.devices.center.name;
                 text = ''cmd[update:1000] echo "<span>$(date +"%I:%M")</span>"'';
-                color = fmtColor config.theme.launcher.foreground;
+                color = fmtColor config.theme.term.foreground;
                 font_size = 120;
                 font_family = "${config.theme.fonts.monospace}";
                 position = "0, 230";
@@ -328,7 +331,7 @@ in
                     # html
                     ''<span bgcolor='${bg}' bgalpha='${al}'> <i>$(${script})</i> </span>'';
                 in ''cmd[update:1000] echo "${escape text}"'';
-                color = fmtColor config.theme.launcher.foreground;
+                color = fmtColor config.theme.term.foreground;
                 shadow_color = fmtColor config.theme.win.shadow.active;
                 shadow_size = 1;
                 shadow_passes = 3;
@@ -601,14 +604,14 @@ in
                     // {
                       modules-left = default.left;
                       modules-center = default.center;
-                      modules-right = default.right ++ ["hyprland/workspaces"];
+                      modules-right = default.right;
                     };
                 };
                 "|-|" = {
                   barRight =
                     (default.bar "right")
                     // {
-                      modules-center = default.right;
+                      modules-center = default.right ++ ["hyprland/workspaces"];
                     };
                   barLeft =
                     (default.bar "left")

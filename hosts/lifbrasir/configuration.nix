@@ -2,6 +2,7 @@
   inputs,
   config,
   lib,
+  flake,
   ...
 }:
 with lib; let
@@ -9,6 +10,7 @@ with lib; let
 in {
   imports = [
     inputs.private.nixosModules."lifbrasir"
+    flake.nixosModules."lichess-bot"
 
     ../_common/configuration.nix
 
@@ -166,6 +168,18 @@ in {
       serviceDataDir = "/mnt/store-1/services/vikunja";
       primaryFqdn = "vikunja.${fqdns.primary.dn}";
       acmeHost = fqdns.primary.dn;
+    };
+
+    lichess-bot = {
+      enable = true;
+      name = "nephrid";
+      configFile = ./lichess-bot/config.yml;
+    };
+  };
+
+  home-manager = {
+    users.root = _: {
+      home.file."lichess-bot/engines/nephrid".source = getExe inputs.nephrid.packages.x86_64-linux.nephrid-hce;
     };
   };
 

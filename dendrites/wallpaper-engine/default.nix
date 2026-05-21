@@ -24,6 +24,12 @@
             default = [];
             description = "List of monitors to stretch the wallpaper across (--screen-span).";
           };
+          options.fullscreen.pause = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Whether to pause the wallpaper when a fullscreen application is active.";
+          };
+
           config.monitor = lib.mkDefault "";
         });
       };
@@ -72,6 +78,7 @@
                 silent = wallpaper.audio.silent;
                 noautomute = !wallpaper.audio.automute;
                 no-audio-processing = !wallpaper.audio.processing;
+                no-fullscreen-pause = !wallpaper.fullscreen.pause;
               }
               ++ lib.optionals (wallpaper.monitor != "") ["--screen-root" wallpaper.monitor]
               ++ lib.optionals (wallpaper.screenSpan != []) ["--screen-span" (screenSpan wallpaper.screenSpan)]
