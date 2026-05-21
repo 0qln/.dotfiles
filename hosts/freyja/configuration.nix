@@ -9,6 +9,7 @@ in {
     ../_common/configuration.nix
 
     flake.nixosModules.bluetooth
+    flake.nixosModules.emojis
     flake.nixosModules."themes/${theme}"
 
     ./bootloader.nix
@@ -26,6 +27,8 @@ in {
     home-manager.enable = true;
 
     bluetooth.enable = true;
+
+    emojis.enable = true;
 
     lid = {
       enable = true;
