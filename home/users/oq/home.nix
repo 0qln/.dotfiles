@@ -73,7 +73,10 @@ in
             enable = mkDefault true;
             clanker.enable = mkDefault true;
           };
-          clanker.claude.enable = mkDefault false;
+          clanker = {
+            claude.enable = mkDefault false;
+            github-copilot.enable = mkDefault true;
+          };
           bash.enable = mkDefault true;
           git.enable = mkDefault true;
           tmux.enable = mkDefault true;
