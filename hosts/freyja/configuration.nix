@@ -3,12 +3,11 @@
   flake,
   ...
 }: let
-  theme = "idekanymore";
+  theme = "autumn-1";
 in {
   imports = [
     ../_common/configuration.nix
 
-    flake.nixosModules.hyprlock
     flake.nixosModules.bluetooth
     flake.nixosModules."themes/${theme}"
 
@@ -36,7 +35,6 @@ in {
     battery.enable = !config.modules.kde.enable;
     avahi.enable = true;
     hyprlock = {
-      enable = true;
       defaultUser = "oq";
       replaceLogin = false;
     };

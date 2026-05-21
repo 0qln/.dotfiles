@@ -60,18 +60,31 @@ in
         };
 
         services.linux-wallpaperengine = {
-          wallpapers = [
-            {
-              screenSpan = with monitors.devices; [
-                left.name
-                center.name
-                right.name
+          wallpapers = let
+            mapping = {
+              "-" = [
+                {
+                  monitor = monitors.devices.center.name;
+                  wallpaperId = "1512181248";
+                  scaling = "fill";
+                  audio.silent = true;
+                }
               ];
-              wallpaperId = "1512181248";
-              scaling = "fill";
-              audio.silent = true;
-            }
-          ];
+              "|-|" = [
+                {
+                  screenSpan = with monitors.devices; [
+                    left.name
+                    center.name
+                    right.name
+                  ];
+                  wallpaperId = "1512181248";
+                  scaling = "fill";
+                  audio.silent = true;
+                }
+              ];
+            };
+          in
+            mapping.${monitors.arrangement.byPictogram};
         };
 
         modules = {

@@ -303,11 +303,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777258755,
-        "narHash": "sha256-EC07KwADRE2LdIk7vEDyAaD3I0ZUq24T9jQF9L0iEPk=",
+        "lastModified": 1778144356,
+        "narHash": "sha256-dGM+QCstz/DyLB68+JK5GWyMx4QSqmOJEVgZmy63d/g=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7f8bbc93d63401e41368d6ddc46a4f631610fa90",
+        "rev": "e4419d3123b780d5f4c0bceeace450424387638c",
         "type": "github"
       },
       "original": {
@@ -1087,11 +1087,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776788135,
-        "narHash": "sha256-HiyQL8JcnRIoR5ssSqbSdsNHlPy/o3RzK0fn+j3JDvw=",
+        "lastModified": 1778716647,
+        "narHash": "sha256-BWD3XfB9MFBsS2l8g1keYXdnF0NM4pomyYBtCqvZRnc=",
         "ref": "refs/heads/master",
-        "rev": "cbee0f09975ed24a09b32a4aef407eea9f32126c",
-        "revCount": 26,
+        "rev": "fc85a7a0e14f1066911ba76613c38ed82737330e",
+        "revCount": 29,
         "type": "git",
         "url": "ssh://gitea@git.07112025.xyz/0qln/.private.git"
       },
