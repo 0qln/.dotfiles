@@ -2,6 +2,8 @@
   description = "My dotfiles";
 
   inputs = {
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
+
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
     nixpkgs-server.url = "nixpkgs/nixos-unstable";

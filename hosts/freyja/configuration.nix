@@ -10,6 +10,8 @@ in {
 
     flake.nixosModules.bluetooth
     flake.nixosModules.emojis
+    flake.nixosModules.flatpak
+    flake.nixosModules.distrobox
     flake.nixosModules."themes/${theme}"
 
     ./bootloader.nix
@@ -29,6 +31,9 @@ in {
     bluetooth.enable = true;
 
     emojis.enable = true;
+
+    flatpak.enable = true;
+    distrobox.enable = true;
 
     lid = {
       enable = true;
@@ -91,6 +96,8 @@ in {
       imports = [
         ./home-vars.nix
         flake.homeModules."themes/${theme}"
+        flake.homeModules.flatpak
+        flake.homeModules.distrobox
       ];
       settings = {
         enable = true;
@@ -111,6 +118,10 @@ in {
             accel = true;
           };
         };
+
+        flatpak.enable = true;
+        distrobox.enable = true;
+
         krita.enable = true;
         nixvim.wayland.enable = true;
         browser = {

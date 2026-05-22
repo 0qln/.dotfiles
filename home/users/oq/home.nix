@@ -202,7 +202,7 @@ in
           fonts.enable = mkDefault true;
           obsidian.enable = mkDefault true;
           # rofi.enable = mkDefault true;
-          vscode.enable = mkDefault true;
+          # vscode.enable = mkDefault true;
           ytm.enable = mkDefault true;
           spotify.enable = mkDefault true;
           todoist = {
