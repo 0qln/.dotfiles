@@ -22,10 +22,30 @@ with inputs.nixpkgs.lib; {
     inherit (config.home) username;
   in {
     options.modules.vscode = {
-      enable = mkEnableOption "vscode user containers";
+      enable = mkEnableOption "vscode";
     };
 
+    imports = [
+      ./profiles/default.nix
+      ./profiles/kimai.nix
+      ./profiles/odoo.nix
+      ./profiles/odoo.kanagawa.nix
+      ./profiles/clanker.kanagawa.nix
+      ./fixes/mutability.nix
+    ];
+
     config = mkIf cfg.enable {
+      programs.vscode = {
+        enable = true;
+      };
+
+      home.activation.vscode-distrobox-config = config.utils.mkCopy {
+        source = "${config.xdg.configHome}/Code/User";
+        destPath = "${containerHome}/.config/Code/User";
+        newMode = "700";
+        deps = ["mutableFileGeneration"];
+      };
+
       home.file.".distrobox/vscode/setup-container.sh" = {
         executable = true;
         text =
