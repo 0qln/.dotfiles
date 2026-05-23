@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  profile = "odoo.kanagawa";
+  profile = "(nix) odoo.kanagawa";
 in {
   imports = [
     (import ../langs/python.nix profile)

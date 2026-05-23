@@ -1,7 +1,7 @@
 profile: {...}: {
   imports = [
     (import ./git.nix profile)
-    (import ./copilot.nix profile)
+    (import ./clanker.nix profile)
     (import ./neovim.nix profile)
     (import ./keybinds.nix profile)
     (import ./nix-shells.nix profile)

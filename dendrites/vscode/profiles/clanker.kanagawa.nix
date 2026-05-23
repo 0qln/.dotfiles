@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  profile = "clanker.kanagawa";
+  profile = "(nix) clanker.kanagawa";
 in {
   imports = [
     (import ../langs/_common.nix profile)

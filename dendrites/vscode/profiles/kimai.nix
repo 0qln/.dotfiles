@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  profile = "kimai";
+  profile = "(nix) kimai";
 in {
   imports = [
     (import ../langs/php.nix profile)

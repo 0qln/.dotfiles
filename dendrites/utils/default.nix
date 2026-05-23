@@ -199,8 +199,9 @@ in {
               if [[ -e "$dst" ]]; then
                 run rm -r "$dst"
               fi
+              run mkdir -p "$(dirname "$dst")"
               run cp -Lrp "$src" "$dst"
-              chmod ${newMode} $dst
+              run chmod ${newMode} $dst
             '';
 
           userRuntimeDir = let

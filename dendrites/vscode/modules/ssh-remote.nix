@@ -4,7 +4,7 @@ profile: {
   lib,
   ...
 }: let
-  sshConfigFile = "/home/oq/.vscode/ssh.config";
+  sshConfigFile = "${config.home.homeDirectory}/.vscode/ssh.config";
 in {
   programs.vscode.profiles.${profile} = {
     extensions = with pkgs.vscode-extensions; [
@@ -19,7 +19,7 @@ in {
 
   home.activation.vscode-sshConfig = lib.mkIf config.modules.vscode.enable (
     config.utils.mkCopy {
-      source = "/home/oq/.ssh/config";
+      source = "${config.home.homeDirectory}/.ssh/config";
       destPath = sshConfigFile;
       newMode = "600";
     }

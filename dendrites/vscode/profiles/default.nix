@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  profile = "default";
+  profile = "(nix) default";
 in {
   imports = [
     (import ../langs/_all.nix profile)
