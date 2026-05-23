@@ -12,7 +12,7 @@ in {
         inputs.private.nixosModules."lif"
 
         self.nixosModules.bluetooth
-        self.nixosModules.distrobox
+        self.nixosModules.vscode
         self.nixosModules.android
         self.nixosModules."themes/${theme}"
 
@@ -52,7 +52,7 @@ in {
           android-studio.enable = false; # disabled until the project starts cause the download is fucking huge
         };
         bluetooth.enable = true;
-        distrobox.enable = true;
+        vscode.enable = true;
         home-manager.enable = true;
         wireguard.enable = true;
         avahi.enable = true;
@@ -97,7 +97,7 @@ in {
         users.oq = _: {
           imports = [
             ./home-vars.nix
-            self.homeModules.distrobox
+            self.homeModules.vscode
             self.homeModules."themes/${theme}"
           ];
 
@@ -111,7 +111,7 @@ in {
 
           modules = {
             nixvim.wayland.enable = true;
-            distrobox.enable = true;
+            vscode.enable = true;
             browser = {
               firefox = {
                 tor.enable = true;
