@@ -24,7 +24,14 @@ in {
         ];
       };
       skills = {};
-      mcpServers = {};
+      mcpServers = {
+        playwright = {
+          type = "local";
+          command = "npx";
+          args = ["@playwright/mcp@latest"];
+          tools = ["*"];
+        };
+      };
       lspServers = {};
       context = ''
 
