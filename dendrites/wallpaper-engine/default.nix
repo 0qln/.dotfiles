@@ -72,18 +72,16 @@
             |> strings.concatStrings;
 
           args = wallpaper:
-            lib.concatStringsSep " " (
-              lib.cli.toGNUCommandLine {} {
-                inherit (wallpaper) scaling fps;
-                silent = wallpaper.audio.silent;
-                noautomute = !wallpaper.audio.automute;
-                no-audio-processing = !wallpaper.audio.processing;
-                no-fullscreen-pause = !wallpaper.fullscreen.pause;
-              }
-              ++ lib.optionals (wallpaper.monitor != "") ["--screen-root" wallpaper.monitor]
-              ++ lib.optionals (wallpaper.screenSpan != []) ["--screen-span" (screenSpan wallpaper.screenSpan)]
-              ++ wallpaper.extraOptions
-            )
+            lib.cli.toCommandLineShellGNU {} {
+              inherit (wallpaper) scaling fps;
+              silent = wallpaper.audio.silent;
+              noautomute = !wallpaper.audio.automute;
+              no-audio-processing = !wallpaper.audio.processing;
+              no-fullscreen-pause = !wallpaper.fullscreen.pause;
+              screen-root = lib.optionals (wallpaper.monitor != "") wallpaper.monitor;
+              screen-span = lib.optionals (wallpaper.screenSpan != []) screenSpan wallpaper.screenSpan;
+            }
+            + (lib.concatStringsSep " " wallpaper.extraOptions)
             + " --bg ${wallpaper.wallpaperId}";
 
           cmd = wallpaper:

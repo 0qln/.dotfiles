@@ -17,6 +17,7 @@ with lib; {
         package = pkgs.gnome-themes-extra;
         name = "Adwaita-dark";
       };
+      gtk4.theme = config.gtk.theme;
     };
 
     dconf = {

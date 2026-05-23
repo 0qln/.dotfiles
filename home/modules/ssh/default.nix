@@ -15,7 +15,7 @@ in {
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = mkMerge [
+      settings = mkMerge [
         {
           "*" = {
             forwardAgent = false;

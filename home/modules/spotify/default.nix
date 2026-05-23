@@ -18,7 +18,7 @@ in {
         spotify.overrideAttrs (oldAttrs: let
           spotx = fetchurl {
             url = "https://raw.githubusercontent.com/SpotX-Official/SpotX-Bash/main/spotx.sh";
-            hash = "sha256-sx9TzfJdPJqIRzIpzcpfHxXsQ1uJWTeTLs6bIq78HL4=";
+            hash = "sha256-/xM107r8rvE3nL17ghEMO1j8B5Ry092SmlfWVInjf6U=";
           };
         in {
           nativeBuildInputs =

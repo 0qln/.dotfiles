@@ -80,7 +80,7 @@ in {
             "${mainMod}, E, exec, ${fileexplorer}"
             "${mainMod}, V, togglefloating"
             "${mainMod}, P, pseudo"
-            "${mainMod}, J, togglesplit"
+            "${mainMod}, J, layoutmsg, togglesplit"
             "${mainMod}, O, exec, obsidian"
           ]
           (mkIf config.modules.splatmoji.enable [

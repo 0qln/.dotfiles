@@ -84,6 +84,7 @@ with inputs.nixpkgs.lib; {
     ];
 
     config = mkIf cfg.enable {
+      wayland.windowManager.hyprland.configType = "hyprlang";
       wayland.windowManager.hyprland.enable = true;
       wayland.windowManager.hyprland.settings = {
         # =============== COLORS ===============
@@ -206,7 +207,6 @@ with inputs.nixpkgs.lib; {
 
         # ============== LAYOUTS ==============
         dwindle = {
-          pseudotile = true;
           preserve_split = true;
         };
 

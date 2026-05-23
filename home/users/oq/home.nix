@@ -39,6 +39,7 @@ in
         root = mkDefault config.home.homeDirectory;
         flake.dir = mkDefault "${config.vars.root}/.dotfiles";
         cloud.dir = mkDefault "${config.vars.root}/nextcloud";
+        repos.dir = mkDefault "${config.vars.root}/repos";
         pictures.dir = mkDefault "${config.vars.cloud.dir}/pictures";
         screenshots.dir = mkDefault "${config.vars.pictures.dir}/screenshots";
       };
@@ -52,7 +53,9 @@ in
       home = {
         username = import ./name.nix;
 
-        homeDirectory = mkForce "/home/${config.home.username}/";
+        homeDirectory = mkForce "/home/${config.home.username}";
+
+        preferXdgDirectories = mkDefault true;
 
         # This value determines the NixOS release from which the default
         # settings for stateful data, like file locations and database versions

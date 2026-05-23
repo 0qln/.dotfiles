@@ -16,8 +16,19 @@ in {
       enable = true;
       enableMcpIntegration = true;
       settings = {
+        banner = "never";
         includeCoAuthoredBy = false;
+        trusted_folders = [
+          config.vars.repos.dir
+          config.vars.flake.dir
+        ];
       };
+      skills = {};
+      mcpServers = {};
+      lspServers = {};
+      context = ''
+
+      '';
     };
   };
 }

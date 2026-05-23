@@ -53,6 +53,19 @@ in {
       description = "Nextcloud configuration";
     };
 
+    repos = lib.mkOption {
+      type = lib.types.submodule {
+        options = {
+          dir = lib.mkOption {
+            type = lib.types.str;
+            description = "Projects directory path";
+          };
+        };
+      };
+      default = {};
+      description = "Projects configuration";
+    };
+
     pictures = lib.mkOption {
       type = lib.types.submodule {
         options = {
