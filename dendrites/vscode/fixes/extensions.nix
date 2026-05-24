@@ -19,7 +19,7 @@
       )
       prev.vscode-extensions;
   };
-  containerName = "vscode_fedora";
+  containerName = config.modules.vscode.containerName;
   containerHome = "${config.home.homeDirectory}/.distrobox/${containerName}";
 in {
   nixpkgs.overlays = [extensionPatchOverlay];

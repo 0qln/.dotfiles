@@ -32,20 +32,30 @@ with inputs.nixpkgs.lib; {
   in {
     options.modules.vscode = {
       enable = mkEnableOption "vscode";
+      containerName = mkOption {
+        type = types.str;
+        default = "vscode_fedora";
+        description = "Name of the distrobox container running VS Code.";
+      };
+      declerative = {
+        enable = mkEnableOption "declerative config";
+      };
     };
 
     imports = [
-      ./profiles/default.nix
-      ./profiles/kimai.nix
-      ./profiles/odoo.nix
-      ./profiles/odoo.kanagawa.nix
-      ./profiles/clanker.kanagawa.nix
-      ./fixes/mutability.nix
-      ./fixes/extensions.nix
+      # todo: enable when declerative
+      # ./profiles/default.nix
+      # ./profiles/kimai.nix
+      # ./profiles/odoo.nix
+      # ./profiles/odoo.kanagawa.nix
+      # ./profiles/clanker.kanagawa.nix
+      # ./fixes/mutability.nix
+      # ./fixes/extensions.nix
     ];
 
     config = mkIf cfg.enable {
-      programs.vscode = {
+      # if declerative, let vscode hm module generate the config files.
+      programs.vscode = mkIf cfg.declerative.enable {
         enable = true;
 
         # provide a dummy package so it doesn't install the real one, we just
