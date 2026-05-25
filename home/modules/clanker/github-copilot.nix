@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -32,7 +33,16 @@ in {
           tools = ["*"];
         };
       };
-      lspServers = {};
+      lspServers = {
+        rust = {
+          command = "${getExe pkgs.rust-analyzer}";
+          args = [];
+          fileExtensions = {
+            ".rs" = "rust";
+            ".toml" = "toml";
+          };
+        };
+      };
       context = ''
 
       '';
