@@ -11,8 +11,8 @@ in {
     flake.nixosModules.bluetooth
     flake.nixosModules.emojis
     flake.nixosModules.flatpak
-    flake.nixosModules.distrobox
     flake.nixosModules."themes/${theme}"
+    flake.nixosModules.vscode
 
     ./bootloader.nix
     ./keys.nix
@@ -33,7 +33,6 @@ in {
     emojis.enable = true;
 
     flatpak.enable = true;
-    distrobox.enable = true;
 
     lid = {
       enable = true;
@@ -97,7 +96,7 @@ in {
         ./home-vars.nix
         flake.homeModules."themes/${theme}"
         flake.homeModules.flatpak
-        flake.homeModules.distrobox
+        flake.homeModules.vscode
       ];
       settings = {
         enable = true;
@@ -120,7 +119,7 @@ in {
         };
 
         flatpak.enable = true;
-        distrobox.enable = true;
+        vscode.enable = true;
 
         krita.enable = true;
         nixvim.wayland.enable = true;
