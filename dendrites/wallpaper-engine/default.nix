@@ -79,7 +79,7 @@
               no-audio-processing = !wallpaper.audio.processing;
               no-fullscreen-pause = !wallpaper.fullscreen.pause;
               screen-root = lib.optionals (wallpaper.monitor != "") wallpaper.monitor;
-              screen-span = lib.optionals (wallpaper.screenSpan != []) screenSpan wallpaper.screenSpan;
+              screen-span = lib.optionals (wallpaper.screenSpan != []) (screenSpan wallpaper.screenSpan);
             }
             + (lib.concatStringsSep " " wallpaper.extraOptions)
             + " --bg ${wallpaper.wallpaperId}";
