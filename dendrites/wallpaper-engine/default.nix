@@ -40,7 +40,7 @@
           (_final: prev: {
             linux-wallpaperengine = prev.linux-wallpaperengine.overrideAttrs (_oldAttrs: {
               src = prev.fetchFromGitHub {
-                owner = "0qln";
+                owner = "Almamu";
                 repo = "linux-wallpaperengine";
                 rev = "de69843edeb6e2ba7b2a6c81176e235c85986ff5";
                 fetchSubmodules = true;
