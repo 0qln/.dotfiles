@@ -3,6 +3,10 @@
     flake.nixosModules.odoo
   ];
 
+  modules = {
+    odoo.enable = true;
+  };
+
   home-manager = {
     users.oq = _: {
       imports = [

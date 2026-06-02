@@ -4,12 +4,16 @@
   ...
 }:
 with inputs.nixpkgs.lib; {
-  flake.nixosModules.xdg = {config, ...}: let
+  flake.nixosModules.xdg = {config, pkgs, ...}: let
     cfg = config.modules.xdg;
   in {
     config = mkIf cfg.enable {
       # https://home-manager-options.extranix.com/?query=xdg.portal.enable&release=release-25.11
       environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
+      xdg.portal = {
+        enable = true;
+        extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      };
     };
   };
 
