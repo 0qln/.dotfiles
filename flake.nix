@@ -304,26 +304,28 @@
                                   hm.config
                                   // {
                                     pkgs = (pkgss system).pkgs;
-                                    modules = [
-                                      (import ./home/users/${user}/home.nix)
-                                      (import ./hosts/${host}/home-vars.nix)
-                                      # (import ./profiles/${profile}/home.nix)
-                                      (_: {
-                                        settings = {
-                                          enable = lib.mkDefault true;
-                                          uiEnv = lib.mkDefault env;
-                                        };
-                                        themes = {
-                                          ${theme}.enable = true;
-                                        };
-                                      })
-                                      (_: {
-                                        # Let Home Manager install and manage itself.
-                                        programs.home-manager.enable = true;
+                                    modules =
+                                      [
+                                        (import ./home/users/${user}/home.nix)
+                                        (import ./hosts/${host}/home-vars.nix)
+                                        # (import ./profiles/${profile}/home.nix)
+                                        (_: {
+                                          settings = {
+                                            enable = lib.mkDefault true;
+                                            uiEnv = lib.mkDefault env;
+                                          };
+                                          themes = {
+                                            ${theme}.enable = true;
+                                          };
+                                        })
+                                        (_: {
+                                          # Let Home Manager install and manage itself.
+                                          programs.home-manager.enable = true;
 
-                                        nix.package = pkgs.nix;
-                                      })
-                                    ] ++ homeOptsModules;
+                                          nix.package = pkgs.nix;
+                                        })
+                                      ]
+                                      ++ homeOptsModules;
                                   }
                                 ));
                             }
