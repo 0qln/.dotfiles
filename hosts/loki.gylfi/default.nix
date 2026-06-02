@@ -2,6 +2,6 @@
   imports = [
     ../loki
     ../gylfi
-    # ./configuration.nix
+    ./configuration.nix
   ];
 }
