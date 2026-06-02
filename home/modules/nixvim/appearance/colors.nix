@@ -78,15 +78,17 @@ in {
         plugins = {
         };
 
-        autoCmd = [
-          {
-            # TODO: sometimes does not work idk
-            event = [
-              "ColorScheme"
-              "VimEnter"
-            ];
-            command = ":TransparentEnable";
-          }
+        autoCmd = mkMerge [
+          (mkIf config.modules.nixvim.transparency.enable [
+            {
+              # TODO: sometimes does not work idk
+              event = [
+                "ColorScheme"
+                "VimEnter"
+              ];
+              command = ":TransparentEnable";
+            }
+          ])
         ];
 
         # in case lualine is opaque again:
