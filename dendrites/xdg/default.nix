@@ -1,25 +1,27 @@
-{inputs, ...}:
+{
+  inputs,
+  self,
+  ...
+}:
 with inputs.nixpkgs.lib; {
-  flake.nixosModules.xdg = {...}: let
+  imports = [./opts.nix];
+
+  flake.nixosModules.xdg = {config, ...}: let
     cfg = config.modules.xdg;
   in {
-    options.modules.xdg = {
-      enable = mkEnableOption "xdg stuff";
-    };
-
     config = mkIf cfg.enable {
       # https://home-manager-options.extranix.com/?query=xdg.portal.enable&release=release-25.11
       environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
     };
   };
 
-  flake.homeModules.xdg = {...}: let
+  flake.homeModules.xdg = {
+    config,
+    pkgs,
+    ...
+  }: let
     cfg = config.modules.xdg;
   in {
-    options.modules.xdg = {
-      enable = mkEnableOption "xdg stuff";
-    };
-
     config = mkIf cfg.enable {
       home.packages = with pkgs; [
         xdg-utils

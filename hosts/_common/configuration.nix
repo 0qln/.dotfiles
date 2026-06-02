@@ -21,6 +21,7 @@
 
     # todo: move this to auto import in the flake when the dendritese are discovered
     flake.nixosModules.hyprland-opts
+    flake.nixosModules.xdg-opts
   ];
 
   # todo: s.a.
@@ -29,6 +30,7 @@
       imports = [
         flake.homeModules.hyprland-opts
         flake.homeModules.hyprland-mods-opts
+        flake.homeModules.xdg-opts
       ];
     };
   };
