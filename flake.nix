@@ -163,16 +163,28 @@
           builtins.readDir ./${dir}/${f}
           |> builtins.hasAttr "default.nix"
         );
+        hasOptsNix = dir: f: t: (
+          builtins.readDir ./${dir}/${f}
+          |> builtins.hasAttr "opts.nix"
+        );
         collectDendrites = dir:
           builtins.readDir ./${dir}
           |> inputs.nixpkgs.lib.attrsets.filterAttrs isDirectory
           |> inputs.nixpkgs.lib.attrsets.filterAttrs (hasDefaultNix dir)
           |> builtins.attrNames
           |> builtins.map (x: ./${dir}/${x});
+        collectOptsNix = dir:
+          builtins.readDir ./${dir}
+          |> inputs.nixpkgs.lib.attrsets.filterAttrs isDirectory
+          |> inputs.nixpkgs.lib.attrsets.filterAttrs (hasOptsNix dir)
+          |> builtins.attrNames
+          |> builtins.map (x: ./${dir}/${x}/opts.nix);
       in
         [hosts/${"lif?dendrite"}/default.nix]
         ++ (collectDendrites "dendrites")
-        ++ (collectDendrites "dendrites/themes");
+        ++ (collectDendrites "dendrites/themes")
+        ++ (collectOptsNix "dendrites")
+        ++ (collectOptsNix "dendrites/themes");
 
       config = {
         _module.args = {inherit mkHostArgs;};
@@ -215,6 +227,14 @@
             then (import systemPath)
             else fallback;
 
+          nixosOptsModules = lib.attrValues (
+            lib.filterAttrs (n: _: lib.hasSuffix "-opts" n) self.nixosModules
+          );
+
+          homeOptsModules = lib.attrValues (
+            lib.filterAttrs (n: _: lib.hasSuffix "-opts" n) self.homeModules
+          );
+
           nixosConfigurations = builtins.listToAttrs (
             utilz.mods.eachX hosts (
               host: let
@@ -223,7 +243,16 @@
                 name = host;
                 value = withSystem system (_:
                   inputs.nixpkgs.lib.nixosSystem {
-                    modules = [./hosts/${host}];
+                    modules =
+                      [./hosts/${host}]
+                      ++ nixosOptsModules
+                      ++ [
+                        {
+                          home-manager.users = lib.genAttrs hm.users (_: {
+                            imports = homeOptsModules;
+                          });
+                        }
+                      ];
                     specialArgs = mkHostArgs host system;
                   });
               }
@@ -294,7 +323,7 @@
 
                                         nix.package = pkgs.nix;
                                       })
-                                    ];
+                                    ] ++ homeOptsModules;
                                   }
                                 ));
                             }

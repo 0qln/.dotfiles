@@ -5,7 +5,6 @@
 }:
 with inputs.nixpkgs.lib; {
   imports = [
-    ./opts.nix
     ./mods.nix
   ];
 

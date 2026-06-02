@@ -4,8 +4,6 @@
   ...
 }:
 with inputs.nixpkgs.lib; {
-  imports = [./opts.nix];
-
   flake.nixosModules.xdg = {config, ...}: let
     cfg = config.modules.xdg;
   in {
