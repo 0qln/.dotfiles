@@ -49,7 +49,9 @@ with inputs.nixpkgs.lib; {
     ]);
   };
 
-  flake.homeModules.distrobox = {...}: {
+  flake.homeModules.distrobox = {config, ...}: let
+    cfg = config.modules.distrobox;
+  in {
     options.modules.distrobox = {
       enable = mkEnableOption "distrobox system dependencies";
     };
