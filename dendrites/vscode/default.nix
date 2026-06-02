@@ -43,6 +43,8 @@ with inputs.nixpkgs.lib; {
     };
 
     imports = [
+      self.homeModules.distrobox
+
       # todo: enable when declerative
       # ./profiles/default.nix
       # ./profiles/kimai.nix

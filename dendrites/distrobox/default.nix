@@ -1,4 +1,8 @@
-{inputs, ...}:
+{
+  inputs,
+  self,
+  ...
+}:
 with inputs.nixpkgs.lib; {
   flake.nixosModules.distrobox = {
     config,
@@ -11,6 +15,10 @@ with inputs.nixpkgs.lib; {
       enable = mkEnableOption "distrobox system dependencies";
     };
 
+    imports = [
+      self.nixosModules.xdg
+    ];
+
     config = mkIf cfg.enable (mkMerge [
       {
         virtualisation.podman = {
@@ -22,6 +30,12 @@ with inputs.nixpkgs.lib; {
           pkgs.distrobox
         ];
       }
+
+      # flatpak needs xdg
+      {
+        modules.xdg.enable = true;
+      }
+
       # need this because: https://github.com/89luca89/distrobox/issues/1198
       {
         services.flatpak.enable = true;
@@ -33,5 +47,20 @@ with inputs.nixpkgs.lib; {
         ];
       }
     ]);
+  };
+
+  flake.homeModules.distrobox = {...}: {
+    options.modules.distrobox = {
+      enable = mkEnableOption "distrobox system dependencies";
+    };
+
+    imports = [
+      self.homeModules.xdg
+    ];
+
+    config = mkIf cfg.enable {
+      # flatpak needs xdg
+      modules.xdg.enable = true;
+    };
   };
 }

@@ -28,6 +28,7 @@ in
         flake.homeModules.utils
         flake.homeModules.vars
         flake.homeModules.fonts
+        flake.homeModules.xdg
       ]
       ++ [
         ../../modules
