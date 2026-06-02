@@ -49,6 +49,47 @@ with inputs.nixpkgs.lib; {
     ];
 
     config = mkIf cfg.enable {
+      home.file.".distrobox/${containerName}/bin/odoo-wrap" = {
+        executable = true;
+        force = true;
+        text =
+          # bash
+          ''
+            #!/usr/bin/env bash
+
+            WS_DIR="$HOME/odoo-ws"
+
+            ADDONS="$(ls $WS_DIR/*/.git | xargs -n1 dirname)"
+            echo "Detected Addons: "
+            echo "$ADDONS"
+
+            BASE_ADDONS="$(cat <(echo "$HOME/repos/odoo/addons") <(echo "$HOME/enterprise-${cfg.branch}") <(echo "$WS_DIR"))"
+            echo "Base Addons: "
+            echo "$BASE_ADDONS"
+
+            FULL_ADDONS="$(cat <(echo "$ADDONS") <(echo "$BASE_ADDONS"))"
+            echo "Full Addons: "
+            echo "$FULL_ADDONS"
+
+            JOINED_ADDONS="$(echo "$FULL_ADDONS" | paste -sd, - )"
+            echo "Joined Addons: "
+            echo "$JOINED_ADDONS"
+
+            PLUGINS="$(fd -t d -d 1 . "$WS_DIR" | xargs realpath | xargs -n1 basename)"
+            echo "Plugins: "
+            echo "$PLUGINS"
+
+            JOINED_PLUGINS="$(echo "$PLUGINS" | xargs -n1 basename | paste -sd, - )"
+            echo "Joined: $JOINED_PLUGINS"
+
+            python3 "$HOME/repos/odoo/odoo-bin" "$1" \
+                --http-interface=0.0.0.0 \
+                --addons-path="$JOINED_ADDONS" \
+                -u="$JOINED_PLUGINS" \
+                -d db2 -i base
+          '';
+      };
+
       home.activation = {
         odoo-distrobox-config_ssh = config.utils.mkCopy {
           source = "${config.home.homeDirectory}/.ssh";
@@ -104,6 +145,18 @@ with inputs.nixpkgs.lib; {
             # install odoo python/system dependencies
             cd "${containerHome}/repos/odoo"
             sudo ./setup/debinstall.sh
+
+            # install fd-find (used by odoo-wrap)
+            sudo apt-get install -y fd-find
+            # ubuntu packages fd as fdfind; symlink to fd if not already present
+            if ! command -v fd &>/dev/null; then
+              sudo ln -sf "$(which fdfind)" /usr/local/bin/fd
+            fi
+
+            # add ~/bin to PATH
+            if ! grep -qF 'PATH="$HOME/bin:$PATH"' ~/.bashrc; then
+              echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+            fi
 
             # create a convenience start script
             cat > "${containerHome}/start-odoo.sh" << 'EOF'
