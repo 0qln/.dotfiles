@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ../loki
-    ./configuration.nix
+    ../gylfi
+    # ./configuration.nix
   ];
 }

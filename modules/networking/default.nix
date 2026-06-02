@@ -34,6 +34,7 @@ in {
   config = mkIf cfg.enable (mkMerge [
     # default config
     {
+      networking.networkmanager.enable = true;
     }
 
     (mkIf (cfg.doh.enable || cfg.localDNS.enable) {

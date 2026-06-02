@@ -20,6 +20,7 @@ with inputs.nixpkgs.lib; {
       wsl = {
         enable = true;
         defaultUser = mkIf (cfg.defaultUser != null) cfg.defaultUser;
+        interop.register = true;
       };
     };
   };

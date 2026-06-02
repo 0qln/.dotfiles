@@ -1,6 +1,7 @@
 {
   inputs,
   flake,
+  host-name,
   ...
 }: {
   imports = [
@@ -8,7 +9,6 @@
     ../../home/users
 
     ./localization.nix
-    ./networking.nix
     ./printing.nix
     ./packages.nix
     ./smart-card-daemon.nix
@@ -18,7 +18,22 @@
     flake.nixosModules.nix
     flake.nixosModules.utils
     flake.nixosModules.vars
+
+    # todo: move this to auto import in the flake when the dendritese are discovered
+    flake.nixosModules.hyprland-opts
   ];
+
+  # todo: s.a.
+  home-manager = {
+    users.oq = _: {
+      imports = [
+        flake.homeModules.hyprland-opts
+        flake.homeModules.hyprland-mods-opts
+      ];
+    };
+  };
+
+  networking.hostName = host-name;
 
   nixpkgs = {
     overlays = [

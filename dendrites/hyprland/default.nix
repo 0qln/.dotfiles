@@ -1,5 +1,14 @@
-{inputs, ...}:
+{
+  inputs,
+  self,
+  ...
+}:
 with inputs.nixpkgs.lib; {
+  imports = [
+    ./opts.nix
+    ./mods.nix
+  ];
+
   flake.nixosModules.hyprland = {
     config,
     pkgs,
@@ -8,10 +17,6 @@ with inputs.nixpkgs.lib; {
   }: let
     cfg = config.modules.hyprland;
   in {
-    options.modules.hyprland = {
-      enable = mkEnableOption "hyprland";
-    };
-
     config = mkIf cfg.enable {
       modules.nix.caches = {"hyprland.cachix.org" = "a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=";};
 
@@ -74,13 +79,10 @@ with inputs.nixpkgs.lib; {
     fmtColor = config.utils.fmtColor_rgbaFn;
     fmtMonitor = config.utils.fmtMonitor_device;
   in {
-    options.modules.hyprland = {
-      enable = mkEnableOption "hyprland";
-    };
-
     imports = [
       ./input.nix
-      ./modules.nix
+
+      self.homeModules.hyprland-mods
     ];
 
     config = mkIf cfg.enable {

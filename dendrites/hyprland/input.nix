@@ -9,36 +9,6 @@ with lib; let
   inherit (config.vars) terminal fileexplorer;
   cfg = config.modules.hyprland.input;
 in {
-  options.modules.hyprland.input = {
-    submaps = mkOption {
-      type = types.attrsOf (types.submodule {
-        options = {
-          key = mkOption {type = types.str;};
-          binds = mkOption {
-            type = types.listOf (types.either types.str (types.submodule {
-              options = {
-                flags = mkOption {
-                  type = types.str;
-                  default = "";
-                };
-                keys = mkOption {type = types.str;};
-                dispatch = mkOption {type = types.str;};
-                reset = mkOption {
-                  type = types.bool;
-                  default = false;
-                };
-              };
-            }));
-          };
-        };
-      });
-    };
-    mainMod = mkOption {
-      type = types.str;
-      default = "SUPER";
-    };
-  };
-
   config = let
     inherit (cfg) mainMod;
   in {
