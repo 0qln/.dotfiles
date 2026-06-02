@@ -32,6 +32,10 @@ in {
           args = ["@playwright/mcp@latest"];
           tools = ["*"];
         };
+        nixos = {
+          command = "nix";
+          args = ["run" "github:utensils/mcp-nixos" "--"];
+        };
       };
       lspServers = {
         rust = {
