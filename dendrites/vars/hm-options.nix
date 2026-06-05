@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 with lib; let
@@ -118,6 +119,13 @@ in {
       default = "kitty";
       description = "Default terminal emulator";
       example = "kitty";
+    };
+
+    music-player = mkOption {
+      type = programType;
+      default = "${getExe pkgs.pear-desktop}";
+      description = "Default music player";
+      example = "spotify";
     };
 
     monitors = let

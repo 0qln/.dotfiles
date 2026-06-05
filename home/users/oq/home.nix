@@ -29,6 +29,7 @@ in
         flake.homeModules.vars
         flake.homeModules.fonts
         flake.homeModules.xdg
+        flake.homeModules.clanker
       ]
       ++ [
         ../../modules
@@ -78,6 +79,7 @@ in
             clanker.enable = mkDefault true;
           };
           clanker = {
+            enable = mkDefault true;
             claude.enable = mkDefault false;
             github-copilot.enable = mkDefault true;
           };
