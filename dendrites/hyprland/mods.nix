@@ -6,7 +6,13 @@ with inputs.nixpkgs.lib; let
   moduleXScriptX = x: y: "${moduleXScripts x}/${y}";
   sourceX = x: "source = ~/${moduleXConf x}";
 in {
-  flake.homeModules.hyprland-mods-opts = {pkgs, ...}: {
+  flake.homeModules.hyprland-mods-opts = {
+    pkgs,
+    config,
+    ...
+  }: let
+    cfg = config.modules.hyprland;
+  in {
     options.modules.hyprland = let
       moduleType = types.submodule (
         {name, ...}: {
