@@ -159,20 +159,24 @@
 
       imports = let
         isDirectory = f: t: t == "directory";
+
         hasDefaultNix = dir: f: t: (
           builtins.readDir ./${dir}/${f}
           |> builtins.hasAttr "default.nix"
         );
+
         hasOptsNix = dir: f: t: (
           builtins.readDir ./${dir}/${f}
           |> builtins.hasAttr "opts.nix"
         );
+
         collectDendrites = dir:
           builtins.readDir ./${dir}
           |> inputs.nixpkgs.lib.attrsets.filterAttrs isDirectory
           |> inputs.nixpkgs.lib.attrsets.filterAttrs (hasDefaultNix dir)
           |> builtins.attrNames
           |> builtins.map (x: ./${dir}/${x});
+
         collectOptsNix = dir:
           builtins.readDir ./${dir}
           |> inputs.nixpkgs.lib.attrsets.filterAttrs isDirectory
