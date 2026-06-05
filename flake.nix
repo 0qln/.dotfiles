@@ -148,6 +148,30 @@
         flake = self;
         host-name = utilz.sanitizeHostName host;
       };
+
+      nixosOptsModules = lib.attrValues (
+        lib.filterAttrs (n: _: lib.hasSuffix "-opts" n) self.nixosModules
+      );
+
+      homeOptsModules = lib.attrValues (
+        lib.filterAttrs (n: _: lib.hasSuffix "-opts" n) self.homeModules
+      );
+
+      mkNixosSystem = host: system: extraModules:
+        withSystem system (_:
+          inputs.nixpkgs.lib.nixosSystem {
+            specialArgs = mkHostArgs host system;
+            modules =
+              extraModules
+              ++ nixosOptsModules
+              ++ [
+                {
+                  home-manager.users = lib.genAttrs hm.users (_: {
+                    imports = homeOptsModules;
+                  });
+                }
+              ];
+          });
     in {
       options = {
         flake.homeModules = lib.mkOption {
@@ -191,7 +215,7 @@
         ++ (collectOptsNix "dendrites/themes");
 
       config = {
-        _module.args = {inherit mkHostArgs;};
+        _module.args = {inherit mkHostArgs mkNixosSystem;};
 
         systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
 
@@ -231,34 +255,13 @@
             then (import systemPath)
             else fallback;
 
-          nixosOptsModules = lib.attrValues (
-            lib.filterAttrs (n: _: lib.hasSuffix "-opts" n) self.nixosModules
-          );
-
-          homeOptsModules = lib.attrValues (
-            lib.filterAttrs (n: _: lib.hasSuffix "-opts" n) self.homeModules
-          );
-
           nixosConfigurations = builtins.listToAttrs (
             utilz.mods.eachX hosts (
               host: let
                 system = getSystem host;
               in {
                 name = host;
-                value = withSystem system (_:
-                  inputs.nixpkgs.lib.nixosSystem {
-                    modules =
-                      [./hosts/${host}]
-                      ++ nixosOptsModules
-                      ++ [
-                        {
-                          home-manager.users = lib.genAttrs hm.users (_: {
-                            imports = homeOptsModules;
-                          });
-                        }
-                      ];
-                    specialArgs = mkHostArgs host system;
-                  });
+                value = mkNixosSystem host system [./hosts/${host}];
               }
             )
           );
