@@ -20,14 +20,6 @@
     flake.nixosModules.vars
   ];
 
-  # todo: s.a.
-  home-manager = {
-    users.oq = _: {
-      imports = [
-      ];
-    };
-  };
-
   networking.hostName = host-name;
 
   nixpkgs = {
