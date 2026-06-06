@@ -166,9 +166,7 @@
               ++ nixosOptsModules
               ++ [
                 {
-                  home-manager.users = lib.genAttrs hm.users (_: {
-                    imports = homeOptsModules;
-                  });
+                  home-manager.sharedModules = homeOptsModules;
                 }
               ];
           });
