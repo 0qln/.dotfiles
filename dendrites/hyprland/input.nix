@@ -6,7 +6,7 @@
 }:
 with lib; let
   todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix {};
-  inherit (config.vars) terminal fileexplorer;
+  inherit (config.vars) terminal fileexplorer music-player;
   cfg = config.modules.hyprland.input;
 in {
   config = let
@@ -107,7 +107,7 @@ in {
             # "${mainMod} ALT, M, "
             # "${mainMod} ALT, M, "
             # hyprland can't handle zen so we using an electron app grahh
-            "${mainMod}, M, exec, youtube-music"
+            "${mainMod}, M, exec, ${music-player}"
 
             # app/window search bar
             "${mainMod}, SPACE, exec, rofi -show combi -modes \"combi,ssh,recursivebrowser\" -combi-modes \"window,run,drun\""

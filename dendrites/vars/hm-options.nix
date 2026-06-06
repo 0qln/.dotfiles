@@ -122,7 +122,7 @@ in {
     };
 
     music-player = mkOption {
-      type = programType;
+      type = types.str;
       default = "${getExe pkgs.pear-desktop}";
       description = "Default music player";
       example = "spotify";
