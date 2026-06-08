@@ -1,6 +1,6 @@
 {...}: {
   imports = [
-    ../lif/home-vars.nix
+    ../${"lif?dendrite"}/home-vars.nix
     ../loki/home-vars.nix
   ];
 }
