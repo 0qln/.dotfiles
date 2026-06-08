@@ -20,6 +20,12 @@ in {
         example = "Tomato";
         description = "whether to higlight 'todo'";
       };
+      indent = mkOption {
+        type = types.enum (builtins.readDir ./indents |> builtins.attrNames);
+        default = "alternating.lua";
+        example = "rainbow.lua";
+        description = "indent color highlighting preset";
+      };
     };
   };
 
@@ -49,6 +55,7 @@ in {
           })
           kanagawa-paper-nvim
           vague-nvim
+          monokai-pro-nvim
 
           #TODO:
           # https://github.com/ramojus/mellifluous.nvim
@@ -106,18 +113,7 @@ in {
 
           -- tab indent colors
           -- #TODO: make work with half-opaque colors
-          local highlight = {
-              "CursorColumn",
-              "Whitespace",
-          }
-          require("ibl").setup {
-              indent = { highlight = highlight, char = "" },
-              whitespace = {
-                  highlight = highlight,
-                  remove_blankline_trail = false,
-              },
-              scope = { enabled = false },
-          }
+          ${builtins.readFile ./indents/${cfg.highlight.indent}}
         '';
       }
     ];

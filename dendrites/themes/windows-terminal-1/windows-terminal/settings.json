@@ -1,0 +1,88 @@
+{
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "actions": [],
+  "alwaysShowTabs": true,
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+  "keybindings": [
+    {
+      "id": "Terminal.CopyToClipboard",
+      "keys": "ctrl+c"
+    },
+    {
+      "id": "Terminal.PasteFromClipboard",
+      "keys": "ctrl+v"
+    },
+    {
+      "id": "Terminal.DuplicatePaneAuto",
+      "keys": "alt+shift+d"
+    }
+  ],
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    }
+  ],
+  "profiles": {
+    "defaults": {
+      "colorScheme": "Campbell",
+      "cursorShape": "filledBox",
+      "font": {
+        "face": "CartographCF Nerd Font",
+        "size": 11
+      },
+      "intenseTextStyle": "all",
+      "opacity": 100
+    },
+    "list": [
+      {
+        "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "hidden": false,
+        "name": "Windows PowerShell"
+      },
+      {
+        "commandline": "%SystemRoot%\\System32\\cmd.exe",
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "hidden": false,
+        "name": "Command Prompt"
+      },
+      {
+        "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+        "hidden": false,
+        "name": "Azure Cloud Shell",
+        "source": "Windows.Terminal.Azure"
+      },
+      {
+        "antialiasingMode": "cleartype",
+        "backgroundImage": "\\\\wsl.localhost\\nixos\\nix\\store\\iqnlvc1n8k418rf75cjhsfs2kh949fc4-wallhaven-qzdolr.jpg",
+        "backgroundImageOpacity": 0.3,
+        "closeOnExit": "automatic",
+        "colorScheme": "Campbell",
+        "cursorShape": "filledBox",
+        "colorScheme": "Ubuntu",
+        "experimental.rainbowSuggestions": true,
+        "experimental.retroTerminalEffect": true,
+        "font": {
+          "face": "CartographCF Nerd Font",
+          "features": {},
+          "size": 12,
+          "weight": "extra-black"
+        },
+        "guid": "{12d21793-ef9e-5187-a804-c52a544e1793}",
+        "hidden": false,
+        "intenseTextStyle": "bright",
+        "name": "nixos",
+        "padding": "0",
+        "source": "Microsoft.WSL"
+      }
+    ]
+  },
+  "schemes": [],
+  "showTabsInTitlebar": true,
+  "tabWidthMode": "titleLength",
+  "themes": [],
+  "useAcrylicInTabRow": true
+}

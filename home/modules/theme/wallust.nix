@@ -10,7 +10,7 @@ in {
   options.modules.wallust = {
     enable = mkEnableOption "wallust";
     wallpaper = mkOption {
-      type = types.path;
+      type = types.either types.path types.str;
       description = "The wallpaper to use when generating the themes. Defaults to the center wallpaper currently set in config.themes.wallpapers.";
       default = let
         mons = config.vars.monitors;
@@ -90,10 +90,13 @@ in {
 
     home.file.".config/wallust/templates".source = ./templates;
 
-    systemd.user.services."wallust-run" = {
+    systemd.user.services."wallust-run" = let
+      isWsl = config.settings.uiEnv == "wsl";
+      sessionTarget = if isWsl then "default.target" else "graphical-session.target";
+    in {
       Unit = {
         Description = "Generate color pallets using wallust";
-        After = ["graphical-session.target"];
+        After = [sessionTarget];
       };
 
       Service = {
@@ -103,7 +106,7 @@ in {
       };
 
       Install = {
-        WantedBy = ["graphical-session.target"];
+        WantedBy = [sessionTarget];
       };
     };
   };
