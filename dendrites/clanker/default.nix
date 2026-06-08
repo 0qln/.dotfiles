@@ -81,6 +81,12 @@ with inputs.nixpkgs.lib; {
                 githubCopilotMd = builtins.replaceStrings ["CLAUDE"] ["Github-Copilot"] claudeMd;
               in "${githubCopilotMd}";
             };
+
+            # make the config file mutable
+            home.file."${config.programs.github-copilot-cli.configDir}/config.json" = {
+              mutable = true;
+              force = true;
+            };
           })
       ]);
   };
