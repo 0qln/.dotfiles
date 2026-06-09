@@ -104,6 +104,7 @@ with inputs.nixpkgs.lib; {
             # other packages
             sudo dnf install -y gnome-keyring
             sudo dnf install -y libsecret
+            sudo dnf install -y ripgrep
 
             # install vscode
             sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
