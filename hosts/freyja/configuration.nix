@@ -10,6 +10,7 @@ in {
   imports = [
     ../_common/configuration.nix
 
+    flake.nixosModules.android
     flake.nixosModules.bluetooth
     flake.nixosModules.emojis
     flake.nixosModules.flatpak
@@ -42,6 +43,12 @@ in {
 
   modules = {
     home-manager.enable = true;
+
+    android = {
+      enable = true;
+      android-studio.enable = true;
+      users = ["oq"];
+    };
 
     bluetooth.enable = true;
 
