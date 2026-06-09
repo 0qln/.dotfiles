@@ -46,9 +46,11 @@ in {
 
     android = {
       enable = true;
-      android-studio.enable = true;
+      android-studio.enable = false; # todo: download when good internet
       users = ["oq"];
     };
+
+    vscode.enable = true;
 
     bluetooth.enable = true;
 
