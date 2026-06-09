@@ -19,22 +19,30 @@ with inputs.nixpkgs.lib; {
         {
           programs.mcp = {
             enable = true;
-            servers = {
-              playwright = {
-                type = "local";
-                command = "npx";
-                args = ["@playwright/mcp@latest"];
-                tools = ["*"];
-              };
-              nixos = {
-                command = "nix";
-                args = ["run" "github:utensils/mcp-nixos" "--"];
-              };
-              github = {
-                type = "http";
-                url = "https://api.githubcopilot.com/mcp/";
-              };
-            };
+            servers = mkMerge [
+              {
+                playwright = {
+                  type = "local";
+                  command = "npx";
+                  args = ["@playwright/mcp@latest"];
+                  tools = ["*"];
+                };
+                nixos = {
+                  command = "nix";
+                  args = ["run" "github:utensils/mcp-nixos" "--"];
+                };
+                github = {
+                  type = "http";
+                  url = "https://api.githubcopilot.com/mcp/";
+                };
+              }
+              (mkIf config.settings.enableWorkSimple {
+                ado-remote-unicornde = {
+                  type = "http";
+                  url = "https://mcp.dev.azure.com/unicornde";
+                };
+              })
+            ];
           };
         }
 
