@@ -1,6 +1,8 @@
 {
   config,
   flake,
+  inputs,
+  pkgs,
   ...
 }: let
   theme = "autumn-1";
@@ -24,6 +26,19 @@ in {
     root.enable = true;
     oq.enable = true;
   };
+
+  # The MediaTek MT7925 combo Wi-Fi/Bluetooth chip (USB 0e8d:8c38) fails to
+  # initialize its Bluetooth controller ("Failed to send wmt func ctrl (-22)",
+  # HW/SW Version 0x00000000, no controller in bluetoothctl/bluetui).
+  # Root cause: upstream regression 634a4408c061 ("Bluetooth: btmtk: validate
+  # WMT event SKB length before struct access"), present in our pinned kernel
+  # (6.18.32), which wrongly rejects the status-less WMT FUNC_CTRL event this
+  # chip sends. Fixed upstream by e3ac0d9f1a20 ("accept too short WMT FUNC_CTRL
+  # events"), backported to linux-6.18.y and shipped in 6.18.34. Use the
+  # prebuilt kernel from a newer nixpkgs (no local compilation).
+  # see: https://bugzilla.kernel.org/show_bug.cgi?id=221521
+  boot.kernelPackages =
+    inputs.nixpkgs-freyja-kernel.legacyPackages.${pkgs.stdenv.hostPlatform.system}.linuxPackages;
 
   modules = {
     home-manager.enable = true;

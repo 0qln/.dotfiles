@@ -974,6 +974,21 @@
         "type": "github"
       }
     },
+    "nixpkgs-freyja-kernel": {
+      "locked": {
+        "lastModified": 1780749050,
+        "narHash": "sha256-3av0pIjlOWQ6rDbNOmpUSvbNnJkGORQKKjb4LtCZsIY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-unstable",
+        "type": "indirect"
+      }
+    },
     "nixpkgs-hot": {
       "locked": {
         "lastModified": 1779357205,
@@ -1216,6 +1231,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_4",
+        "nixpkgs-freyja-kernel": "nixpkgs-freyja-kernel",
         "nixpkgs-hot": "nixpkgs-hot",
         "nixpkgs-server": "nixpkgs-server",
         "nixpkgs-stable": "nixpkgs-stable",

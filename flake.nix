@@ -12,6 +12,15 @@
 
     nixpkgs-hot.url = "nixpkgs/nixos-unstable";
 
+    # Dedicated, independently-pinned nixpkgs used only for freyja's kernel.
+    # Its nixos-unstable kernel (6.18.34+) carries the upstream btmtk fix
+    # e3ac0d9f1a20 ("accept too short WMT FUNC_CTRL events") that the kernel
+    # in `nixpkgs` (6.18.32) lacks, fixing MT7925 Bluetooth init. Pulled
+    # prebuilt from cache.nixos.org, so no local kernel compilation.
+    # Kept separate from `nixpkgs-hot` to avoid rebuilding hot packages on
+    # other hosts. see: https://bugzilla.kernel.org/show_bug.cgi?id=221521
+    nixpkgs-freyja-kernel.url = "nixpkgs/nixos-unstable";
+
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
