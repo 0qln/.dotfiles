@@ -1204,11 +1204,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778716647,
-        "narHash": "sha256-BWD3XfB9MFBsS2l8g1keYXdnF0NM4pomyYBtCqvZRnc=",
+        "lastModified": 1781028322,
+        "narHash": "sha256-yQnEtA/DNgPM+wbWfiD2iDQqDigBd8imeqOruMcBQD0=",
         "ref": "refs/heads/master",
-        "rev": "fc85a7a0e14f1066911ba76613c38ed82737330e",
-        "revCount": 29,
+        "rev": "3e67bc8fddb9fa7fb446601efd3c7d1ec0bfac2d",
+        "revCount": 30,
         "type": "git",
         "url": "ssh://gitea@git.07112025.xyz/0qln/.private.git"
       },
