@@ -30,6 +30,10 @@ with inputs.nixpkgs.lib; {
                 command = "nix";
                 args = ["run" "github:utensils/mcp-nixos" "--"];
               };
+              github = {
+                type = "http";
+                url = "https://api.githubcopilot.com/mcp/";
+              };
             };
           };
         }
