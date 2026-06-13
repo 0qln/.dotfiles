@@ -103,6 +103,13 @@
             installCargo = false;
             settings = {
               checkOnSave = true;
+              diagnostics = {
+                # disable the diagnostics that shows up above code that is not enabled by e.g.
+                # ```rust
+                # #[cfg(...)]
+                # ```
+                disabled = ["inactive-code"];
+              };
             };
           };
 
