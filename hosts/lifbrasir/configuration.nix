@@ -11,6 +11,7 @@ in {
   imports = [
     inputs.private.nixosModules."lifbrasir"
     flake.nixosModules."lichess-bot"
+    flake.nixosModules.sops
 
     ../_common/configuration.nix
 

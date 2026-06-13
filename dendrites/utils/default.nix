@@ -73,7 +73,6 @@ in {
   }:
     with lib; {
       imports = [
-        ./sops.nix
         ./cursors.nix
         ./mutability.nix
         ./theme.nix

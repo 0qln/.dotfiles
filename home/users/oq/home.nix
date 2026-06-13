@@ -31,6 +31,7 @@ in
         flake.homeModules.xdg
         flake.homeModules.clanker
         flake.homeModules.yubi
+        flake.homeModules.sops
       ]
       ++ [
         ../../modules
@@ -75,6 +76,7 @@ in
 
       modules = mkMerge [
         {
+          sops.enable = mkDefault true;
           nixvim = {
             enable = mkDefault true;
             clanker.enable = mkDefault true;

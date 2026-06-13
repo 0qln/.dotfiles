@@ -11,6 +11,7 @@ in {
       imports = [
         inputs.private.nixosModules."lif"
 
+        self.nixosModules.sops
         self.nixosModules.bluetooth
         self.nixosModules.vscode
         self.nixosModules.android
