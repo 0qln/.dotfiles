@@ -32,6 +32,7 @@ in
         flake.homeModules.clanker
         flake.homeModules.yubi
         flake.homeModules.sops
+        flake.homeModules.input
       ]
       ++ [
         ../../modules
