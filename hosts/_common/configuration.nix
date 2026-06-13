@@ -11,13 +11,13 @@
     ./localization.nix
     ./printing.nix
     ./packages.nix
-    ./smart-card-daemon.nix
     ./app-image.nix
     ./compat.nix
 
     flake.nixosModules.nix
     flake.nixosModules.utils
     flake.nixosModules.vars
+    flake.nixosModules.yubi
   ];
 
   networking.hostName = host-name;
@@ -34,6 +34,9 @@
       enable = true;
       caches.enable = true;
     };
+
     ssh.enable = true;
+
+    yubi.enable = true;
   };
 }

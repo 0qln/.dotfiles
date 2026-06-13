@@ -30,6 +30,7 @@ in
         flake.homeModules.fonts
         flake.homeModules.xdg
         flake.homeModules.clanker
+        flake.homeModules.yubi
       ]
       ++ [
         ../../modules

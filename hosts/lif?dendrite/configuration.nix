@@ -16,7 +16,6 @@ in {
         self.nixosModules.android
         self.nixosModules."themes/${theme}"
 
-        # self.nixosModules.common.configuration
         ../_common/configuration.nix
 
         ./bootloader.nix
