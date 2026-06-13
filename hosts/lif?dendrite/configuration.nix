@@ -25,6 +25,7 @@ in {
         ./mount.nix
         ./networking.nix
         ./nvidia.nix
+        ./hardware-configuration.nix
 
         # todo: fix wireguard vpn
         # (import ../../modules/wireguard/template.nix {
