@@ -63,7 +63,7 @@ with inputs.nixpkgs.lib; {
             echo "Detected Addons: "
             echo "$ADDONS"
 
-            BASE_ADDONS="$(cat <(echo "$HOME/repos/odoo/addons") <(echo "$HOME/enterprise-${cfg.branch}") <(echo "$WS_DIR"))"
+            BASE_ADDONS="$(cat <(echo "$HOME/repos/odoo/addons") <(echo "$HOME/enterprise-${cfg.branch}") <(echo "$HOME/worksimple-${cfg.branch}") <(echo "$WS_DIR"))"
             echo "Base Addons: "
             echo "$BASE_ADDONS"
 
@@ -140,6 +140,24 @@ with inputs.nixpkgs.lib; {
                 --single-branch \
                 https://github.com/odoo/odoo.git \
                 "${containerHome}/repos/odoo"
+            fi
+
+            # clone odoo enterprise if not already present
+            if [ ! -d "${containerHome}/enterprise-${cfg.branch}" ]; then
+              git clone \
+                --branch ${cfg.branch} \
+                --single-branch \
+                https://github.com/odoo/enterprise.git \
+                "${containerHome}/enterprise-${cfg.branch}"
+            fi
+
+            # clone workSimple-GmbH/odoo if not already present
+            if [ ! -d "${containerHome}/worksimple-${cfg.branch}" ]; then
+              git clone \
+                --branch ${cfg.branch} \
+                --single-branch \
+                https://github.com/workSimple-GmbH/odoo.git \
+                "${containerHome}/worksimple-${cfg.branch}"
             fi
 
             # install odoo python/system dependencies
