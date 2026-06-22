@@ -14,6 +14,13 @@ in
         ./mount.nix
       ];
 
+      modules = {
+        docker = {
+          enable = true;
+          rootless.enable = true;
+        };
+      };
+
       home-manager = {
         users.oq = _: {
           imports = [
