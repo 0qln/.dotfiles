@@ -35,17 +35,18 @@
       };
 
       config = mkIf cfg.enable {
-        # todo: remove when https://github.com/Almamu/linux-wallpaperengine/pull/557 is merged
         nixpkgs.overlays = [
-          (_final: prev: {
-            linux-wallpaperengine = prev.linux-wallpaperengine.overrideAttrs (_oldAttrs: {
+          (final: prev: {
+            linux-wallpaperengine = prev.linux-wallpaperengine.overrideAttrs (oldAttrs: {
               src = prev.fetchFromGitHub {
                 owner = "Almamu";
                 repo = "linux-wallpaperengine";
-                rev = "de69843edeb6e2ba7b2a6c81176e235c85986ff5";
+                rev = "b016d7d1fdcf4e5fd2f9c9fa420a8aaa07fee02d";
                 fetchSubmodules = true;
-                hash = "sha256-XibtF+FuYknsCr4AN4TAiN4kxZaczO9h0g/ZK2SPki4=";
+                hash = "sha256-ExWAYdSFW5plPuS3/jxTPMXIly6zVb5GojE3e37imZM=";
               };
+              nativeBuildInputs = (oldAttrs.nativeBuildInputs or []) ++ [final.pkg-config];
+              buildInputs = (oldAttrs.buildInputs or []) ++ [final.dbus];
             });
           })
         ];

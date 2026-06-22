@@ -7,6 +7,7 @@
   imports = [
     ../_common
     flake.nixosModules."wsl"
+    flake.nixosModules.sops
   ];
 
   users = {

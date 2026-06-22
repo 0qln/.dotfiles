@@ -11,12 +11,12 @@ in {
       imports = [
         inputs.private.nixosModules."lif"
 
+        self.nixosModules.sops
         self.nixosModules.bluetooth
         self.nixosModules.vscode
         self.nixosModules.android
         self.nixosModules."themes/${theme}"
 
-        # self.nixosModules.common.configuration
         ../_common/configuration.nix
 
         ./bootloader.nix
@@ -25,6 +25,7 @@ in {
         ./mount.nix
         ./networking.nix
         ./nvidia.nix
+        ./hardware-configuration.nix
 
         # todo: fix wireguard vpn
         # (import ../../modules/wireguard/template.nix {

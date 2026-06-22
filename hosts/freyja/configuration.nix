@@ -10,6 +10,7 @@ in {
   imports = [
     ../_common/configuration.nix
 
+    flake.nixosModules.sops
     flake.nixosModules.android
     flake.nixosModules.bluetooth
     flake.nixosModules.emojis

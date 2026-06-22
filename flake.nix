@@ -148,7 +148,6 @@
       mkHostArgs = host: system: let
         inherit (pkgss system) pkgs-stable pkgs-server pkgs-hot;
       in {
-        # todo: utilz shouldn't be needed here anymore
         inherit utilz;
         inherit inputs;
         inherit pkgs-stable;

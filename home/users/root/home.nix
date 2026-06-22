@@ -20,6 +20,7 @@ in
       [
         flake.homeModules.utils
         flake.homeModules.vars
+        flake.homeModules.sops
       ]
       ++ [
         ../../modules
@@ -57,6 +58,7 @@ in
 
       modules = mkMerge [
         {
+          sops.enable = mkDefault true;
           nixvim.enable = mkDefault true;
           lf.enable = mkDefault true;
           bash.enable = mkDefault true;

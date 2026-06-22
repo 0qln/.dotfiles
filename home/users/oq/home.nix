@@ -30,6 +30,9 @@ in
         flake.homeModules.fonts
         flake.homeModules.xdg
         flake.homeModules.clanker
+        flake.homeModules.yubi
+        flake.homeModules.sops
+        flake.homeModules.input
       ]
       ++ [
         ../../modules
@@ -74,6 +77,7 @@ in
 
       modules = mkMerge [
         {
+          sops.enable = mkDefault true;
           nixvim = {
             enable = mkDefault true;
             clanker.enable = mkDefault true;
