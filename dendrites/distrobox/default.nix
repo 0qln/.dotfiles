@@ -4,6 +4,10 @@
   ...
 }:
 with inputs.nixpkgs.lib; {
+  imports = [
+    ./opts.nix
+  ];
+
   flake.nixosModules.distrobox = {
     config,
     pkgs,
@@ -11,10 +15,6 @@ with inputs.nixpkgs.lib; {
   }: let
     cfg = config.modules.distrobox;
   in {
-    options.modules.distrobox = {
-      enable = mkEnableOption "distrobox system dependencies";
-    };
-
     imports = [
       self.nixosModules.xdg
     ];
@@ -52,10 +52,6 @@ with inputs.nixpkgs.lib; {
   flake.homeModules.distrobox = {config, ...}: let
     cfg = config.modules.distrobox;
   in {
-    options.modules.distrobox = {
-      enable = mkEnableOption "distrobox system dependencies";
-    };
-
     imports = [
       self.homeModules.xdg
     ];
