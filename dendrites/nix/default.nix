@@ -27,6 +27,9 @@ with inputs.nixpkgs.lib; {
           attrsets.mapAttrsToList mkSubstituter cfg.caches)
         ++ [
           {
+            trusted-users = [ "root" "@wheel" ];
+          }
+          {
             experimental-features = [
               "nix-command"
               "flakes"
