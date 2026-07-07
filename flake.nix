@@ -87,7 +87,7 @@
     };
 
     nephrid = {
-      url = "github:0qln/Nephrid";
+      url = "git+https://github.com/0qln/Nephrid.git?lfs=1";
     };
   };
 
