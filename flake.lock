@@ -873,11 +873,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1781354387,
-        "narHash": "sha256-vGU3IvlCdBr00lo6maDJYPPNhUUDbDkwgrL3X3K6Dww=",
+        "lastModified": 1783384506,
+        "narHash": "sha256-B+p6CeUXlaFeWziibX3bCoid6S+fWFBJvpSx11GJSfA=",
         "owner": "0qln",
         "repo": "Nephrid",
-        "rev": "3d2d7a74ae154edb0f8d9dd8e32551e785cda72f",
+        "rev": "abbaac63c33bf9585a234413b8763d191ae36860",
         "type": "github"
       },
       "original": {

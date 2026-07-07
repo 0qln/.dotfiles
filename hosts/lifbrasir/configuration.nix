@@ -180,7 +180,7 @@ in {
 
   home-manager = {
     users.root = _: {
-      home.file."lichess-bot/engines/nephrid".source = getExe inputs.nephrid.packages.x86_64-linux.nephrid-hce;
+      home.file."lichess-bot/engines/nephrid".source = getExe inputs.nephrid.packages.x86_64-linux.nephrid-id-nnue;
     };
   };
 
