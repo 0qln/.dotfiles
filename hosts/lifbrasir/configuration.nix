@@ -175,6 +175,7 @@ in {
       enable = true;
       name = "nephrid";
       configFile = ./lichess-bot/config.yml;
+      restartTriggers = [inputs.nephrid.packages.x86_64-linux.nephrid-id-nnue];
     };
   };
 
