@@ -62,6 +62,10 @@ in {
           mergetool.keepBackup = false;
         };
         lfs.enable = true;
+        aliases = {
+          fnotes = "fetch origin refs/notes/commits:refs/notes/commits";
+          pnotes = "push origin refs/notes/commits";
+        };
       }
       (mkIf cfg.worksimple.enable {
         includes = [
