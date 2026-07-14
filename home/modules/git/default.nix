@@ -60,6 +60,7 @@ in {
           merge.tool = cfg.merge.tool;
           mergetool.prompt = false;
           mergetool.keepBackup = false;
+          submodule.recurse = true;
         };
         lfs.enable = true;
         aliases = {
