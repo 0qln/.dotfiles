@@ -60,8 +60,13 @@ in {
           merge.tool = cfg.merge.tool;
           mergetool.prompt = false;
           mergetool.keepBackup = false;
+          submodule.recurse = true;
         };
         lfs.enable = true;
+        aliases = {
+          fnotes = "fetch origin refs/notes/commits:refs/notes/commits";
+          pnotes = "push origin refs/notes/commits";
+        };
       }
       (mkIf cfg.worksimple.enable {
         includes = [

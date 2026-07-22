@@ -60,6 +60,11 @@ with inputs.nixpkgs.lib; {
             type = types.str;
             default = "${serviceName}_${config.name}";
           };
+          restartTriggers = mkOption {
+            type = types.listOf types.package;
+            default = [];
+            description = "Packages that, when updated, trigger a service restart.";
+          };
         };
       });
     };
@@ -84,6 +89,8 @@ with inputs.nixpkgs.lib; {
         wantedBy = ["multi-user.target"];
 
         description = "${cfg.name}, a lichess-bot";
+
+        inherit (cfg) restartTriggers;
 
         serviceConfig = let
           configPath = "/etc/${name}/config.yml";

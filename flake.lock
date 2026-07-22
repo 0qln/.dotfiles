@@ -873,17 +873,19 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1781354387,
-        "narHash": "sha256-vGU3IvlCdBr00lo6maDJYPPNhUUDbDkwgrL3X3K6Dww=",
-        "owner": "0qln",
-        "repo": "Nephrid",
-        "rev": "3d2d7a74ae154edb0f8d9dd8e32551e785cda72f",
-        "type": "github"
+        "lastModified": 1783772347,
+        "lfs": true,
+        "narHash": "sha256-POB6na8Au8XFh+E1abEkwj9y/UyEbGBHEEtZVnZ8oTs=",
+        "ref": "refs/heads/main",
+        "rev": "ca27cedde6f9d446a21f8b4d806059226dcb82ff",
+        "revCount": 185,
+        "type": "git",
+        "url": "https://github.com/0qln/Nephrid.git"
       },
       "original": {
-        "owner": "0qln",
-        "repo": "Nephrid",
-        "type": "github"
+        "lfs": true,
+        "type": "git",
+        "url": "https://github.com/0qln/Nephrid.git"
       }
     },
     "nix-flatpak": {
