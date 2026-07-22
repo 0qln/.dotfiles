@@ -104,6 +104,13 @@ with inputs.nixpkgs.lib; {
           newMode = "700";
           deps = ["mutableFileGeneration" "writeBoundary"];
         };
+
+        odoo-distrobox-config_gh = config.utils.mkCopy {
+          source = "${config.xdg.configHome}/gh";
+          destPath = "${containerHome}/.config/gh";
+          newMode = "700";
+          deps = ["mutableFileGeneration" "writeBoundary"];
+        };
       };
 
       home.file.".distrobox/${containerName}/setup-container.sh" = {
@@ -131,6 +138,23 @@ with inputs.nixpkgs.lib; {
             sudo service postgresql start
             sudo -u postgres createuser -d -R -S ${username} 2>/dev/null || true
             createdb ${username} 2>/dev/null || true
+
+            # configure git credentials for HTTPS clones (e.g. private enterprise repo)
+            # the host uses `gh auth git-credential` via a nix-store path that does not
+            # exist inside the container, so derive a plain credential store from the
+            # copied gh token instead.
+            gh_hosts="$HOME/.config/gh/hosts.yml"
+            if [ -f "$gh_hosts" ]; then
+              gh_token="$(grep -m1 'oauth_token:' "$gh_hosts" | awk '{print $2}')"
+              if [ -n "$gh_token" ]; then
+                printf 'https://x-access-token:%s@github.com\n' "$gh_token" > "$HOME/.git-credentials"
+                chmod 600 "$HOME/.git-credentials"
+                # drop the broken host credential helpers pointing to the nix store
+                git config --global --unset-all 'credential.https://github.com.helper' 2>/dev/null || true
+                git config --global --unset-all 'credential.https://gist.github.com.helper' 2>/dev/null || true
+                git config --global --replace-all credential.helper store
+              fi
+            fi
 
             # clone odoo source if not already present
             if [ ! -d "${containerHome}/repos/odoo" ]; then
