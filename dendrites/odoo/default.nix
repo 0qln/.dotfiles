@@ -142,6 +142,15 @@ with inputs.nixpkgs.lib; {
                 "${containerHome}/repos/odoo"
             fi
 
+            if [ ! -d "${containerHome}/repos/enterprise" ]; then
+              mkdir -p "${containerHome}/repos"
+              git clone \
+                --branch ${cfg.branch} \
+                --single-branch \
+                https://github.com/odoo/enterprise.git \
+                "${containerHome}/repos/enterprise"
+            fi
+
             # install odoo python/system dependencies
             cd "${containerHome}/repos/odoo"
             sudo ./setup/debinstall.sh
