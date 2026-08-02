@@ -9,8 +9,9 @@ in {
       # key = "gc/gcc"
       commentary.enable = true;
 
+      # TODO: idk what has happened between updates but this now just randomly collapses all fucking folds and makes nvim ususable :D
       # folding
-      ufo.enable = true;
+      # nvim-ufo.enable = true;
     };
     keymaps = [
       # improved > <

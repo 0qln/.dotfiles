@@ -53,6 +53,7 @@ in {
               hash = "sha256-rtdDaANnzKqLNMXLcGDFnmzhU8IxjDPqw6Njp+uoZbI=";
             };
           })
+          vim-moonfly-colors
           kanagawa-paper-nvim
           vague-nvim
           monokai-pro-nvim
@@ -62,13 +63,19 @@ in {
           # https://github.com/dgox16/oldworld.nvim
           # https://github.com/everviolet/nvim
         ];
-        colorschemes = mkIf (cfg.theme != null) {
-          ${cfg.theme}.enable = true;
-        };
+        colorschemes = mkMerge [
+          (mkIf (cfg.theme != null) {
+            ${cfg.theme}.enable = true;
+          })
+          {
+            moonfly.settings.transparent = config.modules.nixvim.transparency.enable;
+          }
+        ];
 
         opts = {
           # required by:
           # - colorizer
+          # - bufferline
           termguicolors = true;
         };
 

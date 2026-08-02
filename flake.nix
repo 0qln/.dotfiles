@@ -67,6 +67,10 @@
       url = "github:0qln/Cartograph";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    angel-wish = {
+      url = "github:0qln/angel-wish";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";

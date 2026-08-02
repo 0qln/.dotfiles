@@ -26,6 +26,7 @@
     overlays = [
       inputs.nur.overlays.default
       inputs.cartograph-cf.overlays.default
+      inputs.angel-wish.overlays.default
     ];
   };
 

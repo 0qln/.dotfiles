@@ -68,6 +68,8 @@ in {
           (mkIf (foreground != null) "foreground ${foreground}")
           (mkIf (active_tab_background != null) "active_tab_background ${active_tab_background}")
           (mkIf (active_tab_foreground != null) "active_tab_foreground ${active_tab_foreground}")
+          (mkIf (active_border_color != null) "active_border_color ${active_border_color}")
+          (mkIf (inactive_border_color != null) "inactive_border_color ${inactive_border_color}")
           (mkIf (inactive_tab_background != null) "inactive_tab_background ${inactive_tab_background}")
           (mkIf (inactive_tab_foreground != null) "inactive_tab_foreground ${inactive_tab_foreground}")
           (mkIf (selection_background != null) "selection_background ${selection_background}")

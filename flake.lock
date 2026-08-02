@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "angel-wish": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785686842,
+        "narHash": "sha256-GFERSjslvM29qT17a1ubzEOO35GP3e971yehOO1f4Dc=",
+        "owner": "0qln",
+        "repo": "angel-wish",
+        "rev": "f384e1dc44ebbc3b4e7f389f241d50ce4b8552f7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "angel-wish",
+        "type": "github"
+      }
+    },
     "aquamarine": {
       "inputs": {
         "hyprutils": [
@@ -224,11 +244,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778716662,
-        "narHash": "sha256-m1Yf0wZ8j1OHjTc2UwHwyQRSnNeSgLJOd7q5Y45hzi4=",
+        "lastModified": 1782949081,
+        "narHash": "sha256-vp6Y/Grm98ESt6ceOkWiHWyZRDV3J1RID4w+6NWK9yA=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "f7c1a2d347e4c52d5fb8d10cb4d94b5884e546fb",
+        "rev": "17c9d6cdfc60c64f4ee8d306f9bc0b4ccb51481e",
         "type": "github"
       },
       "original": {
@@ -873,12 +893,12 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1783772347,
+        "lastModified": 1785083301,
         "lfs": true,
-        "narHash": "sha256-POB6na8Au8XFh+E1abEkwj9y/UyEbGBHEEtZVnZ8oTs=",
+        "narHash": "sha256-VgpXl3fSlQiUZBLGzzEg/46snWTGHQu0JwjQRe5aEaE=",
         "ref": "refs/heads/main",
-        "rev": "ca27cedde6f9d446a21f8b4d806059226dcb82ff",
-        "revCount": 185,
+        "rev": "579e3cd20226259c3ad41d6bf735472dec7d6f93",
+        "revCount": 203,
         "type": "git",
         "url": "https://github.com/0qln/Nephrid.git"
       },
@@ -1115,11 +1135,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1780336545,
-        "narHash": "sha256-vhVhuXzFrIOfcssC/9hDHx7MHzDKjF3keHuREOQqQiQ=",
+        "lastModified": 1784555310,
+        "narHash": "sha256-/FCliTPgiuV1owejZFNx3Ch9irdvkOfOFl+HHZ+DrtM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4df1b885d76a54e1aa1a318f8d16fd6005b6401f",
+        "rev": "421eebfd0ec7bccd4abe826ce62d7e6e83129493",
         "type": "github"
       },
       "original": {
@@ -1136,11 +1156,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1781373146,
-        "narHash": "sha256-h8eBVfQ+UZRc52vqGHrtD0gT4cSw41G4PW+iK06Y3nc=",
+        "lastModified": 1785527278,
+        "narHash": "sha256-rYFSM491MFFA1V6oax5PngXbevGt6n0o8sKhwFoItE0=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "19a4e5efa14d15aaeb947db6e700591e4acdb295",
+        "rev": "a19efae6c1afe426e8243d79f6dfbab186be6df8",
         "type": "github"
       },
       "original": {
@@ -1221,6 +1241,7 @@
     },
     "root": {
       "inputs": {
+        "angel-wish": "angel-wish",
         "arion": "arion",
         "bongocat": "bongocat",
         "cartograph-cf": "cartograph-cf",
@@ -1252,11 +1273,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775185947,
-        "narHash": "sha256-8ctPmj6RME4q4ELeg+BuY9lV/34M4AG1CNc0Im9PDDk=",
+        "lastModified": 1784004965,
+        "narHash": "sha256-5Dk8H/H9fqjr7kS4MKqdBOzVsTK5r1/PMjC6eQuXd54=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "199eeb6748116f7da4fbd3a680bc854e99d9132b",
+        "rev": "a794b72f1297136a654424de0348d32e76a9f14e",
         "type": "github"
       },
       "original": {

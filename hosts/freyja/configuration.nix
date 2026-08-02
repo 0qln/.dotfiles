@@ -5,7 +5,7 @@
   pkgs,
   ...
 }: let
-  theme = "autumn-1";
+  theme = "foggy-forest-1";
 in {
   imports = [
     ../_common/configuration.nix

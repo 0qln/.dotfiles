@@ -151,6 +151,8 @@ in {
       foreground = mkColorOption "terminal foreground" null;
       active_tab_background = mkColorOption "active tab background" null;
       active_tab_foreground = mkColorOption "active tab foreground" null;
+      active_border_color = mkColorOption "active border color" null;
+      inactive_border_color = mkColorOption "inactive border color" null;
       inactive_tab_background = mkColorOption "inactive tab background" null;
       inactive_tab_foreground = mkColorOption "inactive tab foreground" null;
       selection_background = mkColorOption "terminal selection_background" null;
