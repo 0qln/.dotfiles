@@ -115,6 +115,7 @@ in
           fonts = {
             cartograph-cf.enable = mkDefault true; # general monospace
             angel-wish.enable = mkDefault true; # cosmetic
+            ruritania.enable = mkDefault true; # cosmetic
             jetbrains-mono.enable = mkDefault true;
             ibm-plex.enable = mkDefault true; # obsidian
           };
@@ -166,8 +167,8 @@ in
           nixvim = {
             transparency.enable = mkDefault true;
             colors = {
-              theme = "moonfly";
-              highlight.indent = "none.lua";
+              theme = "sora";
+              highlight.indent = "rainbow.lua";
             };
           };
 
@@ -221,11 +222,13 @@ in
         };
 
         programs.hyprlock = let
-          inherit (config.utils) ftop ftoi;
           escape =
             replaceStrings
             ["#" ''"'']
             ["##" ''\"''];
+
+          # give the text a rise up and down such that the bounding boxes dont clip any fance parts of extravagant fonts.
+          renderFancyFont = text: "<span rise='30000'> </span> ${text} <span rise='-30000'> </span>";
         in {
           # inspiration: https://www.hyprflux.dev/features/hyprlock.html#features
           settings = {
@@ -260,6 +263,41 @@ in
               )
               devs;
 
+            # vignette with dither pattern
+            image = let
+              monitor = monitors.devices.center;
+              inherit (monitor.dim) w h;
+
+              lesserSide =
+                if w < h
+                then w
+                else h;
+
+              ditherVignette =
+                pkgs.runCommand "dither-vignette.png" {
+                  nativeBuildInputs = [pkgs.imagemagick];
+                } ''
+                  # Generate a radial gradient, apply ordered dithering (8x8 matrix),
+                  # and make the bright center transparent so only edge dots remain.
+                  magick -size ${toString w}x${toString h} radial-gradient:white-black \
+                    -ordered-dither o8x8 \
+                    -transparent white \
+                    $out
+                '';
+            in [
+              {
+                monitor = monitor.name;
+                path = "${ditherVignette}";
+                size = lesserSide;
+                rounding = 0;
+                border_size = 0;
+                position = "0, 0";
+                halign = "center";
+                valign = "center";
+                zindex = 0;
+              }
+            ];
+
             input-field = [
               {
                 monitor = monitors.devices.center.name;
@@ -292,7 +330,7 @@ in
               # Time display
               {
                 monitor = monitors.devices.center.name;
-                text = ''cmd[update:1000] echo "<span>$(date +"%I:%M")</span>"'';
+                text = ''cmd[update:1000] echo "${renderFancyFont ''$(date +"%I:%M")''}"'';
                 color = "$foreground";
                 font_size = 210;
                 font_family = "Angel wish";
@@ -304,11 +342,11 @@ in
               # Date display
               {
                 monitor = monitors.devices.center.name;
-                text = ''cmd[update:1000] echo -e "$(LC_TIME=en_US.UTF-8 date +"%A, %B %d")"'';
+                text = ''cmd[update:1000] echo -e "${renderFancyFont ''$(LC_TIME=en_US.UTF-8 date +"%A, %B %d")''}"'';
                 color = "$foreground";
                 font_size = 30;
-                font_family = "Angel wish";
-                position = "0, 100";
+                font_family = "Ruritania";
+                position = "0, 80";
                 halign = "center";
                 valign = "center";
               }
@@ -339,18 +377,15 @@ in
                         echo ""
                     fi
                   ''}";
-                  bg = "$background_raw";
-                  al = "${toString (ftoi (ftop config.theme.win.opacity.background))}%";
                   text =
                     # html
-                    ''<span bgcolor='${bg}' bgalpha='${al}'> <i>$(${script})</i> </span>'';
-                in ''cmd[update:1000] echo "${escape text}"'';
+                    ''<span> $(${script}) </span>'';
+                in ''cmd[update:1000] echo "${text |> escape |> renderFancyFont}"'';
                 color = "$foreground";
-                shadow_color = "$background";
                 shadow_size = 1;
                 shadow_passes = 3;
                 font_size = 20;
-                font_family = "${config.theme.fonts.monospace}";
+                font_family = "Angel wish";
                 position = "0, 50";
                 halign = "center";
                 valign = "bottom";

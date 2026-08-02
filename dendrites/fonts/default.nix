@@ -13,6 +13,7 @@
         enable = mkEnableOption "fonts";
         cartograph-cf.enable = mkEnableOption "cartograph-cf (nerd-font)";
         angel-wish.enable = mkEnableOption "angel wish";
+        ruritania.enable = mkEnableOption "ruritania";
         ibm-plex.enable = mkEnableOption "ibm-plex";
         victor-mono.enable = mkEnableOption "victor-mono (nerd-font)";
         jetbrains-mono.enable = mkEnableOption "jetbrains-mono (nerd-font)";
@@ -22,6 +23,7 @@
         nixpkgs.overlays = [
           inputs.cartograph-cf.overlays.default
           inputs.angel-wish.overlays.default
+          inputs.ruritania.overlays.default
         ];
 
         fonts.fontconfig.enable = true;
@@ -43,6 +45,11 @@
 
         home.file.".local/share/fonts/Angel wish" = mkIf cfg.angel-wish.enable {
           source = "${pkgs.angel-wish}/share/fonts/opentype";
+          recursive = true;
+        };
+
+        home.file.".local/share/fonts/Ruritania" = mkIf cfg.ruritania.enable {
+          source = "${pkgs.ruritania}/share/fonts/opentype";
           recursive = true;
         };
       };

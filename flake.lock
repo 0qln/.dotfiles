@@ -1234,8 +1234,29 @@
         "nixvim": "nixvim",
         "nur": "nur",
         "private": "private",
+        "ruritania": "ruritania",
         "sops-nix": "sops-nix",
         "zen-browser": "zen-browser"
+      }
+    },
+    "ruritania": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785709950,
+        "narHash": "sha256-kjZU0PKheNFDYbCLQS2kkaBbFTnX6DlshJyk0fZ6pQM=",
+        "owner": "0qln",
+        "repo": "Ruritania",
+        "rev": "3112786cbfcdd626738e40dcc32856cc5027fec9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "Ruritania",
+        "type": "github"
       }
     },
     "rust-overlay": {

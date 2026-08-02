@@ -53,6 +53,15 @@ in {
               hash = "sha256-rtdDaANnzKqLNMXLcGDFnmzhU8IxjDPqw6Njp+uoZbI=";
             };
           })
+          (pkgs.vimUtils.buildVimPlugin {
+            name = "sora";
+            src = pkgs.fetchFromGitHub {
+              owner = "Aejkatappaja";
+              repo = "sora";
+              rev = "958f8f5c3c9790f1902c2c37f5c30e6fe36bab18";
+              hash = "sha256-PKWVUp+loYijLLL6B9/jypRPBb0dx8r6KGs6rjS2iLo=";
+            };
+          })
           vim-moonfly-colors
           kanagawa-paper-nvim
           vague-nvim
@@ -63,10 +72,10 @@ in {
           # https://github.com/dgox16/oldworld.nvim
           # https://github.com/everviolet/nvim
         ];
+
+        colorscheme = mkIf (cfg.theme != null) cfg.theme;
+
         colorschemes = mkMerge [
-          (mkIf (cfg.theme != null) {
-            ${cfg.theme}.enable = true;
-          })
           {
             moonfly.settings.transparent = config.modules.nixvim.transparency.enable;
           }

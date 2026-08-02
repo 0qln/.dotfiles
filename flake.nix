@@ -71,6 +71,10 @@
       url = "github:0qln/angel-wish";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ruritania = {
+      url = "github:0qln/Ruritania";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
