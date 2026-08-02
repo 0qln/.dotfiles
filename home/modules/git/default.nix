@@ -61,12 +61,12 @@ in {
           mergetool.prompt = false;
           mergetool.keepBackup = false;
           submodule.recurse = true;
+          alias = {
+            fnotes = "fetch origin refs/notes/commits:refs/notes/commits";
+            pnotes = "push origin refs/notes/commits";
+          };
         };
         lfs.enable = true;
-        aliases = {
-          fnotes = "fetch origin refs/notes/commits:refs/notes/commits";
-          pnotes = "push origin refs/notes/commits";
-        };
       }
       (mkIf cfg.worksimple.enable {
         includes = [
