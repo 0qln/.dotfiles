@@ -1,0 +1,7 @@
+:root {
+    --solid-background: transparent !important;
+}
+
+body {
+    background: transparent;
+}
