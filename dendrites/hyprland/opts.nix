@@ -14,9 +14,13 @@ with inputs.nixpkgs.lib; {
     # todo: this or another file?
     options.modules.hyprland.input = {
       submaps = mkOption {
+        default = {};
         type = types.attrsOf (types.submodule {
           options = {
-            key = mkOption {type = types.str;};
+            key = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+            };
             binds = mkOption {
               type = types.listOf (types.either types.str (types.submodule {
                 options = {

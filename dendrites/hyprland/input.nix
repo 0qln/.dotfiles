@@ -8,74 +8,65 @@ with lib; let
   todoist-quick-add = pkgs.callPackage ../../todoist/todoist-quick-add.nix {};
   inherit (config.vars) terminal fileexplorer music-player;
   cfg = config.modules.hyprland.input;
+  u = config.utils.hyprLua;
+  inherit (u) exec bind bindF toLua;
 in {
   config = let
     inherit (cfg) mainMod;
   in {
     wayland.windowManager.hyprland = {
       settings = {
-        # For some reason hardware_cursors draws the cursor like 250px
-        # to the left and some other issues...
-        # fix source: https://github.com/hyprwm/Hyprland/issues/8852
-        cursor = {
-          no_hardware_cursors = "true";
-        };
+        config = {
+          # For some reason hardware_cursors draws the cursor like 250px
+          # to the left and some other issues...
+          # fix source: https://github.com/hyprwm/Hyprland/issues/8852
+          cursor.no_hardware_cursors = true;
 
-        input = let
-          inherit (config.modules) input;
-        in
-          mkMerge [
-            {
-              kb_layout = "us";
-              kb_options = "compose:ralt";
-              follow_mouse = 1;
-              sensitivity = input.mouse.speed;
-              touchpad = {
-                natural_scroll = true;
-                scroll_factor = 1.0;
-              };
-            }
-            (mkIf (!input.mouse.accel) {
-              accel_profile = "flat";
-              force_no_accel = true;
-            })
-          ];
+          input = let
+            inherit (config.modules) input;
+          in
+            mkMerge [
+              {
+                kb_layout = "us";
+                kb_options = "compose:ralt";
+                follow_mouse = 1;
+                sensitivity = input.mouse.speed;
+                touchpad = {
+                  natural_scroll = true;
+                  scroll_factor = 1.0;
+                };
+              }
+              (mkIf (!input.mouse.accel) {
+                accel_profile = "flat";
+                force_no_accel = true;
+              })
+            ];
+        };
 
         bind = mkMerge [
           [
             # Application shortcuts
-            "${mainMod}, Q, exec, ${terminal}"
-            "${mainMod}, C, exec, hyprpicker | wl-copy"
-            "${mainMod}, DELETE, killactive"
-            "${mainMod}, E, exec, ${fileexplorer}"
-            "${mainMod}, V, togglefloating"
-            "${mainMod}, P, pseudo"
-            "${mainMod}, J, layoutmsg, togglesplit"
-            "${mainMod}, O, exec, obsidian"
+            (bind "${mainMod} + Q" (exec terminal))
+            (bind "${mainMod} + C" (exec "hyprpicker | wl-copy"))
+            (bind "${mainMod} + DELETE" "hl.dsp.window.close()")
+            (bind "${mainMod} + E" (exec fileexplorer))
+            (bind "${mainMod} + V" "hl.dsp.window.float()")
+            (bind "${mainMod} + P" "hl.dsp.window.pseudo()")
+            (bind "${mainMod} + J" ''hl.dsp.layout("togglesplit")'')
+            (bind "${mainMod} + O" (exec "obsidian"))
           ]
           (mkIf config.modules.splatmoji.enable [
             # copypaste or type commands don't work; type bc ydotool is goofy and the prior idk why
-            "${mainMod}, E, exec, splatmoji --disable-emoji-db copy"
+            (bind "${mainMod} + E" (exec "splatmoji --disable-emoji-db copy"))
           ])
           (mkIf config.modules.browser.firefox.zen.enable [
-            "${mainMod}, Z, exec, zen"
+            (bind "${mainMod} + Z" (exec "zen"))
           ])
           [
-            "${mainMod}, B, exec, ${terminal} -e bluetoothctl"
+            (bind "${mainMod} + B" (exec "${terminal} -e bluetoothctl"))
           ]
           (mkIf config.modules.todoist.quickAdd.enable (let
-            exec = {
-              # TODO:
-              # impl where:
-              #
-              # neovim plugin with completion for stuff like
-              # @... (todoist labels | awk '{print $2}')
-              # #... (todoist projects | awk '{print $2}')
-              #
-              # then create a {terminal} with a scratch buffer:
-              # echo "daily" > /tmp/neovim_buffer.txt && $EDITOR /tmp/neovim_buffer.txt && cat /tmp/neovim_buffer.txt
-              #
-
+            execs = {
               # terminal
               "terminal" = "[float; center; size 600 100] ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}";
 
@@ -84,165 +75,133 @@ in {
               "rofi" = "rofi -show run -config ${config.modules.todoist.quickAdd.rofi.configFile}";
             };
           in [
-            "${mainMod}, T, exec, ${exec.${config.modules.todoist.quickAdd.impl}}"
+            (bind "${mainMod} + T" (exec execs.${config.modules.todoist.quickAdd.impl}))
           ]))
           [
-            #"CTRL, SPACE, exec, [float; center; size 600 100] ${pkgs.writeShellScript "todoist-quick-add-shortcut" ''
-            #  #!${pkgs.bash}/bin/bash
-            #  active_class=$(hyprctl activewindow -j | jq -r '.class')
-            #  if [[ "$active_class" == *"Minecraft"* ]]; then
-            #      # TODO: why does this not work? sending stuff like F2 works, but not ctrl+space...
-            #      # hyprctl dispatch sendshortcut CTRL, SPACE, class:^Minecraft.*$
-            #      # hyprctl dispatch sendshortcut ,SPACE, class:^Minecraft.*$
-            #      exit 0
-            #  else
-            #      ${terminal} --class todoist-popup -e ${lib.getExe todoist-quick-add}
-            #  fi
-            #''}"
-
-            # using dispatchers here, since setting the window rules for zen does not work...
-            # "${mainMod}, M, exec, [float; center; size 600 600] zen-twilight --new-window music.youtube.com"
-            #  # && sleep 1 && hyprctl dispatch movewindow mon:${monitors.left} && hyprctl dispatch pseudo && hyprctl dispatch resizeactive exact 80% 30%
-            # "${mainMod} ALT, M, "
-            # "${mainMod} ALT, M, "
-            # "${mainMod} ALT, M, "
             # hyprland can't handle zen so we using an electron app grahh
-            "${mainMod}, M, exec, ${music-player}"
+            (bind "${mainMod} + M" (exec music-player))
 
             # app/window search bar
-            "${mainMod}, SPACE, exec, rofi -show combi -modes \"combi,ssh,recursivebrowser\" -combi-modes \"window,run,drun\""
+            (bind "${mainMod} + SPACE" (exec ''rofi -show combi -modes "combi,ssh,recursivebrowser" -combi-modes "window,run,drun"''))
 
             # file searchbar
-            "${mainMod}, F, exec, rofi -show recursivebrowser"
+            (bind "${mainMod} + F" (exec "rofi -show recursivebrowser"))
 
             # ssh connections search bar
-            "${mainMod}, S, exec, rofi -show ssh"
-
-            # rebuild current dotfiles
-            # does not work for whatever reason...
-            # "${mainMod}, N, exec, [float; center; size 50% 50%] ${terminal} -e bash -c 'cd ~/.dotfiles && git add . && sudo nixos-rebuild switch --flake ~/.dotfiles#${host-name} ; exec bash'"
+            (bind "${mainMod} + S" (exec "rofi -show ssh"))
 
             # Focus movement
-            "ALT SHIFT, H, movefocus, l"
-            "ALT SHIFT, L, movefocus, r"
-            "ALT SHIFT, K, movefocus, u"
-            "ALT SHIFT, J, movefocus, d"
-            "ALT SHIFT, N, focuswindow, floating"
+            (bind "ALT + SHIFT + H" ''hl.dsp.focus({ direction = "l" })'')
+            (bind "ALT + SHIFT + L" ''hl.dsp.focus({ direction = "r" })'')
+            (bind "ALT + SHIFT + K" ''hl.dsp.focus({ direction = "u" })'')
+            (bind "ALT + SHIFT + J" ''hl.dsp.focus({ direction = "d" })'')
+            (bind "ALT + SHIFT + N" ''hl.dsp.focus({ window = "floating" })'')
+          ]
 
-            # Workspace navigatio
-            "ALT SHIFT, 1, workspace, 1"
-            "ALT SHIFT, 2, workspace, 2"
-            "ALT SHIFT, 3, workspace, 3"
-            "ALT SHIFT, 4, workspace, 4"
-            "ALT SHIFT, 5, workspace, 5"
-            "ALT SHIFT, 6, workspace, 6"
-            "ALT SHIFT, 7, workspace, 7"
-            "ALT SHIFT, 8, workspace, 8"
-            "ALT SHIFT, 9, workspace, 9"
-            "ALT SHIFT, 0, workspace, 10"
+          # Workspace navigation
+          (map (n: bind "ALT + SHIFT + ${toString n}" "hl.dsp.focus({ workspace = ${toString n} })") (range 1 9))
+          [(bind "ALT + SHIFT + 0" "hl.dsp.focus({ workspace = 10 })")]
 
-            # Move windows to workspaces
-            "CTRL ALT, 1, movetoworkspace, 1"
-            "CTRL ALT, 2, movetoworkspace, 2"
-            "CTRL ALT, 3, movetoworkspace, 3"
-            "CTRL ALT, 4, movetoworkspace, 4"
-            "CTRL ALT, 5, movetoworkspace, 5"
-            "CTRL ALT, 6, movetoworkspace, 6"
-            "CTRL ALT, 7, movetoworkspace, 7"
-            "CTRL ALT, 8, movetoworkspace, 8"
-            "CTRL ALT, 9, movetoworkspace, 9"
-            "CTRL ALT, 0, movetoworkspace, 10"
+          # Move windows to workspaces
+          (map (n: bind "CTRL + ALT + ${toString n}" "hl.dsp.window.move({ workspace = ${toString n} })") (range 1 9))
+          [(bind "CTRL + ALT + 0" "hl.dsp.window.move({ workspace = 10 })")]
 
-            "CTRL ALT, H, movewindow, l"
-            "CTRL ALT, J, movewindow, d"
-            "CTRL ALT, K, movewindow, u"
-            "CTRL ALT, L, movewindow, r"
+          [
+            (bind "CTRL + ALT + H" ''hl.dsp.window.move({ direction = "l" })'')
+            (bind "CTRL + ALT + J" ''hl.dsp.window.move({ direction = "d" })'')
+            (bind "CTRL + ALT + K" ''hl.dsp.window.move({ direction = "u" })'')
+            (bind "CTRL + ALT + L" ''hl.dsp.window.move({ direction = "r" })'')
 
-            "CTRL ALT, P, pseudo"
-            "CTRL ALT, C, centerwindow"
-            "CTRL ALT, B, togglefloating"
-            "CTRL ALT, M, fullscreenstate, 0"
-            "CTRL ALT, N, fullscreenstate, 1"
-            "CTRL ALT, F, fullscreenstate, 2"
-            "CTRL SHIFT, M, fullscreenstate, -1, 0"
-            "CTRL SHIFT, N, fullscreenstate, -1, 1"
-            "CTRL SHIFT, F, fullscreenstate, -1, 2"
+            (bind "CTRL + ALT + P" "hl.dsp.window.pseudo()")
+            (bind "CTRL + ALT + C" "hl.dsp.window.center()")
+            (bind "CTRL + ALT + B" "hl.dsp.window.float()")
+            (bind "CTRL + ALT + M" "hl.dsp.window.fullscreen_state({ internal = 0, client = -1 })")
+            (bind "CTRL + ALT + N" "hl.dsp.window.fullscreen_state({ internal = 1, client = -1 })")
+            (bind "CTRL + ALT + F" "hl.dsp.window.fullscreen_state({ internal = 2, client = -1 })")
+            (bind "CTRL + SHIFT + M" "hl.dsp.window.fullscreen_state({ internal = -1, client = 0 })")
+            (bind "CTRL + SHIFT + N" "hl.dsp.window.fullscreen_state({ internal = -1, client = 1 })")
+            (bind "CTRL + SHIFT + F" "hl.dsp.window.fullscreen_state({ internal = -1, client = 2 })")
 
             # Special workspace
-            "ALT SHIFT, S, togglespecialworkspace, magic"
-            "CTRL ALT, S, movetoworkspace, special:magic"
+            (bind "ALT + SHIFT + S" ''hl.dsp.workspace.toggle_special("magic")'')
+            (bind "CTRL + ALT + S" ''hl.dsp.window.move({ workspace = "special:magic" })'')
 
             # Multimedia keys
-            ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
-            ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-            ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-            ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-            ", XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
-            ", XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
-            ", XF86AudioNext, exec, playerctl next"
-            ", XF86AudioPause, exec, playerctl play-pause"
-            ", XF86AudioPlay, exec, playerctl play-pause"
-            ", XF86AudioPrev, exec, playerctl previous"
-          ]
-        ];
+            (bind "XF86AudioRaiseVolume" (exec "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"))
+            (bind "XF86AudioLowerVolume" (exec "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"))
+            (bind "XF86AudioMute" (exec "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
+            (bind "XF86AudioMicMute" (exec "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"))
+            (bind "XF86MonBrightnessUp" (exec "brightnessctl -e4 -n2 set 5%+"))
+            (bind "XF86MonBrightnessDown" (exec "brightnessctl -e4 -n2 set 5%-"))
+            (bind "XF86AudioNext" (exec "playerctl next"))
+            (bind "XF86AudioPause" (exec "playerctl play-pause"))
+            (bind "XF86AudioPlay" (exec "playerctl play-pause"))
+            (bind "XF86AudioPrev" (exec "playerctl previous"))
 
-        # Mouse bindings
-        bindm = [
-          "${mainMod}, mouse:272, movewindow"
-          "${mainMod}, mouse:273, resizewindow"
+            # Mouse bindings
+            (bindF "${mainMod} + mouse:272" "hl.dsp.window.drag()" {mouse = true;})
+            (bindF "${mainMod} + mouse:273" "hl.dsp.window.resize()" {mouse = true;})
+          ]
         ];
       };
 
-      extraConfig = with strings;
-        concatLines (
-          [
-            ''
-              # some config
-            ''
-          ]
-          ++
-          # Submaps
-          (attrsets.mapAttrsToList
-            (
-              name: {
-                key,
-                binds,
-              }:
-                concatStrings [
-                  ''
-                    bind = ${mainMod}, ${key}, submap, ${name}
-                    submap = ${name}
-                  ''
-                  (
-                    concatMapStrings (
-                      bind:
-                        if (isString bind)
-                        then ''
-                          ${bind}
-                        ''
-                        else let
-                          escape = strings.escape ["\"" "\\"];
-                          dispatch = ''hyprctl dispatch "${escape bind.dispatch}"'';
-                          reset =
-                            if bind.reset
-                            then "hyprctl dispatch submap reset"
-                            else ":";
-                          action = ''exec, bash -c "${escape dispatch} && ${reset}"'';
-                        in ''
-                          bind${bind.flags} = ${bind.keys}, ${action}
-                        ''
-                    )
-                    binds
-                  )
-                  ''
-                    bind = , escape, submap, reset
-                    bind = , catchall, submap, reset
-                    submap = reset
-                  ''
-                ]
-            )
-            cfg.submaps)
-        );
+      # Submaps (rendered as raw lua `hl.define_submap`).
+      extraConfig = let
+        # "MODS, KEY" (hyprlang) -> "MODS + KEY" (lua)
+        convertKeys = keys: let
+          parts = splitString "," keys;
+          mods = strings.trim (head parts);
+          key = strings.trim (concatStringsSep "," (tail parts));
+          modsLua = concatStringsSep " + " (filter (m: m != "") (splitString " " mods));
+        in
+          if modsLua == ""
+          then key
+          else "${modsLua} + ${key}";
+
+        flagMap = {
+          e = "repeating";
+          l = "locked";
+          r = "release";
+        };
+        flagsTable = flags: let
+          names = filter (x: x != null) (map (c: flagMap.${c} or null) (stringToCharacters flags));
+        in
+          if names == []
+          then ""
+          else ", { ${concatMapStringsSep ", " (n: "${n} = true") names} }";
+
+        mkSubmapBind = bnd:
+          if isString bnd
+          then bnd
+          else let
+            keysLua = convertKeys bnd.keys;
+            dispCmd = "hyprctl dispatch ${bnd.dispatch}";
+            execExpr = "hl.dsp.exec_cmd(${toLua dispCmd})";
+          in
+            if bnd.reset
+            then ''
+              hl.bind(${toLua keysLua}, function()
+                hl.dispatch(${execExpr})
+                hl.dispatch(hl.dsp.submap("reset"))
+              end${flagsTable bnd.flags})''
+            else "hl.bind(${toLua keysLua}, ${execExpr}${flagsTable bnd.flags})";
+
+        mkSubmap = name: {
+          key ? null,
+          binds,
+        }:
+          concatStringsSep "\n" (
+            (optional (key != null) ''hl.bind(${toLua "${mainMod} + ${key}"}, hl.dsp.submap(${toLua name}))'')
+            ++ [''hl.define_submap(${toLua name}, function()'']
+            ++ (map (b: "  " + mkSubmapBind b) binds)
+            ++ [
+              ''  hl.bind("escape", hl.dsp.submap("reset"))''
+              ''  hl.bind("catchall", hl.dsp.submap("reset"))''
+              ''end)''
+            ]
+          );
+      in
+        concatStringsSep "\n\n" (mapAttrsToList mkSubmap cfg.submaps);
     };
   };
 }

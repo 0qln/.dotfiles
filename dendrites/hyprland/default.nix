@@ -76,7 +76,7 @@ with inputs.nixpkgs.lib; {
     monitors = config.vars.monitors;
     cfg = config.modules.hyprland;
     fmtColor = config.utils.fmtColor_rgbaFn;
-    fmtMonitor = config.utils.fmtMonitor_device;
+    fmtMonitor = config.utils.fmtMonitor_lua;
   in {
     imports = [
       ./input.nix
@@ -85,7 +85,7 @@ with inputs.nixpkgs.lib; {
     ];
 
     config = mkIf cfg.enable {
-      wayland.windowManager.hyprland.configType = "hyprlang";
+      wayland.windowManager.hyprland.configType = "lua";
       wayland.windowManager.hyprland.enable = true;
       wayland.windowManager.hyprland.settings = {
         # =============== COLORS ===============
@@ -96,183 +96,181 @@ with inputs.nixpkgs.lib; {
           (n: v: fmtMonitor n v monitors.arrangement.byName.${v.name})
           monitors.devices;
 
-        workspace = let
+        workspace_rule = let
           # don't forget to set defaults, otherwise the monitor assignments won't work:
           # https://github.com/hyprwm/Hyprland/issues/2331
+          c = monitors.devices.center.name;
+          l = monitors.devices.left.name;
+          r = monitors.devices.right.name;
           mapping = {
             "-" = [
-              "1, monitor:${monitors.devices.center.name}, default:true"
-              "2, monitor:${monitors.devices.center.name}"
-              "3, monitor:${monitors.devices.center.name}"
-              "4, monitor:${monitors.devices.center.name}"
-              "5, monitor:${monitors.devices.center.name}"
-              "6, monitor:${monitors.devices.center.name}"
-              "7, monitor:${monitors.devices.center.name}"
-              "8, monitor:${monitors.devices.center.name}"
-              "9, monitor:${monitors.devices.center.name}"
-              "0, monitor:${monitors.devices.center.name}"
+              {workspace = "1"; monitor = c; default = true;}
+              {workspace = "2"; monitor = c;}
+              {workspace = "3"; monitor = c;}
+              {workspace = "4"; monitor = c;}
+              {workspace = "5"; monitor = c;}
+              {workspace = "6"; monitor = c;}
+              {workspace = "7"; monitor = c;}
+              {workspace = "8"; monitor = c;}
+              {workspace = "9"; monitor = c;}
+              {workspace = "0"; monitor = c;}
             ];
             "|-|" = [
-              "1, monitor:${monitors.devices.center.name}, default:true"
-              "2, monitor:${monitors.devices.center.name}"
-              "3, monitor:${monitors.devices.center.name}"
-              "4, monitor:${monitors.devices.center.name}"
-              "5, monitor:${monitors.devices.center.name}"
+              {workspace = "1"; monitor = c; default = true;}
+              {workspace = "2"; monitor = c;}
+              {workspace = "3"; monitor = c;}
+              {workspace = "4"; monitor = c;}
+              {workspace = "5"; monitor = c;}
 
-              "6, monitor:${monitors.devices.left.name}, default:true"
-              "6, layoutopt:orientation:bottom"
-              "7, monitor:${monitors.devices.left.name}"
-              "7, layoutopt:orientation:bottom"
+              {workspace = "6"; monitor = l; default = true;}
+              {workspace = "6"; layout_opts = {orientation = "bottom";};}
+              {workspace = "7"; monitor = l;}
+              {workspace = "7"; layout_opts = {orientation = "bottom";};}
 
-              "8, monitor:${monitors.devices.right.name}, default:true"
-              "8, layoutopt:orientation:bottom"
-              "9, monitor:${monitors.devices.right.name}"
-              "9, layoutopt:orientation:bottom"
+              {workspace = "8"; monitor = r; default = true;}
+              {workspace = "8"; layout_opts = {orientation = "bottom";};}
+              {workspace = "9"; monitor = r;}
+              {workspace = "9"; layout_opts = {orientation = "bottom";};}
             ];
           };
         in
           mapping.${monitors.arrangement.byPictogram};
 
-        general = with config.theme.win; {
-          inherit
-            (layout)
-            gaps_in
-            gaps_out
-            ;
+        config = {
+          general = with config.theme.win; {
+            inherit
+              (layout)
+              gaps_in
+              gaps_out
+              ;
 
-          border_size = border.size;
+            border_size = border.size;
 
-          "col.active_border" = fmtColor border.active;
-          "col.inactive_border" = fmtColor border.inactive;
+            col = {
+              active_border = fmtColor border.active;
+              inactive_border = fmtColor border.inactive;
+            };
 
-          resize_on_border = true;
+            resize_on_border = true;
 
-          allow_tearing = false;
+            allow_tearing = false;
 
-          layout = "master";
-        };
+            layout = "master";
+          };
 
-        decoration = {
-          inherit (config.theme.win.corners) rounding rounding_power;
+          decoration = {
+            inherit (config.theme.win.corners) rounding rounding_power;
 
-          blur = {enabled = true;} // config.theme.win.blur;
+            blur = {enabled = true;} // config.theme.win.blur;
 
-          active_opacity = config.theme.win.opacity.active;
-          inactive_opacity = config.theme.win.opacity.inactive;
+            active_opacity = config.theme.win.opacity.active;
+            inactive_opacity = config.theme.win.opacity.inactive;
 
-          shadow = {
-            enabled = true;
-            color = fmtColor config.theme.win.shadow.active;
-            color_inactive = fmtColor config.theme.win.shadow.inactive;
-            inherit (config.theme.win.shadow) range render_power;
+            shadow = {
+              enabled = true;
+              color = fmtColor config.theme.win.shadow.active;
+              color_inactive = fmtColor config.theme.win.shadow.inactive;
+              inherit (config.theme.win.shadow) range render_power;
+            };
+          };
+
+          cursor = {
+            hide_on_key_press = true;
+            no_warps = true;
+          };
+
+          animations.enabled = true;
+
+          # ============== LAYOUTS ==============
+          dwindle = {
+            preserve_split = true;
+          };
+
+          master = {
+            new_on_top = true;
+            new_status = "slave";
+          };
+
+          misc = {
+            force_default_wallpaper = 0;
+            disable_hyprland_logo = false;
           };
         };
 
-        cursor = {
-          hide_on_key_press = true;
-          no_warps = true;
-        };
+        # https://easings.net/
+        # https://www.cssportal.com/css-cubic-bezier-generator/
+        curve = [
+          {_args = ["easeOutQuint" {type = "bezier"; points = [[0.23 1] [0.32 1]];}];}
+          {_args = ["easeInOutCubic" {type = "bezier"; points = [[0.65 0.05] [0.36 1]];}];}
+          {_args = ["easeOutSine" {type = "bezier"; points = [[0.61 1] [0.88 1]];}];}
+          {_args = ["linear" {type = "bezier"; points = [[0 0] [1 1]];}];}
+          {_args = ["almostLinear" {type = "bezier"; points = [[0.5 0.5] [0.75 1.0]];}];}
+          {_args = ["quick" {type = "bezier"; points = [[0.15 0] [0.1 1]];}];}
+        ];
 
-        animations = {
-          enabled = true;
-          bezier = [
-            # https://easings.net/
-            # https://www.cssportal.com/css-cubic-bezier-generator/
-            "easeOutQuint,0.23,1,0.32,1"
-            "easeInOutCubic,0.65,0.05,0.36,1"
-            "easeOutSine,0.61,1,0.88,1"
-            "linear,0,0,1,1"
-            "almostLinear,0.5,0.5,0.75,1.0"
-            "quick,0.15,0,0.1,1"
-          ];
-          animation = [
-            "global, 1, 10, default"
-            "border, 1, 5.39, easeOutQuint"
-            "windows, 1, 4.79, easeOutQuint"
-            "windowsIn, 1, 4.1, easeOutQuint, popin 87%"
-            "windowsOut, 1, 1.49, linear, popin 87%"
-            "fadeIn, 1, 1.73, almostLinear"
-            "fadeOut, 1, 1.46, almostLinear"
-            "fadeShadow, 1, 2.00, easeOutSine"
-            "fade, 1, 3.03, quick"
-            "layers, 1, 3.81, easeOutQuint"
-            "layersIn, 1, 4, easeOutQuint, fade"
-            "layersOut, 1, 1.5, linear, fade"
-            "fadeLayersIn, 1, 1.79, almostLinear"
-            "fadeLayersOut, 1, 1.39, almostLinear"
-            "workspaces, 1, 1.94, almostLinear, fade"
-            "workspacesIn, 1, 1.21, almostLinear, fade"
-            "workspacesOut, 1, 1.94, almostLinear, fade"
-          ];
-        };
-
-        # ============== LAYOUTS ==============
-        dwindle = {
-          preserve_split = true;
-        };
-
-        master = {
-          new_on_top = true;
-          new_status = "slave";
-        };
-
-        misc = {
-          force_default_wallpaper = 0;
-          disable_hyprland_logo = false;
-        };
+        animation = [
+          {leaf = "global"; enabled = true; speed = 10; bezier = "default";}
+          {leaf = "border"; enabled = true; speed = 5.39; bezier = "easeOutQuint";}
+          {leaf = "windows"; enabled = true; speed = 4.79; bezier = "easeOutQuint";}
+          {leaf = "windowsIn"; enabled = true; speed = 4.1; bezier = "easeOutQuint"; style = "popin 87%";}
+          {leaf = "windowsOut"; enabled = true; speed = 1.49; bezier = "linear"; style = "popin 87%";}
+          {leaf = "fadeIn"; enabled = true; speed = 1.73; bezier = "almostLinear";}
+          {leaf = "fadeOut"; enabled = true; speed = 1.46; bezier = "almostLinear";}
+          {leaf = "fadeShadow"; enabled = true; speed = 2.00; bezier = "easeOutSine";}
+          {leaf = "fade"; enabled = true; speed = 3.03; bezier = "quick";}
+          {leaf = "layers"; enabled = true; speed = 3.81; bezier = "easeOutQuint";}
+          {leaf = "layersIn"; enabled = true; speed = 4; bezier = "easeOutQuint"; style = "fade";}
+          {leaf = "layersOut"; enabled = true; speed = 1.5; bezier = "linear"; style = "fade";}
+          {leaf = "fadeLayersIn"; enabled = true; speed = 1.79; bezier = "almostLinear";}
+          {leaf = "fadeLayersOut"; enabled = true; speed = 1.39; bezier = "almostLinear";}
+          {leaf = "workspaces"; enabled = true; speed = 1.94; bezier = "almostLinear"; style = "fade";}
+          {leaf = "workspacesIn"; enabled = true; speed = 1.21; bezier = "almostLinear"; style = "fade";}
+          {leaf = "workspacesOut"; enabled = true; speed = 1.94; bezier = "almostLinear"; style = "fade";}
+        ];
 
         # ============== WINDOW RULES ==============
-        windowrule = let
+        window_rule = let
           mapping = {
             "-" = [];
             "|-|" = [
-              "match:tag music, monitor ${monitors.devices.left.name}, "
-              "match:tag zoom, monitor ${monitors.devices.left.name}"
+              {match = {tag = "music";}; monitor = monitors.devices.left.name;}
+              {match = {tag = "zoom";}; monitor = monitors.devices.left.name;}
             ];
           };
         in
           mkMerge [
             mapping.${monitors.arrangement.byPictogram}
             [
-              "match:title todoist-quick-add, float 1"
+              {match = {title = "todoist-quick-add";}; float = true;}
 
-              "match:title Open Files, float 1"
-              "match:title Open Files, center 1"
+              {match = {title = "Open Files";}; float = true; center = true;}
 
-              "match:title (?i).*youtube[-_ ]?music.*, tag +music"
-              "match:tag music, size 918 536"
-              "match:tag music, pseudo 1"
+              {match = {title = "(?i).*youtube[-_ ]?music.*";}; tag = "+music";}
+              {match = {tag = "music";}; size = [918 536]; pseudo = true;}
 
               # chromium popups
-              "match:title about:blank - Chromium, tag +chromium_popup"
-              "match:tag chromium_popup, float 1"
-              "match:tag chromium_popup, center 1"
-              "match:tag chromium_popup, size 900 900"
+              {match = {title = "about:blank - Chromium";}; tag = "+chromium_popup";}
+              {match = {tag = "chromium_popup";}; float = true; center = true; size = [900 900];}
 
               # image windows
-              "match:class qimgv, tag +qimgv"
-              "match:tag qimgv, float 1"
-              "match:tag qimgv, center 1"
-              "match:tag qimgv, size 900 900"
+              {match = {class = "qimgv";}; tag = "+qimgv";}
+              {match = {tag = "qimgv";}; float = true; center = true; size = [900 900];}
 
               # dialogs
-              "match:title Open File, match:class code, tag +dialog"
-              "match:tag dialog, float 1"
-              "match:tag dialog, center 1"
-              "match:tag dialog, size 900 900"
+              {match = {title = "Open File"; class = "code";}; tag = "+dialog";}
+              {match = {tag = "dialog";}; float = true; center = true; size = [900 900];}
 
               # zoom
-              "match:class zoom, tag +zoom"
-              "match:tag zoom, float 1"
+              {match = {class = "zoom";}; tag = "+zoom";}
+              {match = {tag = "zoom";}; float = true;}
 
               # no animations
-              "match:class ueberzug.*, tag +tool"
-              "match:tag tool, no_anim 1"
-              "match:tag tool, float 1"
+              {match = {class = "ueberzug.*";}; tag = "+tool";}
+              {match = {tag = "tool";}; no_anim = true; float = true;}
 
               # move ueberzug windows off the screen so they don't
               # flicker in the center until ueberzug moves them.
-              "match:class ueberzug.*, move -10000 -10000"
+              {match = {class = "ueberzug.*";}; move = [(-10000) (-10000)];}
             ]
           ];
         # windowrule = [

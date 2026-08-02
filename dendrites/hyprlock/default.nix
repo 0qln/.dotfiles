@@ -92,14 +92,17 @@
 
           wayland.windowManager.hyprland = {
             settings = {
-              bind = mkMerge [
-                [
-                  "${mainMod}, L, exec, hyprlock"
-                ]
+              bind = [
+                (config.utils.hyprLua.bind "${mainMod} + L" (config.utils.hyprLua.exec "hyprlock"))
               ];
 
-              exec-once = mkMerge [
-                (mkIf cfg.autostart ["hyprlock || hyprctl dispatch exit"])
+              on = mkIf cfg.autostart [
+                {
+                  _args = [
+                    "hyprland.start"
+                    (config.utils.hyprLua.inline ''function() hl.exec_cmd("hyprlock || hyprctl dispatch exit") end'')
+                  ];
+                }
               ];
             };
           };

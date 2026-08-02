@@ -125,6 +125,30 @@ in {
             inherit (device) name;
           in "${name}, ${w}x${h}@${hz}Hz, ${x}x${y}, ${s}, transform, ${r}";
 
+          # Lua (hl.monitor) form of a monitor device.
+          fmtMonitor_lua = _k: device: pos: {
+            output = device.name;
+            mode = "${toString device.dim.w}x${toString device.dim.h}@${toString device.hz}Hz";
+            position = "${toString pos.x}x${toString pos.y}";
+            scale = device.dim.s;
+            transform = pos.r;
+          };
+
+          # Helpers for generating Hyprland lua config via home-manager's
+          # `configType = "lua"` renderer (each settings attr -> `hl.<name>(...)`).
+          hyprLua = rec {
+            # raw lua expression (rendered verbatim)
+            inline = lib.generators.mkLuaInline;
+            # nix value -> lua literal
+            toLua = lib.generators.toLua {};
+            # `hl.dsp.exec_cmd(<cmd>)` dispatcher as a lua expression string
+            exec = cmd: "hl.dsp.exec_cmd(${toLua cmd})";
+            # a `settings.bind` list element: keys + dispatcher lua expression
+            bind = keys: disp: {_args = [keys (inline disp)];};
+            # like `bind` but with a trailing flags table (e.g. { locked = true; })
+            bindF = keys: disp: flags: {_args = [keys (inline disp) flags];};
+          };
+
           # fmtOpacity_percentage = opacity: let
 
           # Float to Int

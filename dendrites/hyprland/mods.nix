@@ -88,11 +88,11 @@ in {
     in {
       # use the extraConfig option, such that the module is sourced last
       # and can overwrite the default config.
-      wayland.windowManager.hyprland.extraConfig =
-        # hyprlang
-        ''
-          source = ~/${modulesConf}
-        '';
+      # NOTE: hyprlang `source =` includes are unavailable in lua configType.
+      # The toggle-module system (only used by rotate-screen) is not wired up
+      # for lua yet; intentionally left as a no-op so it doesn't corrupt the
+      # generated hyprland.lua.
+      wayland.windowManager.hyprland.extraConfig = "";
 
       systemd.user.tmpfiles.rules = mkMerge [
         # modules.conf

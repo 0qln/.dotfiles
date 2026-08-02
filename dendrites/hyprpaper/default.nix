@@ -54,8 +54,13 @@
 
           wayland.windowManager.hyprland = {
             settings = {
-              exec-once = mkMerge [
-                (mkIf cfg.autostart ["hyprpaper"])
+              on = mkIf cfg.autostart [
+                {
+                  _args = [
+                    "hyprland.start"
+                    (config.utils.hyprLua.inline ''function() hl.exec_cmd("hyprpaper") end'')
+                  ];
+                }
               ];
             };
           };

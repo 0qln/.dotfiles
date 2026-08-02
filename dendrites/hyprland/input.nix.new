@@ -1,0 +1,3 @@
+# NOTE: stray scratch file left over from the hyprlang -> lua migration.
+# The real module lives in ./input.nix. Safe to delete.
+{...}: {}
