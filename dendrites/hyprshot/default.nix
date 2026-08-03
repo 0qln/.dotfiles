@@ -32,9 +32,9 @@
             # NOTE (hyprlang->lua migration): these previously used the `&`
             # multi-held-key chord syntax, which has no documented lua equivalent.
             # Translated to `+`-joined keysyms as a best effort; verify on device.
-            (bind "SHIFT_R + SUPER_L + S" (exec "${hyprshotCmd} -m output"))
-            (bind "SHIFT_R + SUPER_L + SHIFT_L + S" (exec "${hyprshotCmd} -m window"))
-            (bind "SHIFT_R + SUPER_L + SHIFT_L + ALT_L + S" (exec "${hyprshotCmd} -m region"))
+            (bind "SUPER + SHIFT + s" (exec "${hyprshotCmd} -m output"))
+            (bind "SUPER + SHIFT + ALT + s" (exec "${hyprshotCmd} -m window"))
+            (bind "SUPER + SHIFT + ALT + CTRL + s" (exec "${hyprshotCmd} -m region"))
           ];
         };
       };
