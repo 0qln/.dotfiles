@@ -147,6 +147,7 @@ in {
             bind = keys: disp: {_args = [keys (inline disp)];};
             # like `bind` but with a trailing flags table (e.g. { locked = true; })
             bindF = keys: disp: flags: {_args = [keys (inline disp) flags];};
+            bindl = keys: disp: bindF keys disp {locked = true;};
           };
 
           # fmtOpacity_percentage = opacity: let
