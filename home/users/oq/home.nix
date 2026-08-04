@@ -131,30 +131,28 @@ in
             modules = {
               "rotate-screen".conf = let
                 inherit (config.vars) monitors;
+                inherit (config.utils.hyprLua) toLua;
                 n = "center";
                 v = monitors.devices.${n};
-                formatted =
-                  config.utils.fmtMonitor_device
+                monitor =
+                  config.utils.fmtMonitor_lua
                   n
                   v
                   (monitors.arrangement.byName.${v.name} // {r = 2;});
               in
-                #hyprlang
+                #lua
                 ''
-                  monitor = ${formatted}
-
-                  input {
-                    touchdevice {
-                      transform = 2
-                    }
-                    tablet {
-                      transform = 2
-                    }
-                    touchpad {
-                      flip_x = true
-                      flip_y = true
-                    }
-                  }
+                  hl.monitor(${toLua monitor})
+                  hl.config(${toLua {
+                    input = {
+                      touchdevice.transform = 2;
+                      tablet.transform = 2;
+                      touchpad = {
+                        flip_x = true;
+                        flip_y = true;
+                      };
+                    };
+                  }})
                 '';
 
               # todo: maybe ein waybar toggle ding womit ich das dann togglen kann idk (📝)
