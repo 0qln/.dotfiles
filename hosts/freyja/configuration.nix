@@ -17,6 +17,7 @@ in {
     flake.nixosModules.flatpak
     flake.nixosModules."themes/${theme}"
     flake.nixosModules.vscode
+    flake.nixosModules.clanker
 
     ./bootloader.nix
     ./keys.nix
@@ -43,6 +44,8 @@ in {
     inputs.nixpkgs-freyja-kernel.legacyPackages.${pkgs.stdenv.hostPlatform.system}.linuxPackages;
 
   modules = {
+    clanker.enable = true;
+
     home-manager.enable = true;
 
     android = {

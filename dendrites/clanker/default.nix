@@ -1,5 +1,20 @@
 {inputs, ...}:
 with inputs.nixpkgs.lib; {
+  flake.nixosModules.clanker = {config, ...}: {
+    options.modules.clanker = {
+      enable = mkEnableOption "clanker";
+    };
+
+    config = let
+      cfg = config.modules.clanker;
+    in
+      mkIf cfg.enable
+      {
+        # so copilot cli can resolve /bin/bash
+        services.envfs.enable = true;
+      };
+  };
+
   flake.homeModules.clanker = {
     config,
     pkgs,
