@@ -116,6 +116,7 @@ in
             cartograph-cf.enable = mkDefault true; # general monospace
             angel-wish.enable = mkDefault true; # cosmetic
             ruritania.enable = mkDefault true; # cosmetic
+            kingjola.enable = mkDefault true; # cosmetic
             jetbrains-mono.enable = mkDefault true;
             ibm-plex.enable = mkDefault true; # obsidian
           };
@@ -301,45 +302,80 @@ in
             input-field = [
               {
                 monitor = monitors.devices.center.name;
-                size = "300, 50";
+                size = "340, 55";
 
-                dots_size = 0.2;
+                rounding = 0;
+                outline_thickness = 1;
+                position = "0, -40";
+                halign = "center";
+                valign = "center";
+
+                font_family = "Kingjola";
+                dots_text_format = "x";
+                font_color = "$color14";
+
+                dots_size = 0.45;
                 dots_spacing = 0.2;
                 dots_center = true;
 
-                outline_thickness = 0;
-                shadow_color = "$background";
-                shadow_size = 1;
-                shadow_passes = 3;
-
-                rounding = 0;
-
                 inner_color = "$background_rgba";
-                font_color = "$foreground";
+                outer_color = "$color12";
+
+                shadow_passes = 3;
+                shadow_size = 10;
+                shadow_color = "$color14";
+                shadow_boost = 2.0;
+
+                check_color = "$color13";
+                fail_color = "rgb(180, 45, 45)";
+                capslock_color = "$color12";
+
                 fade_on_empty = false;
-                font_family = "${config.theme.fonts.monospace}";
-                placeholder_text = ''<i><span foreground="$foreground_raw">🔒︎ Enter Pass</span></i>'';
-                hide_input = false;
-                position = "0, -30";
-                halign = "center";
-                valign = "center";
+                placeholder_text = ''<i><span font_family="Ruritania" foreground="$color6_raw">Sssdfg...</span></i>'';
+                fail_text = ''<i><span foreground="##ff6b6b"><b>$FAIL</b> ($ATTEMPTS)</span></i>'';
               }
             ];
 
             label = [
-              # Time display
+              # --- 1. TIME: NEON AURA (BACK LAYER) ---
               {
                 monitor = monitors.devices.center.name;
                 text = ''cmd[update:1000] echo "${renderFancyFont ''$(date +"%I:%M")''}"'';
-                color = "$foreground";
+                color = "$color12"; # Wallust bright accent (or $color14 / $color4)
                 font_size = 210;
                 font_family = "Angel wish";
                 position = "0, 230";
                 halign = "center";
                 valign = "center";
+                zindex = 0;
+
+                # Deep multi-pass shadow radiates the bright accent color outward
+                shadow_passes = 5;
+                shadow_size = 16;
+                shadow_color = "$color12";
+                shadow_boost = 3.5;
               }
 
-              # Date display
+              # --- 2. TIME: WHITE-HOT CORE (FRONT LAYER) ---
+              {
+                monitor = monitors.devices.center.name;
+                text = ''cmd[update:1000] echo "${renderFancyFont ''$(date +"%I:%M")''}"'';
+                color = "$foreground"; # Crisp white-hot center (rgb(ECF5F3))
+                font_size = 210;
+                font_family = "Angel wish";
+                position = "0, 230";
+                halign = "center";
+                valign = "center";
+                zindex = 1;
+
+                # Tight inner halo that makes the text strokes look illuminated
+                shadow_passes = 2;
+                shadow_size = 4;
+                shadow_color = "$foreground";
+                shadow_boost = 2.0;
+              }
+
+              # --- 3. DATE DISPLAY ---
               {
                 monitor = monitors.devices.center.name;
                 text = ''cmd[update:1000] echo -e "${renderFancyFont ''$(LC_TIME=en_US.UTF-8 date +"%A, %B %d")''}"'';
@@ -349,16 +385,17 @@ in
                 position = "0, 80";
                 halign = "center";
                 valign = "center";
+                shadow_passes = 2;
+                shadow_size = 4;
+                shadow_color = "$color12";
               }
 
-              # Song information
+              # --- 4. SONG INFORMATION ---
               {
                 monitor = monitors.devices.center.name;
                 text = let
                   script = "${pkgs.writeShellScript "songdetails" ''
-                    # Get current playing song from playerctl
                     if command -v playerctl &> /dev/null; then
-                        # Check if any player is running
                         if playerctl status &> /dev/null; then
                             artist=$(playerctl metadata artist 2>/dev/null)
                             title=$(playerctl metadata title 2>/dev/null)
@@ -377,13 +414,12 @@ in
                         echo ""
                     fi
                   ''}";
-                  text =
-                    # html
-                    ''<span> $(${script}) </span>'';
+                  text = ''<span> $(${script}) </span>'';
                 in ''cmd[update:1000] echo "${text |> escape |> renderFancyFont}"'';
                 color = "$foreground";
-                shadow_size = 1;
-                shadow_passes = 3;
+                shadow_size = 2;
+                shadow_passes = 2;
+                shadow_color = "$color12";
                 font_size = 20;
                 font_family = "Angel wish";
                 position = "0, 50";
