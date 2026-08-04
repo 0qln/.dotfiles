@@ -75,6 +75,10 @@
       url = "github:0qln/Ruritania";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    kingjola = {
+      url = "github:0qln/Kingjola";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";

@@ -863,6 +863,26 @@
         "type": "github"
       }
     },
+    "kingjola": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785722879,
+        "narHash": "sha256-lAmXkKZW9aItExOQ+EBGGAyEEHceB5lXiVtBQKkGPec=",
+        "owner": "0qln",
+        "repo": "Kingjola",
+        "rev": "67a348030362626d86488b473689e21848d63115",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "Kingjola",
+        "type": "github"
+      }
+    },
     "nephrid": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -1222,6 +1242,7 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "hyprpaper": "hyprpaper",
+        "kingjola": "kingjola",
         "nephrid": "nephrid",
         "nix-flatpak": "nix-flatpak",
         "nix-index-database": "nix-index-database",

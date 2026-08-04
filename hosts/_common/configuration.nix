@@ -28,6 +28,7 @@
       inputs.cartograph-cf.overlays.default
       inputs.angel-wish.overlays.default
       inputs.ruritania.overlays.default
+      inputs.kingjola.overlays.default
     ];
   };
 

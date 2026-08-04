@@ -14,6 +14,7 @@
         cartograph-cf.enable = mkEnableOption "cartograph-cf (nerd-font)";
         angel-wish.enable = mkEnableOption "angel wish";
         ruritania.enable = mkEnableOption "ruritania";
+        kingjola.enable = mkEnableOption "kingjola";
         ibm-plex.enable = mkEnableOption "ibm-plex";
         victor-mono.enable = mkEnableOption "victor-mono (nerd-font)";
         jetbrains-mono.enable = mkEnableOption "jetbrains-mono (nerd-font)";
@@ -24,6 +25,7 @@
           inputs.cartograph-cf.overlays.default
           inputs.angel-wish.overlays.default
           inputs.ruritania.overlays.default
+          inputs.kingjola.overlays.default
         ];
 
         fonts.fontconfig.enable = true;
@@ -50,6 +52,11 @@
 
         home.file.".local/share/fonts/Ruritania" = mkIf cfg.ruritania.enable {
           source = "${pkgs.ruritania}/share/fonts/opentype";
+          recursive = true;
+        };
+
+        home.file.".local/share/fonts/Kingjola" = mkIf cfg.kingjola.enable {
+          source = "${pkgs.kingjola}/share/fonts/opentype";
           recursive = true;
         };
       };
