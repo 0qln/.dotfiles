@@ -404,8 +404,7 @@ in
                     background: alpha(@background, ${toString config.theme.win.opacity.background});
                     box-shadow: 0px 0px 2px ${bgColor};
                 }
-                ${selectBarsIfEnabled "modules-right"}
-                 {
+                ${selectBarsIfEnabled "modules-right"} {
                     padding:7px;
                     margin: ${gaps_out} ${gaps_out} 0 ${gaps_in};
                     border-radius:10px;
