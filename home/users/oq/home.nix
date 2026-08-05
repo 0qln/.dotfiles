@@ -131,6 +131,8 @@ in
           };
           hyprland = {
             modules = {
+              # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
+              # is this any better / even relevant?
               "rotate-screen".conf = let
                 inherit (config.vars) monitors;
                 inherit (config.utils.hyprLua) toLua;

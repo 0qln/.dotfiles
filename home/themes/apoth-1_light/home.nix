@@ -115,35 +115,6 @@ in {
           };
         };
       };
-
-      hyprland.modules = {
-        # todo: https://knowledgebase.frame.work/en_us/tablet-mode-and-screen-rotation-on-linux-SJkaIhBSbg
-        # is this any better / even relevant?
-        "rotate-screen".conf = let
-          inherit (config.utils.hyprLua) toLua;
-          n = "center";
-          v = monitors.devices.${n};
-          monitor =
-            config.utils.fmtMonitor_lua
-            n
-            v
-            (monitors.arrangement.byName.${v.name} // {r = 2;});
-        in
-          #lua
-          ''
-            hl.monitor(${toLua monitor})
-            hl.config(${toLua {
-              input = {
-                touchdevice.transform = 2;
-                tablet.transform = 2;
-                touchpad = {
-                  flip_x = true;
-                  flip_y = true;
-                };
-              };
-            }})
-          '';
-      };
     };
 
     programs.hyprlock = let
