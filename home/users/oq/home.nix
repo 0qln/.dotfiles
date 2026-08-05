@@ -33,6 +33,7 @@ in
         flake.homeModules.yubi
         flake.homeModules.sops
         flake.homeModules.input
+        flake.homeModules.nixvim
       ]
       ++ [
         ../../modules
