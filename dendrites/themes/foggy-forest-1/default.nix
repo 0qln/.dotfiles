@@ -656,27 +656,31 @@ in
                     output = [monitors.devices.${monitor}.name];
                     reload_style_on_change = true;
                   }
-                  // (let
-                    importModule = name: import ../../waybar/modules/${name}.nix ({inherit monitor;} // args);
-                  in {
-                    "hyprland/workspaces" = importModule "hyprland/workspaces";
-                    "custom/notification" = importModule "custom/notification";
-                    "clock" = importModule "clock";
-                    "network" = importModule "network";
-                    "bluetooth" = importModule "bluetooth";
-                    "pulseaudio" = importModule "pulseaudio";
-                    "battery" = importModule "battery";
-                    "custom/pacman" = importModule "custom/pacman";
-                    "custom/nixpkgs" = importModule "custom/nixpkgs";
-                    "custom/rotate-screen" = importModule "custom/rotate-screen";
-                    "custom/expand" = importModule "custom/expand";
-                    "custom/endpoint" = importModule "custom/endpoint";
-                    "group/expand" = importModule "group/expand";
-                    "cpu" = importModule "cpu";
-                    "memory" = importModule "memory";
-                    "temperature" = importModule "temperature";
-                    "tray" = importModule "tray";
-                  })
+                  // (
+                    let
+                      importModule = name: import ../../waybar/modules/${name}.nix ({inherit monitor;} // args);
+                      mkModule = module: nameValuePair module (importModule module);
+                    in
+                      builtins.listToAttrs mkModule [
+                        "hyprland/workspaces"
+                        "custom/notification"
+                        "clock"
+                        "network"
+                        "bluetooth"
+                        "pulseaudio"
+                        "battery"
+                        "custom/pacman"
+                        "custom/nixpkgs"
+                        "custom/rotate-screen"
+                        "custom/expand"
+                        "custom/endpoint"
+                        "group/expand"
+                        "cpu"
+                        "memory"
+                        "temperature"
+                        "tray"
+                      ]
+                  )
                 );
               };
 
