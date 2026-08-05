@@ -1,5 +1,6 @@
-{...}: {
+{inputs, ...}: {
   flake.homeModules.waybar = {
+    pkgs,
     config,
     lib,
     ...
@@ -27,6 +28,7 @@
       #   - https://gitlab.com/Zaney/zaneyos/-/tree/main/modules/home/waybar?ref_type=heads
       config = mkIf cfg.enable {
         programs.waybar = {
+          package = inputs.waybar.packages.${pkgs.stdenv.hostPlatform.system}.waybar;
           enable = true;
           style = mkDefault ./waybar.css;
           systemd = {
