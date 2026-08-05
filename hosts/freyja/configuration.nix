@@ -171,6 +171,11 @@ in {
         minecraft = {
           prismlauncher.enable = false;
         };
+        waybar.modules = {
+          left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
+          center = ["hyprland/workspaces" "custom/rotate-screen"];
+          right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
+        };
       };
       private = {
         secrets.ssh = {

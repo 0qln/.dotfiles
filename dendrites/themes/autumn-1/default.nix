@@ -561,9 +561,7 @@ in
 
             settings = let
               default = {
-                left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
-                center = ["hyprland/workspaces" "custom/rotate-screen"];
-                right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
+                inherit (config.modules.waybar) left center right;
                 bar = monitor: (
                   {
                     layer = "top";

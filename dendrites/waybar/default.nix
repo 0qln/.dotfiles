@@ -12,6 +12,7 @@
         enable = mkEnableOption "waybar";
         modules = mkOption {
           type = types.attrs;
+          description = "which modules to activate, see freyja/configuration.nix as reference.";
         };
       };
 

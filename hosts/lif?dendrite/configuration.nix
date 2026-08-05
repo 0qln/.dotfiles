@@ -112,6 +112,11 @@ in {
 
           modules = {
             nixvim.wayland.enable = true;
+            waybar.modules = {
+              left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
+              center = ["hyprland/workspaces"];
+              right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
+            };
             vscode.enable = true;
             browser = {
               firefox = {
