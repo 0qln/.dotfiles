@@ -22,6 +22,7 @@ in
         flake.homeModules.vars
         flake.homeModules.sops
         flake.homeModules.nixvim
+        flake.homeModules.git
       ]
       ++ [
         ../../modules

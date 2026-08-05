@@ -34,6 +34,7 @@ in
         flake.homeModules.sops
         flake.homeModules.input
         flake.homeModules.nixvim
+        flake.homeModules.git
       ]
       ++ [
         ../../modules
