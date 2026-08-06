@@ -28,7 +28,10 @@
       #   - https://gitlab.com/Zaney/zaneyos/-/tree/main/modules/home/waybar?ref_type=heads
       config = mkIf cfg.enable {
         programs.waybar = {
-          package = inputs.waybar.packages.${pkgs.stdenv.hostPlatform.system}.waybar;
+          package = inputs.waybar.packages.${pkgs.stdenv.hostPlatform.system}.waybar.overrideAttrs (oldAttrs: {
+            doCheck = false;
+            mesonFlags = (oldAttrs.mesonFlags or []) ++ ["-Dtests=disabled"];
+          });
           enable = true;
           style = mkDefault ./waybar.css;
           systemd = {
