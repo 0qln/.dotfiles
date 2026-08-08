@@ -164,7 +164,6 @@ in
 
           nixvim = {
             transparency.enable = mkDefault true;
-            colors.theme = "gruvbox-material";
           };
 
           starship = {
@@ -203,6 +202,12 @@ in
           };
 
           wallpaperengine.enable = true;
+        };
+
+        programs.nixvim = {
+          colorschemes = {
+            gruvbox-material.enable = true;
+          };
         };
 
         programs.hyprlock = let
