@@ -102,6 +102,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    sparkyfitness = {
+      url = "github:CodeWithCJ/SparkyFitness";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nephrid = {
       url = "git+https://github.com/0qln/Nephrid.git?lfs=1";
     };
