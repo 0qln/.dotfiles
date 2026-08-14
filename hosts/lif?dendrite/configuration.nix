@@ -16,6 +16,7 @@ in {
         self.nixosModules.vscode
         self.nixosModules.android
         self.nixosModules."themes/${theme}"
+        self.nixosModules.clanker
 
         ../_common/configuration.nix
 
@@ -47,6 +48,7 @@ in {
       };
 
       modules = {
+        clanker.enable = true;
         android = {
           enable = true;
           users = ["oq"];
