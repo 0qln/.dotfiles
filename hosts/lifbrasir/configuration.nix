@@ -175,7 +175,6 @@ in {
     sparky-fitness = {
       enable = true;
       stateDir = "/mnt/store-1/services/sparky-fitness";
-      secretsFile = mkDefault (throw "should be configured in .private");
       fqdn = {
         dn = "fitness.${fqdns.primary.dn}";
         acmeHost = fqdns.primary.dn;

@@ -76,17 +76,40 @@ with inputs.nixpkgs.lib; {
           useACMEHost = cfg.fqdn.acmeHost;
         };
 
+        postgresql = {
+          ensureDatabases = [config.services.sparkyfitness.database.name];
+          ensureUsers = [
+            {
+              name = config.services.sparkyfitness.database.user;
+              ensureDBOwnership = true;
+              ensureClauses.createrole = true;
+            }
+          ];
+        };
+
         sparkyfitness = {
           enable = true;
           inherit (cfg) port stateDir extraEnvironment;
           frontendUrl = "https://${cfg.fqdn.dn}";
           environmentFile = config.sops.secrets."${serviceName}/secrets.env".path;
 
-          database.createLocally = true;
+          database = {
+            createLocally = false;
+            host = "/run/postgresql";
+            name = "sparkyfitness";
+            user = "sparkyfitness";
+            appUser = "sparkyfitness_app";
+          };
+
           nginx.virtualHost = cfg.fqdn.dn;
 
           garmin.enable = cfg.garmin.enable;
         };
+      };
+
+      systemd.services.sparkyfitness = {
+        after = ["postgresql.service"];
+        requires = ["postgresql.service"];
       };
     };
   };
