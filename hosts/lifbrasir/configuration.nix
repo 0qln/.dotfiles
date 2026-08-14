@@ -179,6 +179,9 @@ in {
         dn = "fitness.${fqdns.primary.dn}";
         acmeHost = fqdns.primary.dn;
       };
+      extraEnvironment = {
+        SPARKY_FITNESS_DISABLE_SIGNUP = "true";
+      };
     };
 
     lichess-bot = {
