@@ -85,6 +85,9 @@ with inputs.nixpkgs.lib; {
               ensureClauses.createrole = true;
             }
           ];
+          authentication = ''
+            local ${config.services.sparkyfitness.database.name} ${config.services.sparkyfitness.database.appUser} md5
+          '';
         };
 
         sparkyfitness = {
