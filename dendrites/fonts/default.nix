@@ -1,64 +1,74 @@
-{...}: {
+{inputs, ...}:
+with inputs.nixpkgs.lib; {
+  flake.nixosModules.fonts = {
+    inputs,
+    config,
+    ...
+  }: let
+    cfg = config.modules.fonts;
+  in {
+    options.modules.fonts = {
+      enable = mkEnableOption "fonts";
+    };
+    config = mkIf cfg.enable {
+      nixpkgs = {
+        overlays = [
+          inputs.nur.overlays.default
+
+          # todo:
+          # why were these needed here?
+          # shouldn't it be enough to import them in the home manager config?
+          # if needed, move into the dendrite
+          #
+          # inputs.cartograph-cf.overlays.default
+          # inputs.angel-wish.overlays.default
+          # inputs.ruritania.overlays.default
+          # inputs.kingjola.overlays.default
+        ];
+      };
+    };
+  };
+
   flake.homeModules.fonts = {
     pkgs,
     config,
-    lib,
     inputs,
     ...
-  }:
-    with lib; let
-      cfg = config.modules.fonts;
-    in {
-      options.modules.fonts = {
-        enable = mkEnableOption "fonts";
-        cartograph-cf.enable = mkEnableOption "cartograph-cf (nerd-font)";
-        angel-wish.enable = mkEnableOption "angel wish";
-        ruritania.enable = mkEnableOption "ruritania";
-        kingjola.enable = mkEnableOption "kingjola";
-        ibm-plex.enable = mkEnableOption "ibm-plex";
-        victor-mono.enable = mkEnableOption "victor-mono (nerd-font)";
-        jetbrains-mono.enable = mkEnableOption "jetbrains-mono (nerd-font)";
-      };
-
-      config = mkIf cfg.enable {
-        nixpkgs.overlays = [
-          inputs.cartograph-cf.overlays.default
-          inputs.angel-wish.overlays.default
-          inputs.ruritania.overlays.default
-          inputs.kingjola.overlays.default
-        ];
-
-        fonts.fontconfig.enable = true;
-
-        home.packages = with pkgs;
-          (optionals cfg.victor-mono.enable [nerd-fonts.victor-mono])
-          ++ (optionals cfg.jetbrains-mono.enable [nerd-fonts.jetbrains-mono])
-          ++ (optionals cfg.ibm-plex.enable [ibm-plex]);
-
-        home.file.".local/share/fonts/IbmPlex" = mkIf cfg.ibm-plex.enable {
-          source = "${pkgs.ibm-plex}/share/fonts/opentype";
-          recursive = true;
-        };
-
-        home.file.".local/share/fonts/CartographCF" = mkIf cfg.cartograph-cf.enable {
-          source = "${pkgs.cartographcf-nerdfont}/share/fonts/opentype";
-          recursive = true;
-        };
-
-        home.file.".local/share/fonts/Angel wish" = mkIf cfg.angel-wish.enable {
-          source = "${pkgs.angel-wish}/share/fonts/opentype";
-          recursive = true;
-        };
-
-        home.file.".local/share/fonts/Ruritania" = mkIf cfg.ruritania.enable {
-          source = "${pkgs.ruritania}/share/fonts/opentype";
-          recursive = true;
-        };
-
-        home.file.".local/share/fonts/Kingjola" = mkIf cfg.kingjola.enable {
-          source = "${pkgs.kingjola}/share/fonts/opentype";
-          recursive = true;
-        };
-      };
+  }: let
+    cfg = config.modules.fonts;
+  in {
+    options.modules.fonts = {
+      enable = mkEnableOption "fonts";
+      cartograph-cf.enable = mkEnableOption "cartograph-cf (nerd-font)";
+      angel-wish.enable = mkEnableOption "angel wish";
+      ruritania.enable = mkEnableOption "ruritania";
+      kingjola.enable = mkEnableOption "kingjola";
+      old-london.enable = mkEnableOption "old-london";
+      ibm-plex.enable = mkEnableOption "ibm-plex";
+      victor-mono.enable = mkEnableOption "victor-mono (nerd-font)";
+      jetbrains-mono.enable = mkEnableOption "jetbrains-mono (nerd-font)";
     };
+
+    config = mkIf cfg.enable {
+      nixpkgs.overlays = [
+        inputs.cartograph-cf.overlays.default
+        inputs.angel-wish.overlays.default
+        inputs.ruritania.overlays.default
+        inputs.kingjola.overlays.default
+        inputs.old-london.overlays.default
+      ];
+
+      fonts.fontconfig.enable = true;
+
+      home.packages = with pkgs;
+        (optionals cfg.victor-mono.enable [nerd-fonts.victor-mono])
+        ++ (optionals cfg.jetbrains-mono.enable [nerd-fonts.jetbrains-mono])
+        ++ (optionals cfg.ibm-plex.enable [ibm-plex])
+        ++ (optionals cfg.angel-wish.enable [angel-wish])
+        ++ (optionals cfg.cartograph-cf.enable [cartographcf-nerdfont])
+        ++ (optionals cfg.ruritania.enable [ruritania])
+        ++ (optionals cfg.kingjola.enable [kingjola])
+        ++ (optionals cfg.old-london.enable [old-london]);
+    };
+  };
 }

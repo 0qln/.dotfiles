@@ -1218,6 +1218,26 @@
         "type": "github"
       }
     },
+    "old-london": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786923472,
+        "narHash": "sha256-RE7ZK3QwGgce4lOv2PMzSEDLkKBhlqX8mcUUIQf8NhQ=",
+        "owner": "0qln",
+        "repo": "old-london",
+        "rev": "a9c306f2a167042d92cf2f689d8a44ec5305098f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "old-london",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -1288,6 +1308,7 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nixvim": "nixvim",
         "nur": "nur",
+        "old-london": "old-london",
         "private": "private",
         "ruritania": "ruritania",
         "sops-nix": "sops-nix",

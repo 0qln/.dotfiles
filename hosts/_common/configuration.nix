@@ -18,6 +18,7 @@
     flake.nixosModules.utils
     flake.nixosModules.vars
     flake.nixosModules.yubi
+    flake.nixosModules.fonts
   ];
 
   networking.hostName = host-name;
@@ -25,10 +26,6 @@
   nixpkgs = {
     overlays = [
       inputs.nur.overlays.default
-      inputs.cartograph-cf.overlays.default
-      inputs.angel-wish.overlays.default
-      inputs.ruritania.overlays.default
-      inputs.kingjola.overlays.default
     ];
   };
 
@@ -41,5 +38,7 @@
     ssh.enable = true;
 
     yubi.enable = true;
+
+    fonts.enable = true;
   };
 }

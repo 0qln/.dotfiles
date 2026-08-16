@@ -83,6 +83,10 @@
       url = "github:0qln/Kingjola";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    old-london = {
+      url = "github:0qln/old-london";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
