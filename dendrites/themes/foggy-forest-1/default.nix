@@ -223,6 +223,9 @@ in
         };
 
         programs.hyprlock = let
+          devs = monitors.devices;
+          pict = monitors.arrangement.byPictogram;
+
           escape =
             replaceStrings
             ["#" ''"'']
@@ -251,53 +254,62 @@ in
             };
 
             background = let
-              devs = monitors.devices;
-              pict = monitors.arrangement.byPictogram;
               wals = wallpapers.arrangements.${pict};
-            in
-              attrsets.mapAttrsToList (
-                k: v: {
-                  monitor = v.name;
-                  path = toString wals.${k};
-                  crossfade_time = 1.0;
-                }
-              )
-              devs;
+              inherit (monitors.arrangement) totalW totalH;
 
-            # vignette with dither pattern
-            image = let
-              monitor = monitors.devices.center;
-              inherit (monitor.dim) w h;
-
-              lesserSide =
-                if w < h
-                then w
-                else h;
-
-              ditherVignette =
-                pkgs.runCommand "dither-vignette.png" {
+              # spanning vignette for the entire desktop area
+              giantVignette =
+                pkgs.runCommand "giant-vignette.png" {
                   nativeBuildInputs = [pkgs.imagemagick];
                 } ''
-                  # Generate a radial gradient, apply ordered dithering (8x8 matrix),
-                  # and make the bright center transparent so only edge dots remain.
-                  magick -size ${toString w}x${toString h} radial-gradient:white-black \
+                  magick -size ${toString totalW}x${toString totalH} radial-gradient:white-black \
                     -ordered-dither o8x8 \
                     -transparent white \
                     $out
                 '';
-            in [
-              {
-                monitor = monitor.name;
-                path = "${ditherVignette}";
-                size = lesserSide;
-                rounding = 0;
-                border_size = 0;
-                position = "0, 0";
-                halign = "center";
-                valign = "center";
-                zindex = 0;
-              }
-            ];
+
+              # 3. Base Wallpapers (remains the same)
+              baseWallpapers =
+                attrsets.mapAttrsToList (
+                  k: v: {
+                    monitor = v.name;
+                    path = toString wals.${k};
+                    crossfade_time = 1.0;
+                    zindex = -2;
+                  }
+                )
+                devs;
+
+              # 4. Sliced Vignette Overlays
+              vignetteOverlays =
+                attrsets.mapAttrsToList (
+                  _position: monitor: let
+                    mLayout = monitors.arrangement.byName.${monitor.name};
+
+                    # 1. Use the physical (rotated) dimensions we previously calculated
+                    w = mLayout.physicalW;
+                    h = mLayout.physicalH;
+
+                    # 2. Shift layout coordinates so they start exactly at 0,0 on the giant canvas
+                    cropX = mLayout.x - monitors.arrangement.minX;
+                    cropY = mLayout.y - monitors.arrangement.minY;
+
+                    # Crop the giant vignette for this specific monitor's geometry
+                    ditherVignette =
+                      pkgs.runCommand "dither-vignette-${monitor.name}.png" {
+                        nativeBuildInputs = [pkgs.imagemagick];
+                      } ''
+                        magick ${giantVignette} -crop ${toString w}x${toString h}+${toString cropX}+${toString cropY} +repage $out
+                      '';
+                  in {
+                    monitor = monitor.name;
+                    path = "${ditherVignette}";
+                    zindex = -1;
+                  }
+                )
+                devs;
+            in
+              baseWallpapers ++ vignetteOverlays;
 
             input-field = [
               {
@@ -311,7 +323,7 @@ in
                 valign = "center";
 
                 font_family = "Kingjola";
-                dots_text_format = "x";
+                dots_text_format = renderFancyFont "dsfx";
                 font_color = "$color14";
 
                 dots_size = 0.45;
@@ -772,11 +784,17 @@ in
             };
             # todo: some opengl error when exporting the WPE image as screenshot, replace those when it works
             images = {
-              left = "${./wpe-1512181248_left.png}";
-              right = "${./wpe-1512181248_right.png}";
+              left = "${pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/x1/wallhaven-x17mdz.jpg";
+                hash = "sha256-igR37M4bGjxWOkviMjKrI91rP81dIoC02fh6LHfUBQM=";
+              }}";
+              right = "${pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/x1/wallhaven-x17mdz.jpg";
+                hash = "sha256-igR37M4bGjxWOkviMjKrI91rP81dIoC02fh6LHfUBQM=";
+              }}";
               center = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/0q/wallhaven-0qw55l.jpg";
-                hash = "sha256-VD8nwfOXVXlgJKcO04mpsF4QdE4GrlgulA6nhkYmpJg=";
+                url = "https://w.wallhaven.cc/full/x1/wallhaven-x17mdz.jpg";
+                hash = "sha256-igR37M4bGjxWOkviMjKrI91rP81dIoC02fh6LHfUBQM=";
               }}";
               normal = "${pkgs.fetchurl {
                 url = "https://w.wallhaven.cc/full/0q/wallhaven-0qw55l.jpg";
