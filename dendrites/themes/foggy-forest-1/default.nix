@@ -524,6 +524,8 @@ in
                     color:@foreground;
                 }
                 #clock{
+                    font-size:18px;
+                    font-family: "Old London";
                     padding: 0px 5px;
                     color:@foreground;
                     transition: all .3s ease;
@@ -675,7 +677,23 @@ in
                   in {
                     "hyprland/workspaces" = importModule "hyprland/workspaces";
                     "custom/notification" = importModule "custom/notification";
-                    "clock" = importModule "clock";
+                    "clock" = {
+                      "format" = "{:%I:%M:%S %p} ";
+                      "interval" = 1;
+                      "tooltip-format" = "{calendar}";
+                      "calendar" = {
+                        "format" = {
+                          "months" = "<span font_family='Old London' size='large'>{}</span>";
+                          "weekdays" = "<span font_family='CartographCF Nerd Font'>{}</span>";
+                          "days" = "<span font_family='CartographCF Nerd Font'>{}</span>";
+                          "today" = "<span color='#fAfBfC'><b>{}</b></span>";
+                        };
+                      };
+                      "actions" = {
+                        "on-click-right" = "shift_down";
+                        "on-click" = "shift_up";
+                      };
+                    };
                     "network" = importModule "network";
                     "bluetooth" = importModule "bluetooth";
                     "pulseaudio" = importModule "pulseaudio";
