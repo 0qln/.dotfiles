@@ -62,7 +62,7 @@ image: font:
       spacing:                     10px;
       padding:                     100px 40px;
       background-color:            transparent;
-      background-image:            url("${image}", width);
+      background-image:            url("${image}", height);
       text-color:                  @foreground;
       orientation:                 horizontal;
       children:                    [ "textbox-prompt-colon", "entry" ];
