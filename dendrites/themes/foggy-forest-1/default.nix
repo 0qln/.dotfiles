@@ -130,10 +130,10 @@ in
           rofi = {
             enable = mkDefault true;
             themeFile = let
-              walName = "wallhaven-q6wyg7.jpg";
+              walName = "isopod.jpg";
               rawImg = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/q6/${walName}";
-                hash = "sha256-ClK5aTven8j+/DWoQ4YAMGoAF48ojFXl95NT2Z3WPIQ=";
+                url = "https://i.pinimg.com/736x/f3/a3/db/f3a3dbccfe9f74caf5c042ed5471a397.jpg";
+                hash = "sha256-Tf7Og3PBBKuCg4oR0gFFoDqq6fVmhQAn0s4mHQOuHLE=";
               }}";
               # todo: figure out exact size we need
               # scaling down the bg image, otherwise it takes like 500ms to load
@@ -192,8 +192,8 @@ in
           wallust = {
             enable = true;
             wallpaper = "${pkgs.fetchurl {
-              url = "https://w.wallhaven.cc/full/83/wallhaven-83p31k.jpg";
-              hash = "sha256-6+Shpm+xpEW11IGujgMKKlo3INur7n6O+AdZLUJWJTA=";
+              url = "https://i.pinimg.com/736x/f3/a3/db/f3a3dbccfe9f74caf5c042ed5471a397.jpg";
+              hash = "sha256-Tf7Og3PBBKuCg4oR0gFFoDqq6fVmhQAn0s4mHQOuHLE=";
             }}";
             settings = {
               backend = "fastresize";
