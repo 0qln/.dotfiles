@@ -117,6 +117,7 @@ in
             angel-wish.enable = mkDefault true; # cosmetic
             ruritania.enable = mkDefault true; # cosmetic
             kingjola.enable = mkDefault true; # cosmetic
+            old-london.enable = mkDefault true; # cosmetic
             jetbrains-mono.enable = mkDefault true;
             ibm-plex.enable = mkDefault true; # obsidian
           };
