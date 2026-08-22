@@ -778,7 +778,7 @@ in
             blur = {
               size = 4;
               passes = 3;
-              vibrancy = 1.0;
+              vibrancy = 0.0;
             };
             layout = {
               gaps_in = 10;
@@ -789,7 +789,12 @@ in
             conf = builtins.readFile ./kitty/${"Moonfly.conf"};
             theme = utils.importKittyTheme conf;
           in
-            theme // {padding = 2;};
+            theme
+            // {
+              padding = 2;
+              # from: https://github.com/Aejkatappaja/sora#palette
+              background = mkForce "#0e1018";
+            };
 
           wallpapers = rec {
             arrangements = {
