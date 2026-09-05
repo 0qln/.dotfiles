@@ -83,6 +83,10 @@
       url = "github:0qln/Kingjola";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    old-london = {
+      url = "github:0qln/old-london";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
@@ -99,6 +103,11 @@
 
     arion = {
       url = "github:hercules-ci/arion";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    sparkyfitness = {
+      url = "github:CodeWithCJ/SparkyFitness";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

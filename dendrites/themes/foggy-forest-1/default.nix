@@ -117,6 +117,7 @@ in
             angel-wish.enable = mkDefault true; # cosmetic
             ruritania.enable = mkDefault true; # cosmetic
             kingjola.enable = mkDefault true; # cosmetic
+            old-london.enable = mkDefault true; # cosmetic
             jetbrains-mono.enable = mkDefault true;
             ibm-plex.enable = mkDefault true; # obsidian
           };
@@ -129,12 +130,11 @@ in
           rofi = {
             enable = mkDefault true;
             themeFile = let
-              walName = "wallhaven-q6wyg7.jpg";
+              walName = "wallhaven-p831ej.jpg";
               rawImg = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/q6/${walName}";
-                hash = "sha256-ClK5aTven8j+/DWoQ4YAMGoAF48ojFXl95NT2Z3WPIQ=";
+                url = utils.wallhavenUrl walName;
+                hash = "sha256-Z8I00X/RBPAf2popMl+y+gS00gaf7hIuKeLFvDZ5wys=";
               }}";
-              # todo: figure out exact size we need
               # scaling down the bg image, otherwise it takes like 500ms to load
               img = utils.resizeImage 1000 1000 rawImg walName;
               rasi =
@@ -191,8 +191,8 @@ in
           wallust = {
             enable = true;
             wallpaper = "${pkgs.fetchurl {
-              url = "https://w.wallhaven.cc/full/83/wallhaven-83p31k.jpg";
-              hash = "sha256-6+Shpm+xpEW11IGujgMKKlo3INur7n6O+AdZLUJWJTA=";
+              url = "https://w.wallhaven.cc/full/p8/wallhaven-p831ej.jpg";
+              hash = "sha256-Z8I00X/RBPAf2popMl+y+gS00gaf7hIuKeLFvDZ5wys=";
             }}";
             settings = {
               backend = "fastresize";
@@ -223,6 +223,9 @@ in
         };
 
         programs.hyprlock = let
+          devs = monitors.devices;
+          pict = monitors.arrangement.byPictogram;
+
           escape =
             replaceStrings
             ["#" ''"'']
@@ -251,53 +254,62 @@ in
             };
 
             background = let
-              devs = monitors.devices;
-              pict = monitors.arrangement.byPictogram;
               wals = wallpapers.arrangements.${pict};
-            in
-              attrsets.mapAttrsToList (
-                k: v: {
-                  monitor = v.name;
-                  path = toString wals.${k};
-                  crossfade_time = 1.0;
-                }
-              )
-              devs;
+              inherit (monitors.arrangement) totalW totalH;
 
-            # vignette with dither pattern
-            image = let
-              monitor = monitors.devices.center;
-              inherit (monitor.dim) w h;
-
-              lesserSide =
-                if w < h
-                then w
-                else h;
-
-              ditherVignette =
-                pkgs.runCommand "dither-vignette.png" {
+              # spanning vignette for the entire desktop area
+              giantVignette =
+                pkgs.runCommand "giant-vignette.png" {
                   nativeBuildInputs = [pkgs.imagemagick];
                 } ''
-                  # Generate a radial gradient, apply ordered dithering (8x8 matrix),
-                  # and make the bright center transparent so only edge dots remain.
-                  magick -size ${toString w}x${toString h} radial-gradient:white-black \
+                  magick -size ${toString totalW}x${toString totalH} radial-gradient:white-black \
                     -ordered-dither o8x8 \
                     -transparent white \
                     $out
                 '';
-            in [
-              {
-                monitor = monitor.name;
-                path = "${ditherVignette}";
-                size = lesserSide;
-                rounding = 0;
-                border_size = 0;
-                position = "0, 0";
-                halign = "center";
-                valign = "center";
-                zindex = 0;
-              }
-            ];
+
+              # 3. Base Wallpapers (remains the same)
+              baseWallpapers =
+                attrsets.mapAttrsToList (
+                  k: v: {
+                    monitor = v.name;
+                    path = toString wals.${k};
+                    crossfade_time = 1.0;
+                    zindex = -2;
+                  }
+                )
+                devs;
+
+              # 4. Sliced Vignette Overlays
+              vignetteOverlays =
+                attrsets.mapAttrsToList (
+                  _position: monitor: let
+                    mLayout = monitors.arrangement.byName.${monitor.name};
+
+                    # 1. Use the physical (rotated) dimensions we previously calculated
+                    w = mLayout.physicalW;
+                    h = mLayout.physicalH;
+
+                    # 2. Shift layout coordinates so they start exactly at 0,0 on the giant canvas
+                    cropX = mLayout.x - monitors.arrangement.minX;
+                    cropY = mLayout.y - monitors.arrangement.minY;
+
+                    # Crop the giant vignette for this specific monitor's geometry
+                    ditherVignette =
+                      pkgs.runCommand "dither-vignette-${monitor.name}.png" {
+                        nativeBuildInputs = [pkgs.imagemagick];
+                      } ''
+                        magick ${giantVignette} -crop ${toString w}x${toString h}+${toString cropX}+${toString cropY} +repage $out
+                      '';
+                  in {
+                    monitor = monitor.name;
+                    path = "${ditherVignette}";
+                    zindex = -1;
+                  }
+                )
+                devs;
+            in
+              baseWallpapers ++ vignetteOverlays;
 
             input-field = [
               {
@@ -311,7 +323,7 @@ in
                 valign = "center";
 
                 font_family = "Kingjola";
-                dots_text_format = "x";
+                dots_text_format = renderFancyFont "dsfx";
                 font_color = "$color14";
 
                 dots_size = 0.45;
@@ -512,6 +524,8 @@ in
                     color:@foreground;
                 }
                 #clock{
+                    font-size:18px;
+                    font-family: "Old London";
                     padding: 0px 5px;
                     color:@foreground;
                     transition: all .3s ease;
@@ -647,7 +661,9 @@ in
 
             settings = let
               default = {
-                inherit (config.modules.waybar) left center right;
+                left = ["custom/notification" "clock" "custom/nixpkgs" "tray"];
+                center = ["hyprland/workspaces" "custom/rotate-screen"];
+                right = ["group/expand" "pulseaudio" "bluetooth" "network" "battery"];
                 bar = monitor: (
                   {
                     layer = "top";
@@ -656,31 +672,43 @@ in
                     output = [monitors.devices.${monitor}.name];
                     reload_style_on_change = true;
                   }
-                  // (
-                    let
-                      importModule = name: import ../../waybar/modules/${name}.nix ({inherit monitor;} // args);
-                      mkModule = module: nameValuePair module (importModule module);
-                    in
-                      builtins.listToAttrs mkModule [
-                        "hyprland/workspaces"
-                        "custom/notification"
-                        "clock"
-                        "network"
-                        "bluetooth"
-                        "pulseaudio"
-                        "battery"
-                        "custom/pacman"
-                        "custom/nixpkgs"
-                        "custom/rotate-screen"
-                        "custom/expand"
-                        "custom/endpoint"
-                        "group/expand"
-                        "cpu"
-                        "memory"
-                        "temperature"
-                        "tray"
-                      ]
-                  )
+                  // (let
+                    importModule = name: import ../../waybar/modules/${name}.nix ({inherit monitor;} // args);
+                  in {
+                    "hyprland/workspaces" = importModule "hyprland/workspaces";
+                    "custom/notification" = importModule "custom/notification";
+                    "clock" = {
+                      "format" = "{:%I:%M:%S %p} ";
+                      "interval" = 1;
+                      "tooltip-format" = "{calendar}";
+                      "calendar" = {
+                        "format" = {
+                          "months" = "<span font_family='Old London' size='large'>{}</span>";
+                          "weekdays" = "<span font_family='CartographCF Nerd Font'>{}</span>";
+                          "days" = "<span font_family='CartographCF Nerd Font'>{}</span>";
+                          "today" = "<span color='#fAfBfC'><b>{}</b></span>";
+                        };
+                      };
+                      "actions" = {
+                        "on-click-right" = "shift_down";
+                        "on-click" = "shift_up";
+                      };
+                    };
+                    "network" = importModule "network";
+                    "bluetooth" = importModule "bluetooth";
+                    "pulseaudio" = importModule "pulseaudio";
+                    "battery" = importModule "battery";
+                    "custom/pacman" = importModule "custom/pacman";
+                    "custom/nixpkgs" = importModule "custom/nixpkgs";
+                    "custom/rotate-screen" = importModule "custom/rotate-screen";
+                    "custom/expand" = importModule "custom/expand";
+                    "custom/endpoint" = importModule "custom/endpoint";
+                    "group/expand" = importModule "group/expand";
+                    "cpu" = importModule "cpu";
+                    "memory" = importModule "memory";
+                    "temperature" = importModule "temperature";
+                    "tray" = importModule "tray";
+                  })
                 );
               };
 
@@ -750,7 +778,7 @@ in
             blur = {
               size = 4;
               passes = 3;
-              vibrancy = 1.0;
+              vibrancy = 0.0;
             };
             layout = {
               gaps_in = 10;
@@ -761,7 +789,12 @@ in
             conf = builtins.readFile ./kitty/${"Moonfly.conf"};
             theme = utils.importKittyTheme conf;
           in
-            theme // {padding = 2;};
+            theme
+            // {
+              padding = 2;
+              # from: https://github.com/Aejkatappaja/sora#palette
+              background = mkForce "#0e1018";
+            };
 
           wallpapers = rec {
             arrangements = {
@@ -774,11 +807,17 @@ in
             };
             # todo: some opengl error when exporting the WPE image as screenshot, replace those when it works
             images = {
-              left = "${./wpe-1512181248_left.png}";
-              right = "${./wpe-1512181248_right.png}";
+              left = "${pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/x1/wallhaven-x17mdz.jpg";
+                hash = "sha256-igR37M4bGjxWOkviMjKrI91rP81dIoC02fh6LHfUBQM=";
+              }}";
+              right = "${pkgs.fetchurl {
+                url = "https://w.wallhaven.cc/full/x1/wallhaven-x17mdz.jpg";
+                hash = "sha256-igR37M4bGjxWOkviMjKrI91rP81dIoC02fh6LHfUBQM=";
+              }}";
               center = "${pkgs.fetchurl {
-                url = "https://w.wallhaven.cc/full/0q/wallhaven-0qw55l.jpg";
-                hash = "sha256-VD8nwfOXVXlgJKcO04mpsF4QdE4GrlgulA6nhkYmpJg=";
+                url = "https://w.wallhaven.cc/full/x1/wallhaven-x17mdz.jpg";
+                hash = "sha256-igR37M4bGjxWOkviMjKrI91rP81dIoC02fh6LHfUBQM=";
               }}";
               normal = "${pkgs.fetchurl {
                 url = "https://w.wallhaven.cc/full/0q/wallhaven-0qw55l.jpg";

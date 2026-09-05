@@ -11,6 +11,7 @@ in {
   imports = [
     inputs.private.nixosModules."lifbrasir"
     flake.nixosModules."lichess-bot"
+    flake.nixosModules."sparky-fitness"
     flake.nixosModules.sops
 
     ../_common/configuration.nix
@@ -169,6 +170,18 @@ in {
       serviceDataDir = "/mnt/store-1/services/vikunja";
       primaryFqdn = "vikunja.${fqdns.primary.dn}";
       acmeHost = fqdns.primary.dn;
+    };
+
+    sparky-fitness = {
+      enable = true;
+      stateDir = "/mnt/store-1/services/sparky-fitness";
+      fqdn = {
+        dn = "fitness.${fqdns.primary.dn}";
+        acmeHost = fqdns.primary.dn;
+      };
+      extraEnvironment = {
+        SPARKY_FITNESS_DISABLE_SIGNUP = "true";
+      };
     };
 
     lichess-bot = {

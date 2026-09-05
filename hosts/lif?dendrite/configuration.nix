@@ -1,5 +1,5 @@
 {self, ...}: let
-  theme = "autumn-1";
+  theme = "foggy-forest-1";
 in {
   flake.nixosModules.lif = {
     pkgs,
@@ -16,6 +16,7 @@ in {
         self.nixosModules.vscode
         self.nixosModules.android
         self.nixosModules."themes/${theme}"
+        self.nixosModules.clanker
 
         ../_common/configuration.nix
 
@@ -47,6 +48,7 @@ in {
       };
 
       modules = {
+        clanker.enable = true;
         android = {
           enable = true;
           users = ["oq"];

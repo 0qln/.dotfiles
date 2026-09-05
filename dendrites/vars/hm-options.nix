@@ -202,6 +202,16 @@ in {
             default = 0;
             description = "Rotation of the monitor";
           };
+          physicalW = mkOption {
+            type = types.int;
+            default = 0;
+            description = "If rotated 90 (1) or 270 (3) degrees, its physical width is its native height";
+          };
+          physicalH = mkOption {
+            type = types.int;
+            default = 0;
+            description = "If rotated 90 (1) or 270 (3) degrees, its physical height is its native width";
+          };
         };
       };
     in {
@@ -229,6 +239,42 @@ in {
             byName = mkOption {
               type = types.attrsOf positionType;
               description = "Monitor arrangement by name";
+            };
+
+            totalW = mkOption {
+              type = types.int;
+              default = 0;
+              description = "Total width of the monitor arrangement";
+            };
+
+            totalH = mkOption {
+              type = types.int;
+              default = 0;
+              description = "Total height of the monitor arrangement";
+            };
+
+            minX = mkOption {
+              type = types.int;
+              default = 0;
+              description = "Minimum X offset of the monitor arrangement";
+            };
+
+            maxX = mkOption {
+              type = types.int;
+              default = 0;
+              description = "Maximum X offset of the monitor arrangement";
+            };
+
+            minY = mkOption {
+              type = types.int;
+              default = 0;
+              description = "Minimum Y offset of the monitor arrangement";
+            };
+
+            maxY = mkOption {
+              type = types.int;
+              default = 0;
+              description = "Maximum Y offset of the monitor arrangement";
             };
           };
         };

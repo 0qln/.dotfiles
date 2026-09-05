@@ -66,5 +66,16 @@
           convert $src -resize ${w}x${h} $out/share/${name}
         '';
       };
+
+    wallhavenUrl = name: let
+      match = builtins.match "wallhaven-(.{2}).*" name;
+      prefix =
+        if match != null
+        then builtins.elemAt match 0
+        else null;
+    in
+      if prefix == null
+      then throw "Invalid wallhaven wallpaper name: ${name}. Expected format: wallhaven-<id>.<type>, where len(id) > 1."
+      else "https://w.wallhaven.cc/full/${prefix}/${name}";
   };
 }
