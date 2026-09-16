@@ -82,6 +82,7 @@ with inputs.nixpkgs.lib; {
       ./input.nix
 
       self.homeModules.hyprland-mods
+      self.homeModules.shikane
     ];
 
     config = mkIf cfg.enable {
@@ -92,9 +93,28 @@ with inputs.nixpkgs.lib; {
         # source = "${config.xdg.cache}/pywal/colors-hyprland.conf";
 
         monitor =
-          attrsets.mapAttrsToList
-          (n: v: fmtMonitor n v monitors.arrangement.byName.${v.name})
-          monitors.devices;
+          # Catch-all fallback for displays without an explicit rule.
+          # `output = ""` never matches in Hyprland's main rule loop (that
+          # compares `m_name == selector`); it is only consulted in the
+          # dedicated fallback loop, so this cannot shadow the rules below and
+          # its position in the list does not matter.
+          [
+            {
+              output = "";
+              mode = "preferred";
+              position = "auto";
+              scale = 1.0;
+            }
+          ]
+          # When shikane is active it owns placement via wlr-output-management,
+          # which Hyprland applies *on top of* the matched monitor rule (see
+          # `applyWlrOutputConfig`). Static rules would only duplicate that
+          # state, so the catch-all above covers the pre-shikane startup window.
+          ++ optionals (!config.modules.shikane.enable) (
+            attrsets.mapAttrsToList
+            (n: v: fmtMonitor n v monitors.arrangement.byName.${v.name})
+            monitors.devices
+          );
 
         workspace_rule = let
           # don't forget to set defaults, otherwise the monitor assignments won't work:
