@@ -13,6 +13,15 @@ in {
   config = mkIf cfg.enable {
     services.nginx = {
       clientMaxBodySize = "1024m";
+
+      # default for unused subdomains
+      virtualHosts."_" = mkDefault {
+        default = true;
+        rejectSSL = true;
+        locations."/".extraConfig = ''
+          return 444;
+        '';
+      };
     };
   };
 }
