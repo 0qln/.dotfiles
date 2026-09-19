@@ -12,6 +12,7 @@ in {
     inputs.private.nixosModules."lifbrasir"
     flake.nixosModules."lichess-bot"
     flake.nixosModules."sparky-fitness"
+    flake.nixosModules."obsidian-relay"
     flake.nixosModules.sops
 
     ../_common/configuration.nix
@@ -181,6 +182,15 @@ in {
       };
       extraEnvironment = {
         SPARKY_FITNESS_DISABLE_SIGNUP = "true";
+      };
+    };
+
+    obsidian-relay = {
+      enable = true;
+      stateDir = "/mnt/store-1/services/obsidian-relay";
+      fqdn = {
+        dn = "obsidian-relay.${fqdns.primary.dn}";
+        acmeHost = fqdns.primary.dn;
       };
     };
 
