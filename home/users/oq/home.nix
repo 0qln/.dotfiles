@@ -216,7 +216,7 @@ in
           # rofi.enable = mkDefault true;
           # vscode.enable = mkDefault true;
           ytm.enable = mkDefault true;
-          spotify.enable = mkDefault true;
+          spotify.enable = mkDefault false;
           todoist = {
             enable = mkDefault true;
             cliProgram.enable = mkDefault true;
