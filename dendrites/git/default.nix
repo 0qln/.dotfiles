@@ -86,10 +86,10 @@ with inputs.nixpkgs.lib; {
           settings = {
             # https://github.com/jesseduffield/lazygit/issues/155#issuecomment-2260986940
             git = {
-              pagers = [
+              diffRenderers = [
                 {
                   colorArg = "always";
-                  pager = "delta --paging=never -s";
+                  command = "delta --paging=never -s";
                 }
               ];
             };
