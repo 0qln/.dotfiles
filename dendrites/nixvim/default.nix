@@ -50,7 +50,11 @@ with inputs.nixpkgs.lib; {
           default = [];
           description = "Languages for which to enable line wrapping.";
         };
-        clanker.enable = mkEnableOption "clanker (github copilot)";
+        clanker = {
+          enable = mkEnableOption "clanker";
+          github-copilot.enable = mkEnableOption "clanker.github-copilot" // {default = true;};
+          claude.enable = mkEnableOption "clanker.claude (claudecode.nvim)";
+        };
       };
     };
 

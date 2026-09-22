@@ -24,6 +24,7 @@ with lib; {
         ])
         (with pkgs.vscode-extensions-patched; [
           github.copilot-chat
+          anthropic.claude-code
         ])
       ];
       userSettings = {

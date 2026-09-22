@@ -66,11 +66,32 @@ with inputs.nixpkgs.lib; {
           cfg = config.modules.clanker.claude;
         in
           mkIf cfg.enable {
+            # https://home-manager-options.extranix.com/?query=claude-code&release=master
             programs.claude-code = {
               enable = true;
+              enableMcpIntegration = true;
+              mcpServers = {}; # define in programs.mcp.servers instead.
               settings = {
                 includeCoAuthoredBy = false;
               };
+              skills = {};
+              lspServers = {
+                rust = {
+                  command = "${getExe pkgs.rust-analyzer}";
+                  args = [];
+                  fileExtensions = {
+                    ".rs" = "rust";
+                    ".toml" = "toml";
+                  };
+                };
+              };
+              context = builtins.readFile (pkgs.callPackage ./andrej-kaparthy.nix {});
+            };
+
+            # make the config file mutable
+            home.file."${config.programs.claude-code.configDir}/settings.json" = {
+              mutable = true;
+              force = true;
             };
           })
 

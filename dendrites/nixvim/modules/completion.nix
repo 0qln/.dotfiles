@@ -30,7 +30,7 @@ in {
     # inspiration: https://github.com/dc-tec/nixvim/blob/main/config/plugins/cmp/cmp.nix
     plugins = mkMerge [
       # Github Copilot: https://github.com/zbirenbaum/copilot-cmp/
-      (mkIf cfg.clanker.enable {
+      (mkIf (cfg.clanker.enable && cfg.clanker.github-copilot.enable) {
         copilot-cmp.enable = true;
         copilot-lsp.settings = {
           suggestion = {enabled = false;};
