@@ -49,6 +49,32 @@ with inputs.nixpkgs.lib; {
     ];
 
     config = mkIf cfg.enable {
+      # the container's filesystem sits behind a rootless-podman user namespace,
+      # so a language server running out here cannot read the container
+      # interpreter's stdlib or dist-packages. this nixos-side interpreter is
+      # only ever used for editor analysis: it matches the container's python
+      # minor version and carries the third-party libraries odoo and the
+      # worksimple addons import, so pylance resolves them. odoo itself is
+      # picked up from the checkout through python.analysis.extraPaths.
+      home.packages = [
+        (pkgs.python312.withPackages (ps:
+          with ps; [
+            babel
+            decorator
+            jinja2
+            lxml
+            markupsafe
+            passlib
+            pillow
+            psutil
+            psycopg2
+            python-dateutil
+            pytz
+            requests
+            werkzeug
+          ]))
+      ];
+
       home.file.".distrobox/${containerName}/odoo.conf" = {
         force = true;
         text =
@@ -105,11 +131,35 @@ with inputs.nixpkgs.lib; {
             echo "addons path: $ADDONS_PATH" >&2
             echo "ws modules:  $(ws_manifest_dirs | xargs -r -n1 basename | sort -u | paste -sd, -)" >&2
 
-            exec python3 "$ODOO_DIR/odoo-bin" \
-              --config="$CONF" \
-              --addons-path="$ADDONS_PATH" \
-              --database="$DB" \
+            # odoo dispatches subcommands (shell, scaffold, ...) off argv[1] only,
+            # so a leading non-flag argument has to stay in front of the flags.
+            SUBCOMMAND=()
+            if [ $# -gt 0 ] && [ "''${1#-}" = "$1" ]; then
+              SUBCOMMAND=("$1")
+              shift
+            fi
+
+            ODOO_ARGS=(
+              "$ODOO_DIR/odoo-bin"
+              "''${SUBCOMMAND[@]}"
+              --config="$CONF"
+              --addons-path="$ADDONS_PATH"
+              --database="$DB"
               "$@"
+            )
+
+            # vscode on the windows side attaches over the port. wsl forwards
+            # localhost, and the container shares the wsl network namespace, so
+            # binding 0.0.0.0 here is reachable as localhost from windows.
+            if [ -n "''${ODOO_DEBUG_PORT:-}" ]; then
+              echo "debugpy:     waiting for a client on 0.0.0.0:$ODOO_DEBUG_PORT" >&2
+              exec python3 -m debugpy \
+                --listen "0.0.0.0:$ODOO_DEBUG_PORT" \
+                --wait-for-client \
+                "''${ODOO_ARGS[@]}"
+            fi
+
+            exec python3 "''${ODOO_ARGS[@]}"
           '';
       };
 
@@ -233,6 +283,9 @@ with inputs.nixpkgs.lib; {
 
             # inotify powers the code autoreload that `dev_mode = all` turns on
             sudo apt-get install -y python3-inotify
+
+            # debugpy backs the vscode attach configurations (ODOO_DEBUG_PORT)
+            pip3 install --break-system-packages --user debugpy
 
             # python dependencies of the workspace addons. ubuntu marks its python
             # as externally managed, hence --break-system-packages into ~/.local.
