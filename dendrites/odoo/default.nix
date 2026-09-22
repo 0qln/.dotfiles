@@ -49,6 +49,24 @@ with inputs.nixpkgs.lib; {
     ];
 
     config = mkIf cfg.enable {
+      home.file.".distrobox/${containerName}/odoo.conf" = {
+        force = true;
+        text =
+          # ini
+          ''
+            [options]
+            admin_passwd = admin_passwd
+            db_host = 127.0.0.1
+            db_port = 5432
+            db_user = odoo
+            db_password = odoo
+            xmlrpc_port = 9026
+            netrpc_port = 9026
+            http_port = 9026
+            dev_mode = all
+          '';
+      };
+
       home.file.".distrobox/${containerName}/bin/odoo-wrap" = {
         executable = true;
         force = true;
@@ -57,36 +75,52 @@ with inputs.nixpkgs.lib; {
           ''
             #!/usr/bin/env bash
 
-            WS_DIR="$HOME/odoo-ws"
+            set -euo pipefail
 
-            ADDONS="$(ls $WS_DIR/*/.git | xargs -n1 dirname)"
-            echo "Detected Addons: "
-            echo "$ADDONS"
+            ODOO_DIR="$HOME/repos/odoo"
+            ENTERPRISE_DIR="$HOME/repos/enterprise"
+            WS_DIR="$HOME/repos/ws-odoo"
+            CONF="$HOME/odoo.conf"
+            DB="''${ODOO_DB:-odoo_dev}"
 
-            BASE_ADDONS="$(cat <(echo "$HOME/repos/odoo/addons") <(echo "$HOME/enterprise-${cfg.branch}") <(echo "$WS_DIR"))"
-            echo "Base Addons: "
-            echo "$BASE_ADDONS"
+            sudo service postgresql start >/dev/null
 
-            FULL_ADDONS="$(cat <(echo "$ADDONS") <(echo "$BASE_ADDONS"))"
-            echo "Full Addons: "
-            echo "$FULL_ADDONS"
+            # workspace addons live either at the workspace root
+            # (worksimple_project/__manifest__.py) or one level down inside a
+            # submodule that bundles several (ecoservice/eco_base/__manifest__.py),
+            # so the addons path is the set of directories holding a manifest.
+            ws_manifest_dirs() {
+              find "$WS_DIR" -mindepth 2 -maxdepth 3 -name __manifest__.py -printf '%h\n' | sort -u
+            }
 
-            JOINED_ADDONS="$(echo "$FULL_ADDONS" | paste -sd, - )"
-            echo "Joined Addons: "
-            echo "$JOINED_ADDONS"
+            ADDONS_PATH="$(
+              {
+                printf '%s\n' "$ODOO_DIR/odoo/addons" "$ODOO_DIR/addons" "$ENTERPRISE_DIR"
+                ws_manifest_dirs | xargs -r -n1 dirname | sort -u
+              } | paste -sd, -
+            )"
 
-            PLUGINS="$(fd -t d -d 1 . "$WS_DIR" | xargs realpath | xargs -n1 basename)"
-            echo "Plugins: "
-            echo "$PLUGINS"
+            echo "database:    $DB" >&2
+            echo "config:      $CONF" >&2
+            echo "addons path: $ADDONS_PATH" >&2
+            echo "ws modules:  $(ws_manifest_dirs | xargs -r -n1 basename | sort -u | paste -sd, -)" >&2
 
-            JOINED_PLUGINS="$(echo "$PLUGINS" | xargs -n1 basename | paste -sd, - )"
-            echo "Joined: $JOINED_PLUGINS"
+            exec python3 "$ODOO_DIR/odoo-bin" \
+              --config="$CONF" \
+              --addons-path="$ADDONS_PATH" \
+              --database="$DB" \
+              "$@"
+          '';
+      };
 
-            python3 "$HOME/repos/odoo/odoo-bin" "$1" \
-                --http-interface=0.0.0.0 \
-                --addons-path="$JOINED_ADDONS" \
-                -u="$JOINED_PLUGINS" \
-                -d db2 -i base
+      home.file.".distrobox/${containerName}/start-odoo.sh" = {
+        executable = true;
+        force = true;
+        text =
+          # bash
+          ''
+            #!/usr/bin/env bash
+            exec "$HOME/bin/odoo-wrap" "$@"
           '';
       };
 
@@ -131,13 +165,20 @@ with inputs.nixpkgs.lib; {
               curl \
               postgresql \
               postgresql-client \
+              python3-pip \
               nodejs \
               npm
 
-            # set up postgresql user matching the host user
+            # set up postgresql. note sudoers only grants root, not postgres,
+            # so postgres commands have to go through `sudo su postgres`.
             sudo service postgresql start
-            sudo -u postgres createuser -d -R -S ${username} 2>/dev/null || true
+            sudo su postgres -c "createuser -d -R -S ${username}" 2>/dev/null || true
             createdb ${username} 2>/dev/null || true
+
+            # the role odoo.conf authenticates as. it owns the dev databases, so
+            # that odoo can see its own tables in information_schema.
+            sudo su postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='odoo'\"" | grep -q 1 \
+              || sudo su postgres -c "psql -c \"CREATE ROLE odoo LOGIN CREATEDB PASSWORD 'odoo'\""
 
             # configure git credentials for HTTPS clones (e.g. private enterprise repo)
             # the host uses `gh auth git-credential` via a nix-store path that does not
@@ -175,30 +216,33 @@ with inputs.nixpkgs.lib; {
                 "${containerHome}/repos/enterprise"
             fi
 
+            # the worksimple addon workspace. its submodules are cloned over ssh,
+            # which works because ~/.ssh is copied into the container home.
+            if [ ! -d "${containerHome}/repos/ws-odoo" ]; then
+              mkdir -p "${containerHome}/repos"
+              git clone \
+                --branch staging \
+                --recurse-submodules \
+                https://github.com/workSimple-GmbH/odoo \
+                "${containerHome}/repos/ws-odoo"
+            fi
+
             # install odoo python/system dependencies
             cd "${containerHome}/repos/odoo"
             sudo ./setup/debinstall.sh
 
-            # install fd-find (used by odoo-wrap)
-            sudo apt-get install -y fd-find
-            # ubuntu packages fd as fdfind; symlink to fd if not already present
-            if ! command -v fd &>/dev/null; then
-              sudo ln -sf "$(which fdfind)" /usr/local/bin/fd
-            fi
+            # inotify powers the code autoreload that `dev_mode = all` turns on
+            sudo apt-get install -y python3-inotify
+
+            # python dependencies of the workspace addons. ubuntu marks its python
+            # as externally managed, hence --break-system-packages into ~/.local.
+            pip3 install --break-system-packages --user \
+              -r "${containerHome}/repos/ws-odoo/requirements.txt"
 
             # add ~/bin to PATH
             if ! grep -qF 'PATH="$HOME/bin:$PATH"' ~/.bashrc; then
               echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
             fi
-
-            # create a convenience start script
-            cat > "${containerHome}/start-odoo.sh" << 'EOF'
-            #!/usr/bin/env bash
-            sudo service postgresql start
-            cd "${containerHome}/repos/odoo"
-            python3 odoo-bin --addons-path=addons -d odoo_dev "$@"
-            EOF
-            chmod +x "${containerHome}/start-odoo.sh"
           '';
       };
 
