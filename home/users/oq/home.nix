@@ -82,11 +82,14 @@ in
           sops.enable = mkDefault true;
           nixvim = {
             enable = mkDefault true;
-            clanker.enable = mkDefault true;
+            clanker = {
+              enable = mkDefault true;
+              claude.enable = mkDefault true;
+            };
           };
           clanker = {
             enable = mkDefault true;
-            claude.enable = mkDefault false;
+            claude.enable = mkDefault true;
             github-copilot.enable = mkDefault true;
           };
           bash.enable = mkDefault true;
