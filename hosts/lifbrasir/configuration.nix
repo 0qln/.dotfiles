@@ -13,6 +13,8 @@ in {
     flake.nixosModules."lichess-bot"
     flake.nixosModules."sparky-fitness"
     flake.nixosModules."obsidian-relay"
+    flake.nixosModules.harmonia
+    flake.nixosModules.cache-builder
     flake.nixosModules.sops
 
     ../_common/configuration.nix
@@ -59,6 +61,18 @@ in {
     battery.enable = true;
 
     nginx.enable = true;
+
+    harmonia = {
+      enable = true;
+      fqdn = {
+        dn = "cache.${fqdns.primary.dn}";
+        acmeHost = fqdns.primary.dn;
+      };
+    };
+
+    # nobody waits on this one, so it can grind away here at the bottom of the
+    # scheduler. interactive builds stay on whichever machine is asking.
+    cache-builder.enable = true;
 
     vaultwarden = {
       enable = true;
