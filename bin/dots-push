@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Build something here and push it to the binary cache host.
 #
-# The workstation does the compiling; lifbrasir only stores and serves.
+# The machine you are on does the compiling; lifbrasir only stores and serves.
 
 set -e
 
 target="${1:-.#cache-all}"
-cache_host="${cache_host:-root@lifbrasir}"
+lifbrasir="${lifbrasir:-"lifbrasir"}"
+cache_host="${cache_host:-"root@$lifbrasir"}"
 
-cd ~/.dotfiles || exit 67
+cd ~/.dotfiles || exit 69
 
 out=$(nix build --no-link --print-out-paths "$target")
 
