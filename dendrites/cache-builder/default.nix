@@ -49,6 +49,16 @@ with inputs.nixpkgs.lib; {
         description = "Randomized delay for the timer.";
       };
 
+      sshKeyFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = ''
+          The sops encrypted ssh key used to fetch the private flake input.
+          Register the matching public key in gitea as a read only deploy key
+          on that repository: this service only ever reads it.
+        '';
+      };
+
       memoryHigh = mkOption {
         type = types.str;
         default = "8G";
@@ -61,11 +71,35 @@ with inputs.nixpkgs.lib; {
     };
 
     config = mkIf cfg.enable {
+      sops.secrets = mkIf (cfg.sshKeyFile != null) {
+        "cache-builder/sshKey" = {
+          sopsFile = cfg.sshKeyFile;
+          mode = "0400";
+          format = "binary";
+        };
+      };
+
       systemd.services.cache-builder = {
         description = "Build the fleet's configurations into the local store";
 
         # openssh because the private flake input is fetched over git+ssh
         path = with pkgs; [nix git openssh];
+
+        environment = {
+          # nix shells out to git, which shells out to ssh, so the key and the
+          # host key policy have to reach it this way.
+          HOME = "/root";
+
+          GIT_SSH_COMMAND =
+            concatStringsSep " "
+            (["ssh" "-o" "StrictHostKeyChecking=accept-new"]
+              ++ optionals (cfg.sshKeyFile != null) [
+                "-o"
+                "IdentitiesOnly=yes"
+                "-i"
+                config.sops.secrets."cache-builder/sshKey".path
+              ]);
+        };
 
         serviceConfig = {
           Type = "oneshot";

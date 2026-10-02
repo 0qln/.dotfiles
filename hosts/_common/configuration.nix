@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   flake,
   host-name,
@@ -44,7 +45,11 @@ with inputs.nixpkgs.lib; {
 
     # a host builds whatever the cache could not give it, then sends it up.
     # lifbrasir is the cache, so it has nowhere to push to.
-    nix.push.enable = host-name != "lifbrasir";
+    # the bare hostname does not resolve; the fqdn does, on the lan and off it.
+    nix.push = {
+      enable = host-name != "lifbrasir";
+      cacheHost = "root@${config.vars.hosts.lifbrasir.fqdns.primary.dn}";
+    };
 
     ssh.enable = true;
 

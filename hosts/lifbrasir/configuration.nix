@@ -74,6 +74,12 @@ in {
     # scheduler. interactive builds stay on whichever machine is asking.
     cache-builder.enable = true;
 
+    # Accept paths signed by the pushing machines. This store refuses unsigned
+    # paths even over an authenticated ssh connection, so without this the
+    # pushes bounce. Deliberately not a `caches` entry: that would also make
+    # this host substitute from itself.
+    nix.trustedKeys = ["dots-push-1:hzd69RP0e91oOy6HkRWlHBIKQa2QCAjo95+gsQlLT64="];
+
     vaultwarden = {
       enable = true;
       fqdn = {
@@ -151,6 +157,9 @@ in {
       enable = true;
       keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHGSLpGhb4X7V6eDVqXq9uzUth9xfHJsSugmOZzS+qt1 user@Linus-PC"
+        # used only by the nix-cache-push drain service, so it is locked to the
+        # nix protocol and cannot be used to get a shell here.
+        ''command="nix-daemon --stdio",restrict ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBwYS/o7jjpBKQFSSDyoxaI/9gTG4nMOW/kW0fjDRxyN dots-cache-push''
       ];
     };
 
