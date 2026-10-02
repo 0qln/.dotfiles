@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Build something here and push it to the binary cache host.
+#
+# The workstation does the compiling; lifbrasir only stores and serves.
+
+set -e
+
+target="${1:-.#cache-all}"
+cache_host="${cache_host:-root@lifbrasir}"
+
+cd ~/.dotfiles || exit 67
+
+out=$(nix build --no-link --print-out-paths "$target")
+
+nix copy --to "ssh-ng://$cache_host" "$out"
+
+# Pushed paths are referenced by nothing over there, so without a root a
+# garbage collection on the cache host would drop them again.
+name="${target##*#}"
+ssh "$cache_host" ln -sfn "$out" "/nix/var/nix/gcroots/dots-cache/${name##*/}"

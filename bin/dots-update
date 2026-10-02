@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd ~/.dotfiles || exit 67
+
+nix flake update "$@"
+
+git add flake.lock
+git commit -m "flake: update ${*:-all inputs}"
+git push

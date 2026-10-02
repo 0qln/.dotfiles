@@ -10,4 +10,4 @@ if [ -z "$action" ]; then
 fi
 
 dots-prepare
-nixos-rebuild "$action" --flake "$HOME/.dotfiles?submodules=1#$output" --impure --show-trace --sudo
+nixos-rebuild "$action" --flake "$HOME/.dotfiles?submodules=1#$output" --show-trace --sudo
