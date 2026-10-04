@@ -9,6 +9,7 @@ with inputs.nixpkgs.lib; {
   # serving traffic. Interactive builds stay on whichever machine is asking.
   flake.nixosModules.cache-builder = {
     config,
+    options,
     pkgs,
     ...
   }: let
@@ -36,6 +37,20 @@ with inputs.nixpkgs.lib; {
           Maintained by hand. The flake's own host collection cannot stand in
           for this: it misses hosts reached through a dendrite path, and it
           carries composition fragments that have no toplevel to build.
+        '';
+      };
+
+      inheritCaches = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Adopt the binary caches of every host in `hosts`.
+
+          A machine can only substitute what its own substituters carry, so a
+          builder missing a cache that one of its targets relies on compiles
+          that host's packages from source instead. Hyprland is the usual
+          case: its cache is registered by the dendrite that installs it,
+          which a headless builder never imports.
         '';
       };
 
@@ -83,6 +98,32 @@ with inputs.nixpkgs.lib; {
     };
 
     config = mkIf cfg.enable {
+      # The caches of the hosts this machine builds for. Without them it is
+      # not a cache builder so much as a compile farm: whatever its targets
+      # would have substituted, it builds from source on their behalf.
+      modules.nix.caches = mkIf cfg.inheritCaches (
+        let
+          # Reading the declaring host's own caches from inside its own
+          # definition of them would not terminate.
+          others = filter (h: h != config.networking.hostName) cfg.hosts;
+
+          harvested =
+            foldl'
+            (acc: h: acc // inputs.self.nixosConfigurations.${h}.config.modules.nix.caches)
+            {}
+            others;
+
+          # Serving a cache and substituting from it are opposites: every
+          # lookup is a guaranteed miss, since harmonia answers out of the very
+          # store the fetch would be writing into.
+          ownCache =
+            if options.modules ? harmonia && config.modules.harmonia.enable
+            then [config.modules.harmonia.fqdn.dn]
+            else [];
+        in
+          removeAttrs harvested ownCache
+      );
+
       sops.secrets = mkIf (cfg.sshKeyFile != null) {
         "cache-builder/sshKey" = {
           sopsFile = cfg.sshKeyFile;
