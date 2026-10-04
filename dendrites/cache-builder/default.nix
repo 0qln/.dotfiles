@@ -27,11 +27,23 @@ with inputs.nixpkgs.lib; {
         '';
       };
 
-      gcRoot = mkOption {
-        type = types.str;
-        default = "/nix/var/nix/gcroots/dots-cache/cache-all";
+      hosts = mkOption {
+        type = types.listOf types.str;
+        default = ["lif" "lifbrasir" "freyja" "loki.lif" "loki.gylfi"];
         description = ''
-          Doubles as the build's out-link. Nothing on this host otherwise
+          The nixosConfigurations to build, by attribute name.
+
+          Maintained by hand. The flake's own host collection cannot stand in
+          for this: it misses hosts reached through a dendrite path, and it
+          carries composition fragments that have no toplevel to build.
+        '';
+      };
+
+      gcRootDir = mkOption {
+        type = types.str;
+        default = "/nix/var/nix/gcroots/dots-cache";
+        description = ''
+          Holds one out-link per host. Nothing on this machine otherwise
           references the other machines' closures, so without a root here they
           are garbage by definition.
         '';
@@ -113,14 +125,32 @@ with inputs.nixpkgs.lib; {
         };
 
         script = ''
-          mkdir -p "$(dirname ${cfg.gcRoot})"
+          mkdir -p ${cfg.gcRootDir}
 
-          # One derivation at a time. The bound here is memory, not cpu: the
-          # evaluator alone holds ~4G for the whole fleet, and whatever builds
-          # alongside it has to fit in what is left of MemoryHigh. Overcommit and
-          # the cgroup reclaims its own page cache away to stay under the
-          # ceiling, which turns the build into disk thrash that never finishes.
-          nix build --max-jobs 1 --out-link ${cfg.gcRoot} "${cfg.flakeRef}#cache-all"
+          # One invocation per host, rather than one build of the whole fleet.
+          # The evaluator keeps every configuration it has read live for as long
+          # as it runs, so reading all of them together costs more than
+          # MemoryHigh allows on its own. The cgroup then reclaims its own page
+          # cache away trying to fit under the ceiling and the build thrashes
+          # instead of finishing. A separate process per host hands that memory
+          # back each time.
+          rc=0
+          for host in ${concatStringsSep " " cfg.hosts}; do
+            echo "building $host"
+
+            # --max-jobs 1 so that one host's own derivations cannot stack up
+            # against the same ceiling either. The attribute name is quoted
+            # because two of these hosts have a dot in their name, which the
+            # flake reference parser would otherwise read as a path separator.
+            nix build --max-jobs 1 \
+              --out-link "${cfg.gcRootDir}/$host" \
+              "${cfg.flakeRef}#nixosConfigurations.\"$host\".config.system.build.toplevel" \
+              || { echo "failed: $host" >&2; rc=1; }
+          done
+
+          # one broken configuration should not keep the rest out of the cache,
+          # but the unit should still come out red.
+          exit $rc
         '';
       };
 

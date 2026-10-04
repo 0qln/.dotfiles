@@ -5,7 +5,7 @@
 
 set -e
 
-target="${1:-.#cache-all}"
+target="${1:?usage: dots-push <flake-target>}"
 lifbrasir="${lifbrasir:-"lifbrasir"}"
 cache_host="${cache_host:-"root@$lifbrasir"}"
 

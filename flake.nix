@@ -250,29 +250,7 @@
 
         systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
 
-        perSystem = {
-          pkgs,
-          system,
-          ...
-        }: {
-          # One derivation referencing every system closure worth caching, so
-          # that filling the cache is a single build and a single gc root on the
-          # far side.
-          #
-          # One derivation referencing every system closure worth caching, so
-          # that filling the cache is a single build and a single gc root.
-          #
-          # Maintained by hand. Add new machines here.
-          packages = lib.optionalAttrs (system == "x86_64-linux") {
-            cache-all = pkgs.linkFarm "dots-cache-all" (
-              ["lif" "lifbrasir" "freyja" "loki.lif" "loki.gylfi"]
-              |> builtins.map (name: {
-                inherit name;
-                path = self.nixosConfigurations.${name}.config.system.build.toplevel;
-              })
-            );
-          };
-
+        perSystem = {pkgs, ...}: {
           devShells.default = with pkgs; let
             lifbrasir = (vars pkgs).hosts.lifbrasir.fqdns.primary.dn;
 
