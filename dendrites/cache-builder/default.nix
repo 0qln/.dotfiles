@@ -115,7 +115,12 @@ with inputs.nixpkgs.lib; {
         script = ''
           mkdir -p "$(dirname ${cfg.gcRoot})"
 
-          nix build --out-link ${cfg.gcRoot} "${cfg.flakeRef}#cache-all"
+          # One derivation at a time. The bound here is memory, not cpu: the
+          # evaluator alone holds ~4G for the whole fleet, and whatever builds
+          # alongside it has to fit in what is left of MemoryHigh. Overcommit and
+          # the cgroup reclaims its own page cache away to stay under the
+          # ceiling, which turns the build into disk thrash that never finishes.
+          nix build --max-jobs 1 --out-link ${cfg.gcRoot} "${cfg.flakeRef}#cache-all"
         '';
       };
 
