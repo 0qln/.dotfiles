@@ -61,12 +61,22 @@ with inputs.nixpkgs.lib; {
               }
               (mkIf config.settings.enableWorkSimple {
                 ado-unicornde = {
-                  command = "npx";
-                  args = ["-y" "@azure-devops/mcp" "unicornde" "--authentication" "pat"];
-                  # The server wants the generic `PERSONAL_ACCESS_TOKEN`; keep that
-                  # name out of the login shell and map it in per-server instead.
-                  # Value is base64 of `<email>:<pat>`, from the clanker dotenv.
-                  env.PERSONAL_ACCESS_TOKEN = "\${ADO_MCP_PAT}";
+                  command = getExe pkgs.bash;
+                  args = [
+                    "-c"
+                    ''
+                      # @azure-devops/mcp depends on keytar, which dlopens libsecret
+                      # and glib; neither is on the default library path on NixOS.
+                      export LD_LIBRARY_PATH=${makeLibraryPath [pkgs.libsecret pkgs.glib]}
+                      # The server wants base64 of `<user>:<pat>` in the generic
+                      # PERSONAL_ACCESS_TOKEN. The user half is ignored as long as it
+                      # is non-empty, and the sops secret holds the PAT verbatim as
+                      # Azure DevOps issues it. Built here so the generic name never
+                      # enters the login shell.
+                      export PERSONAL_ACCESS_TOKEN="$(printf '%s' "mcp:$ADO_MCP_PAT" | base64 -w0)"
+                      exec npx -y @azure-devops/mcp unicornde --authentication pat
+                    ''
+                  ];
                 };
               })
             ];

@@ -43,6 +43,24 @@ in
         in
           attrsets.mapAttrs' mkSecret cfg.secretFiles;
 
+        # VS Code runs no shell startup files when it starts its remote server,
+        # so the sourcing in initExtra never reaches anything it launches (most
+        # visibly Claude Code and the MCP servers it spawns). This hook is read
+        # before the server starts. An erroring script blocks VS Code from
+        # starting at all, so every line here has to be non-fatal.
+        home.file.".vscode-server/server-env-setup".text = ''
+          ${
+            with lib.strings;
+              concatLines (
+                attrsets.mapAttrsToList (name: _: let
+                  path = config.sops.secrets.${secretName name}.path;
+                in ''if [ -r "${path}" ]; then set -a; . "${path}"; set +a; fi'')
+                cfg.secretFiles
+              )
+          }
+          true
+        '';
+
         programs.bash = {
           enable = true;
           # Setting session variables normally is broken when using home-manager ;(
@@ -77,7 +95,7 @@ in
             ${
               with lib.strings;
                 concatLines (
-                  attrsets.mapAttrsToList (name: _: ''source "${config.sops.secrets.${secretName name}.path}"'') cfg.secretFiles
+                  attrsets.mapAttrsToList (name: _: ''set -a; source "${config.sops.secrets.${secretName name}.path}"; set +a'') cfg.secretFiles
                 )
             }
           '';
