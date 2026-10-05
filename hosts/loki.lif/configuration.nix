@@ -14,6 +14,7 @@ in
         flake.nixosModules.kimai
 
         ./mount.nix
+        ./wslconfig.nix
       ];
 
       modules = {
