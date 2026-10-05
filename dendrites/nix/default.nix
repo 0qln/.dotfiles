@@ -202,6 +202,22 @@ with inputs.nixpkgs.lib; {
       {
         nixpkgs.config.allowUnfree = mkDefault true;
 
+        nix.gc = {
+          automatic = mkDefault true;
+          dates = mkDefault "weekly";
+          persistent = mkDefault true;
+          randomizedDelaySec = mkDefault "45min";
+          options = mkDefault "--delete-older-than 30d";
+        };
+
+        # Hardlinks identical files in the store together. Deliberately a
+        # scheduled job rather than `auto-optimise-store`, which does the same
+        # work inline and so charges it to every single build instead.
+        nix.optimise = {
+          automatic = mkDefault true;
+          dates = mkDefault ["weekly"];
+        };
+
         nix.settings = mkMerge (
           (let
             mkSubstituter = fqdn: key: {
