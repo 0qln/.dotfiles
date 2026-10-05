@@ -1314,6 +1314,7 @@
         "sops-nix": "sops-nix",
         "sparkyfitness": "sparkyfitness",
         "waybar": "waybar",
+        "ws-skills": "ws-skills",
         "zen-browser": "zen-browser"
       }
     },
@@ -1495,6 +1496,21 @@
         "owner": "Alexays",
         "repo": "Waybar",
         "type": "github"
+      }
+    },
+    "ws-skills": {
+      "locked": {
+        "lastModified": 1791236275,
+        "narHash": "sha256-6ubaGDB9aWT/2zn7B/DCxf0xTk2onIig2OV8bpNF8Aw=",
+        "ref": "refs/heads/main",
+        "rev": "978d02ced6c3ab183436347f407faf9229b74129",
+        "revCount": 28,
+        "type": "git",
+        "url": "https://github.com/WorkSimple-GmbH/skills"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://github.com/WorkSimple-GmbH/skills"
       }
     },
     "xdph": {

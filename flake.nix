@@ -47,6 +47,15 @@
       };
     };
 
+    # WorkSimple agent skills. `git+https` rather than `github:` because
+    # the repo is private: the `github:` fetcher goes through the GitHub
+    # API and 404s without an `access-tokens` entry in nix.conf, while
+    # `git+https` shells out to git and reuses the usual credentials.
+    # Input-free upstream, so there is nothing to `follows`.
+    ws-skills = {
+      url = "git+https://github.com/WorkSimple-GmbH/skills";
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -28,6 +28,13 @@ with inputs.nixpkgs.lib; {
 
     config = let
       cfg = config.modules.clanker;
+
+      # Skill name -> source directory; the attrset form merges with any
+      # skills defined elsewhere, unlike `lib.skillsPath`. WorkSimple's
+      # skills are Odoo-internal, so gate them like the ado MCP server.
+      wsSkills =
+        optionalAttrs config.settings.enableWorkSimple
+        inputs.ws-skills.lib.skills;
     in
       mkIf cfg.enable (mkMerge [
         # global clankkker setup
@@ -74,7 +81,7 @@ with inputs.nixpkgs.lib; {
               settings = {
                 includeCoAuthoredBy = false;
               };
-              skills = {};
+              skills = wsSkills;
               lspServers = {
                 rust = {
                   command = "${getExe pkgs.rust-analyzer}";
@@ -113,7 +120,7 @@ with inputs.nixpkgs.lib; {
                   config.vars.flake.dir
                 ];
               };
-              skills = {};
+              skills = wsSkills;
               lspServers = {
                 rust = {
                   command = "${getExe pkgs.rust-analyzer}";
