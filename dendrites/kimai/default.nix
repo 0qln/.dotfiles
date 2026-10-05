@@ -81,10 +81,117 @@ with inputs.nixpkgs.lib; {
       };
 
       # vscode runs on the windows side through the wsl extension, so the
-      # language server lives in this distro and sees these paths unchanged.
-      # open the workspace, not a single plugin, so that this applies. the
-      # debug configuration is user level, in the windows settings.json, next
-      # to the odoo one.
+      # language server, the debug adapter and these tasks all live in this
+      # distro and see these paths unchanged. open the workspace, not a single
+      # plugin, so that the three files below apply.
+      # the two commands worth remembering, as buttons: the debug session owns
+      # the server, starting it through preLaunchTask and killing it again
+      # through postDebugTask, so the green arrow and the red square in the
+      # debug toolbar are the whole interface.
+      home.file."${pluginsDirRel}/.vscode/tasks.json" = {
+        force = true;
+        text =
+          # json
+          ''
+            {
+              "version": "2.0.0",
+              "tasks": [
+                {
+                  "label": "kimai: serve (xdebug)",
+                  "type": "shell",
+                  "command": "distrobox enter ${containerName} -- env KIMAI_DEBUG_PORT=9003 kimai-wrap",
+                  // the server never exits, so vscode has to be told to stop
+                  // waiting for it. the matcher never matches anything: it is
+                  // here only to carry the two patterns that bracket startup,
+                  // and the end one is php's own line as it binds the port.
+                  "isBackground": true,
+                  "problemMatcher": {
+                    "owner": "kimai",
+                    "pattern": [
+                      {
+                        "regexp": "$^",
+                        "file": 1,
+                        "line": 2,
+                        "message": 3
+                      }
+                    ],
+                    "background": {
+                      "activeOnStart": true,
+                      "beginsPattern": "^database:",
+                      "endsPattern": "Development Server \\(.*\\) started"
+                    }
+                  },
+                  "presentation": {
+                    "panel": "dedicated",
+                    "reveal": "always",
+                    "clear": true
+                  }
+                },
+                {
+                  "label": "kimai: console command (xdebug)",
+                  "type": "shell",
+                  // start the listener first: xdebug dials out, and a command
+                  // that finds nobody there simply runs to completion.
+                  "command": "distrobox enter ${containerName} -- env KIMAI_DEBUG_PORT=9003 kimai-wrap console ''${input:kimaiConsoleCommand}",
+                  "problemMatcher": [],
+                  "presentation": {
+                    "panel": "dedicated",
+                    "reveal": "always",
+                    "clear": true
+                  }
+                },
+                {
+                  "label": "kimai: stop",
+                  "type": "shell",
+                  // ending the debug session runs this. the wrapper kills the
+                  // pid it recorded when it started, so this works whether or
+                  // not the server was started with xdebug enabled.
+                  "command": "distrobox enter ${containerName} -- kimai-wrap stop",
+                  "problemMatcher": [],
+                  "presentation": {
+                    "panel": "shared",
+                    "reveal": "silent",
+                    "close": true
+                  }
+                }
+              ],
+              "inputs": [
+                {
+                  "id": "kimaiConsoleCommand",
+                  "type": "promptString",
+                  "description": "bin/console arguments",
+                  "default": "list"
+                }
+              ]
+            }
+          '';
+      };
+
+      home.file."${pluginsDirRel}/.vscode/launch.json" = {
+        force = true;
+        text =
+          # json
+          ''
+            {
+              // xdebug dials the editor rather than the other way round, so this
+              // listens, and the port has to be the KIMAI_DEBUG_PORT the serve
+              // task passes. no pathMappings: the adapter runs in this distro
+              // and the container's paths are already these paths.
+              "version": "0.2.0",
+              "configurations": [
+                {
+                  "name": "kimai: serve and debug",
+                  "type": "php",
+                  "request": "launch",
+                  "port": 9003,
+                  "preLaunchTask": "kimai: serve (xdebug)",
+                  "postDebugTask": "kimai: stop"
+                }
+              ]
+            }
+          '';
+      };
+
       home.file."${pluginsDirRel}/.vscode/settings.json" = {
         force = true;
         text =
@@ -117,6 +224,55 @@ with inputs.nixpkgs.lib; {
             KIMAI_DIR="$HOME/repos/kimai"
             WS_DIR="${pluginsDir}"
             PORT="''${KIMAI_PORT:-8001}"
+            PID_FILE="$KIMAI_DIR/var/kimai-wrap.pid"
+
+            # `kimai-wrap stop` is the other half of the vscode task pair. the
+            # pid file is exact, which a pattern is not: with KIMAI_DEBUG_PORT
+            # set the command line reads `php -d xdebug... -S 0.0.0.0:8001`, so
+            # anything matching on `php -S` quietly misses the debug server.
+            if [ "''${1:-}" = "stop" ]; then
+              if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+                kill "$(cat "$PID_FILE")"
+                rm -f "$PID_FILE"
+                echo "stopped" >&2
+              # a server from before this wrote pid files, or one started by
+              # hand. the bracket keeps the pattern off this command's own
+              # argv, which pkill can see: distrobox shares the host pid
+              # namespace, so the two sides watch the same process table.
+              elif pkill -f -- '-S 0[.]0.0.0:8001'; then
+                rm -f "$PID_FILE"
+                echo "stopped (found by port)" >&2
+              else
+                echo "no server running" >&2
+              fi
+              exit 0
+            fi
+
+            # the same flags arm the debugger for the server and for a console
+            # command: xdebug dials the editor, so all it needs is the port the
+            # listener sits on. without them a php process here has no debugger
+            # at all, since xdebug.mode is off container-wide.
+            PHP_ARGS=()
+            if [ -n "''${KIMAI_DEBUG_PORT:-}" ]; then
+              echo "xdebug:      connecting to a client on 127.0.0.1:$KIMAI_DEBUG_PORT" >&2
+              PHP_ARGS+=(
+                -d xdebug.mode=debug
+                -d xdebug.start_with_request=yes
+                -d xdebug.discover_client_host=false
+                -d xdebug.client_host=127.0.0.1
+                -d xdebug.client_port="$KIMAI_DEBUG_PORT"
+              )
+            fi
+
+            # `kimai-wrap console <command ...>` is `bin/console` with those
+            # flags in front of it. the plugin links are left alone: a console
+            # command runs against whatever the server last set up.
+            if [ "''${1:-}" = "console" ]; then
+              shift
+              sudo service mariadb start >/dev/null
+              cd "$KIMAI_DIR"
+              exec php "''${PHP_ARGS[@]}" bin/console "$@"
+            fi
 
             sudo service mariadb start >/dev/null
 
@@ -156,21 +312,13 @@ with inputs.nixpkgs.lib; {
             # this to be rerun after every change.
             php bin/console assets:install --symlink
 
-            PHP_ARGS=()
-            if [ -n "''${KIMAI_DEBUG_PORT:-}" ]; then
-              echo "xdebug:      connecting to a client on 127.0.0.1:$KIMAI_DEBUG_PORT" >&2
-              PHP_ARGS+=(
-                -d xdebug.mode=debug
-                -d xdebug.start_with_request=yes
-                -d xdebug.discover_client_host=false
-                -d xdebug.client_host=127.0.0.1
-                -d xdebug.client_port="$KIMAI_DEBUG_PORT"
-              )
-            fi
-
             # symfony dropped server:start years ago; php's own server is what is
             # left, and it is enough for one developer and one debug session.
             # wsl forwards localhost, so this is http://localhost:$PORT on windows.
+            # exec hands this shell's pid straight to php, so $$ written here is
+            # the pid `kimai-wrap stop` will signal.
+            echo $$ > "$PID_FILE"
+
             echo "serving:     http://0.0.0.0:$PORT" >&2
             exec php "''${PHP_ARGS[@]}" -S "0.0.0.0:$PORT" -t public
           '';
@@ -309,6 +457,13 @@ with inputs.nixpkgs.lib; {
             if ! grep -qF 'PATH="$HOME/bin:$PATH"' ~/.bashrc; then
               echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
             fi
+
+            # that only covers interactive shells. `distrobox enter -- cmd` runs
+            # no profile at all and comes with the stock PATH, so the wrapper
+            # also goes where that PATH already looks. the link points at the
+            # stable ~/bin path, not at the nix store path behind it, so it
+            # survives a new home-manager generation.
+            sudo ln -sf "$HOME/bin/kimai-wrap" /usr/local/bin/kimai-wrap
 
             echo "Kimai setup complete. Run start-kimai.sh to start the dev server."
           '';
