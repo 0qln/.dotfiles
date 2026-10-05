@@ -29,6 +29,30 @@ with inputs.nixpkgs.lib; {
     containerName = "odoo_ubuntu";
     containerHome = "${config.home.homeDirectory}/.distrobox/${containerName}";
     inherit (config.home) username;
+
+    # the container's filesystem sits behind a rootless-podman user namespace,
+    # so a language server running out here cannot read the container
+    # interpreter's stdlib or dist-packages. this nixos-side interpreter is
+    # only ever used for editor analysis: it matches the container's python
+    # minor version and carries the third-party libraries odoo and the
+    # worksimple addons import, so pylance resolves them. odoo itself is
+    # picked up from the checkout through python.analysis.extraPaths.
+    analysisPython = pkgs.python312.withPackages (ps:
+      with ps; [
+        babel
+        decorator
+        jinja2
+        lxml
+        markupsafe
+        passlib
+        pillow
+        psutil
+        psycopg2
+        python-dateutil
+        pytz
+        requests
+        werkzeug
+      ]);
   in {
     options.modules.odoo = {
       enable = mkEnableOption "odoo";
@@ -49,31 +73,118 @@ with inputs.nixpkgs.lib; {
     ];
 
     config = mkIf cfg.enable {
-      # the container's filesystem sits behind a rootless-podman user namespace,
-      # so a language server running out here cannot read the container
-      # interpreter's stdlib or dist-packages. this nixos-side interpreter is
-      # only ever used for editor analysis: it matches the container's python
-      # minor version and carries the third-party libraries odoo and the
-      # worksimple addons import, so pylance resolves them. odoo itself is
-      # picked up from the checkout through python.analysis.extraPaths.
-      home.packages = [
-        (pkgs.python312.withPackages (ps:
-          with ps; [
-            babel
-            decorator
-            jinja2
-            lxml
-            markupsafe
-            passlib
-            pillow
-            psutil
-            psycopg2
-            python-dateutil
-            pytz
-            requests
-            werkzeug
-          ]))
-      ];
+      home.packages = [analysisPython];
+
+      # the same buttons kimai has, kept here rather than in the windows
+      # settings.json so that this repository is where they are defined. a
+      # workspace file rather than ws-odoo/.vscode because ws-odoo is a
+      # checkout: a generated file inside it would both block the clone and
+      # show up as a change in that repository. open it with
+      # "File > Open Workspace from File...".
+      home.file."repos/odoo.code-workspace" = {
+        force = true;
+        text =
+          # json
+          ''
+            {
+              "folders": [
+                {
+                  "name": "ws-odoo",
+                  "path": "${containerHome}/repos/ws-odoo"
+                }
+              ],
+              "settings": {
+                "python.defaultInterpreterPath": "${analysisPython}/bin/python3",
+                "python.analysis.extraPaths": [
+                  "${containerHome}/repos/odoo",
+                  "${containerHome}/repos/odoo/addons",
+                  "${containerHome}/repos/enterprise"
+                ]
+              },
+              "tasks": {
+                "version": "2.0.0",
+                "tasks": [
+                  {
+                    "label": "odoo: serve (debugpy)",
+                    "type": "shell",
+                    "command": "distrobox enter ${containerName} -- env ODOO_DEBUG_PORT=5678 odoo-wrap",
+                    // debugpy waits for the client, so this task never
+                    // finishes on its own and vscode has to be told to stop
+                    // waiting. the end pattern is odoo-wrap announcing that
+                    // debugpy is listening, which is exactly the moment the
+                    // attach below can connect.
+                    "isBackground": true,
+                    "problemMatcher": {
+                      "owner": "odoo",
+                      "pattern": [
+                        {
+                          "regexp": "$^",
+                          "file": 1,
+                          "line": 2,
+                          "message": 3
+                        }
+                      ],
+                      "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": "^database:",
+                        "endsPattern": "waiting for a client"
+                      }
+                    },
+                    "presentation": {
+                      "panel": "dedicated",
+                      "reveal": "always",
+                      "clear": true
+                    }
+                  },
+                  {
+                    "label": "odoo: serve",
+                    "type": "shell",
+                    "command": "distrobox enter ${containerName} -- odoo-wrap",
+                    "problemMatcher": [],
+                    "presentation": {
+                      "panel": "dedicated",
+                      "reveal": "always",
+                      "clear": true
+                    }
+                  },
+                  {
+                    "label": "odoo: stop",
+                    "type": "shell",
+                    "command": "distrobox enter ${containerName} -- odoo-wrap stop",
+                    "problemMatcher": [],
+                    "presentation": {
+                      "panel": "shared",
+                      "reveal": "silent",
+                      "close": true
+                    }
+                  }
+                ]
+              },
+              "launch": {
+                // the opposite of kimai's: debugpy is the server here and the
+                // editor dials it, which is why this is an attach. the port
+                // has to be the ODOO_DEBUG_PORT the serve task passes. no
+                // pathMappings: through the wsl extension the adapter runs in
+                // this distro and the container's paths are already these.
+                "version": "0.2.0",
+                "configurations": [
+                  {
+                    "name": "odoo: serve and debug",
+                    "type": "debugpy",
+                    "request": "attach",
+                    "connect": {
+                      "host": "127.0.0.1",
+                      "port": 5678
+                    },
+                    "justMyCode": false,
+                    "preLaunchTask": "odoo: serve (debugpy)",
+                    "postDebugTask": "odoo: stop"
+                  }
+                ]
+              }
+            }
+          '';
+      };
 
       home.file.".distrobox/${containerName}/odoo.conf" = {
         force = true;
@@ -358,8 +469,14 @@ with inputs.nixpkgs.lib; {
             # landed owned by a subuid: sources that are read-only on the nixos
             # side, which is where the editor runs, and a credential file the
             # user that actually runs odoo cannot read. hand them over.
+            # .local and .cache matter as much as the checkouts: pip installed
+            # debugpy as root, which created ~/.local, and odoo keeps its
+            # filestore under ~/.local/share/Odoo -- it cannot start without
+            # being able to write there.
             for path in \
               "${containerHome}/repos" \
+              "${containerHome}/.local" \
+              "${containerHome}/.cache" \
               "${containerHome}/.git-credentials" \
               "${containerHome}/.config/git"; do
               if [ -e "$path" ]; then

@@ -186,6 +186,15 @@ with inputs.nixpkgs.lib; {
                   "port": 9003,
                   "preLaunchTask": "kimai: serve (xdebug)",
                   "postDebugTask": "kimai: stop"
+                },
+                {
+                  // the same listener without the server attached to it, for a
+                  // server already running in a terminal, or for debugging a
+                  // console command, which starts and ends on its own.
+                  "name": "kimai: listen for xdebug",
+                  "type": "php",
+                  "request": "launch",
+                  "port": 9003
                 }
               ]
             }
@@ -450,8 +459,19 @@ with inputs.nixpkgs.lib; {
             # init_hooks run as root, so everything above landed root-owned.
             # kimai-wrap runs as ${username} and has to write var/cache, var/log
             # and the var/plugins links, and the editor out on the host side has
-            # to be able to read the sources it indexes.
-            sudo chown -R ${username}:${username} "${containerHome}/repos"
+            # to be able to read the sources it indexes. the caches belong to
+            # the same problem: composer and npm wrote them as root, and the
+            # user that runs them next cannot.
+            for path in \
+              "${containerHome}/repos" \
+              "${containerHome}/.local" \
+              "${containerHome}/.cache" \
+              "${containerHome}/.npm" \
+              "${containerHome}/.config/composer"; do
+              if [ -e "$path" ]; then
+                sudo chown -R ${username}:${username} "$path"
+              fi
+            done
 
             # add ~/bin to PATH
             if ! grep -qF 'PATH="$HOME/bin:$PATH"' ~/.bashrc; then
