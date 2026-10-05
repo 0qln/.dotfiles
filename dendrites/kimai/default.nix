@@ -29,6 +29,16 @@ with inputs.nixpkgs.lib; {
     containerName = "kimai_ubuntu";
     containerHome = "${config.home.homeDirectory}/.distrobox/${containerName}";
     inherit (config.home) username;
+
+    # the plugin checkouts stay out here rather than in the container home:
+    # init_hooks run as root, so anything the container creates is owned by a
+    # subuid and is read-only from this side, which is the side the editor
+    # runs on. the workspace is bind-mounted into the container at this very
+    # same path, so a symlink into var/plugins resolves in both namespaces.
+    pluginsDirRel = "repos/ws-kimai";
+    pluginsDir = "${config.home.homeDirectory}/${pluginsDirRel}";
+
+    kimaiDir = "${containerHome}/repos/kimai";
   in {
     options.modules.kimai = {
       enable = mkEnableOption "kimai";
@@ -70,6 +80,113 @@ with inputs.nixpkgs.lib; {
         };
       };
 
+      # vscode runs on the windows side through the wsl extension, so the
+      # language server lives in this distro and sees these paths unchanged.
+      # open the workspace, not a single plugin, so that this applies. the
+      # debug configuration is user level, in the windows settings.json, next
+      # to the odoo one.
+      home.file."${pluginsDirRel}/.vscode/settings.json" = {
+        force = true;
+        text =
+          # json
+          ''
+            {
+              // a plugin checkout carries none of the kimai or symfony sources
+              // its classes extend, so intelephense is pointed at the checkout
+              // in the container home. reading it from out here is fine; it is
+              // only writes that the podman user namespace blocks.
+              "intelephense.environment.phpVersion": "8.2.0",
+              "intelephense.environment.includePaths": [
+                "${kimaiDir}/src",
+                "${kimaiDir}/vendor"
+              ]
+            }
+          '';
+      };
+
+      home.file.".distrobox/${containerName}/bin/kimai-wrap" = {
+        executable = true;
+        force = true;
+        text =
+          # bash
+          ''
+            #!/usr/bin/env bash
+
+            set -euo pipefail
+
+            KIMAI_DIR="$HOME/repos/kimai"
+            WS_DIR="${pluginsDir}"
+            PORT="''${KIMAI_PORT:-8001}"
+
+            sudo service mariadb start >/dev/null
+
+            # kimai discovers a plugin as a directory named *Bundle sitting
+            # directly in var/plugins. a workspace checkout is either the bundle
+            # itself (EfecteSyncBundle/) or a repository that wraps one
+            # (Worksimple.KimaiEfecteSyncPlugin/EfecteSyncBundle), so the bundles
+            # are the *Bundle directories carrying a composer.json.
+            ws_bundles() {
+              find "$WS_DIR" -mindepth 1 -maxdepth 2 -type d -name '*Bundle' \
+                -exec test -f '{}/composer.json' \; -print | sort -u
+            }
+
+            mkdir -p "$KIMAI_DIR/var/plugins"
+
+            # links whose checkout left the workspace would abort the kernel
+            # boot, so clear the dangling ones before relinking.
+            find "$KIMAI_DIR/var/plugins" -maxdepth 1 -type l ! -exec test -e '{}' \; -delete
+
+            while read -r bundle; do
+              [ -n "$bundle" ] || continue
+              ln -sfn "$bundle" "$KIMAI_DIR/var/plugins/$(basename "$bundle")"
+            done < <(ws_bundles)
+
+            echo "database:    ${cfg.dbName}" >&2
+            echo "kimai:       $KIMAI_DIR" >&2
+            echo "plugins:     $(ws_bundles | xargs -r -n1 basename | paste -sd, -)" >&2
+
+            cd "$KIMAI_DIR"
+
+            # the bundle list is baked into the compiled container, so a changed
+            # set of links only takes effect after kimai drops its caches.
+            php bin/console kimai:reload --env=dev
+
+            # a plugin ships its public assets inside the bundle; symlinking
+            # them into public/bundles keeps an edit live instead of needing
+            # this to be rerun after every change.
+            php bin/console assets:install --symlink
+
+            PHP_ARGS=()
+            if [ -n "''${KIMAI_DEBUG_PORT:-}" ]; then
+              echo "xdebug:      connecting to a client on 127.0.0.1:$KIMAI_DEBUG_PORT" >&2
+              PHP_ARGS+=(
+                -d xdebug.mode=debug
+                -d xdebug.start_with_request=yes
+                -d xdebug.discover_client_host=false
+                -d xdebug.client_host=127.0.0.1
+                -d xdebug.client_port="$KIMAI_DEBUG_PORT"
+              )
+            fi
+
+            # symfony dropped server:start years ago; php's own server is what is
+            # left, and it is enough for one developer and one debug session.
+            # wsl forwards localhost, so this is http://localhost:$PORT on windows.
+            echo "serving:     http://0.0.0.0:$PORT" >&2
+            exec php "''${PHP_ARGS[@]}" -S "0.0.0.0:$PORT" -t public
+          '';
+      };
+
+      home.file.".distrobox/${containerName}/start-kimai.sh" = {
+        executable = true;
+        force = true;
+        text =
+          # bash
+          ''
+            #!/usr/bin/env bash
+            exec "$HOME/bin/kimai-wrap" "$@"
+          '';
+      };
+
       home.file.".distrobox/${containerName}/setup-container.sh" = {
         executable = true;
         force = true;
@@ -106,13 +223,26 @@ with inputs.nixpkgs.lib; {
               php8.2-opcache \
               php8.2-bcmath \
               php8.2-pdo \
+              php8.2-xdebug \
               unzip \
               git \
               curl \
               mariadb-server \
-              mariadb-client \
-              nodejs \
-              npm
+              mariadb-client
+
+            # ubuntu 24.04 ships node 18, but the kimai frontend build needs 20.9
+            # or newer: css-minimizer and serialize-javascript reach for the
+            # global `crypto`, which older node does not have, and webpack dies
+            # with "ReferenceError: crypto is not defined" halfway through.
+            # nodesource's package carries npm, so ubuntu's npm stays out of it.
+            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+
+            # xdebug ships enabled in develop mode, which taxes every request
+            # for stack traces nobody asked for. kimai-wrap turns the debugger
+            # on per run instead, via -d flags.
+            echo 'xdebug.mode=off' | sudo tee /etc/php/8.2/mods-available/xdebug-mode.ini >/dev/null
+            sudo phpenmod xdebug-mode
 
             # install composer
             if ! command -v composer &>/dev/null; then
@@ -135,24 +265,25 @@ with inputs.nixpkgs.lib; {
             sudo mysql -e "GRANT ALL PRIVILEGES ON ${cfg.dbName}.* TO '${username}'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null || true
 
             # clone kimai source if not already present
-            if [ ! -d "${containerHome}/repos/kimai" ]; then
+            if [ ! -d "${kimaiDir}" ]; then
               mkdir -p "${containerHome}/repos"
               git clone \
                 --branch ${cfg.branch} \
                 --single-branch \
                 https://github.com/kimai/kimai.git \
-                "${containerHome}/repos/kimai"
+                "${kimaiDir}"
             fi
 
             # install PHP dependencies
-            cd "${containerHome}/repos/kimai"
+            cd "${kimaiDir}"
             composer install --no-interaction --optimize-autoloader
 
             # write .env.local if not present
             if [ ! -f .env.local ]; then
-              cat > .env.local << 'ENVEOF'
+              app_secret="$(openssl rand -hex 16)"
+              cat > .env.local << ENVEOF
             APP_ENV=dev
-            APP_SECRET=$(openssl rand -hex 16)
+            APP_SECRET=$app_secret
             DATABASE_URL="mysql://${username}:kimai@127.0.0.1:3306/${cfg.dbName}?serverVersion=mariadb-10.6.0&charset=utf8mb4"
             ENVEOF
             fi
@@ -168,29 +299,18 @@ with inputs.nixpkgs.lib; {
             # create an initial admin user (skip if already exists)
             php bin/console kimai:user:create admin admin@example.com ROLE_SUPER_ADMIN kimai_admin 2>/dev/null || true
 
+            # init_hooks run as root, so everything above landed root-owned.
+            # kimai-wrap runs as ${username} and has to write var/cache, var/log
+            # and the var/plugins links, and the editor out on the host side has
+            # to be able to read the sources it indexes.
+            sudo chown -R ${username}:${username} "${containerHome}/repos"
+
             # add ~/bin to PATH
             if ! grep -qF 'PATH="$HOME/bin:$PATH"' ~/.bashrc; then
               echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
             fi
 
             echo "Kimai setup complete. Run start-kimai.sh to start the dev server."
-          '';
-      };
-
-      home.file.".distrobox/${containerName}/bin/start-kimai" = {
-        executable = true;
-        force = true;
-        text =
-          # bash
-          ''
-            #!/usr/bin/env bash
-
-            set -e
-
-            sudo service mariadb start
-
-            cd "${containerHome}/repos/kimai"
-            php bin/console server:start 0.0.0.0:8001 "$@"
           '';
       };
 
@@ -201,6 +321,7 @@ with inputs.nixpkgs.lib; {
           image=docker.io/library/ubuntu:24.04
           pull=true
           home=${containerHome}
+          volume=${pluginsDir}:${pluginsDir}
 
           init_hooks=${containerHome}/setup-container.sh
         '';
