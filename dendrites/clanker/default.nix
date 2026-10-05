@@ -56,12 +56,17 @@ with inputs.nixpkgs.lib; {
                 github = {
                   type = "http";
                   url = "https://api.githubcopilot.com/mcp/";
+                  headers.Authorization = "Bearer \${GITHUB_MCP_PAT}";
                 };
               }
               (mkIf config.settings.enableWorkSimple {
-                ado-remote-unicornde = {
-                  type = "http";
-                  url = "https://mcp.dev.azure.com/unicornde";
+                ado-unicornde = {
+                  command = "npx";
+                  args = ["-y" "@azure-devops/mcp" "unicornde" "--authentication" "pat"];
+                  # The server wants the generic `PERSONAL_ACCESS_TOKEN`; keep that
+                  # name out of the login shell and map it in per-server instead.
+                  # Value is base64 of `<email>:<pat>`, from the clanker dotenv.
+                  env.PERSONAL_ACCESS_TOKEN = "\${ADO_MCP_PAT}";
                 };
               })
             ];
