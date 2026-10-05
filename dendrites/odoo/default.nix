@@ -111,6 +111,20 @@ with inputs.nixpkgs.lib; {
 
             sudo service postgresql start >/dev/null
 
+            # the submodules come over ssh and the key github accepts carries a
+            # passphrase, so only the forwarded agent can fetch them -- which
+            # is why this is here and not in setup-container.sh. git marks an
+            # uninitialised submodule with a leading '-'.
+            if git -C "$WS_DIR" submodule status --recursive | grep -q '^-'; then
+              echo "submodules:  checking out the ones that are missing" >&2
+              git -C "$WS_DIR" submodule update --init --recursive || {
+                echo "submodules:  failed. 'ssh-add -l' in here should list a key;" >&2
+                echo "             without the forwarded agent the passphrase on" >&2
+                echo "             ~/.ssh/id_ed25519 cannot be supplied." >&2
+                exit 1
+              }
+            fi
+
             # workspace addons live either at the workspace root
             # (worksimple_project/__manifest__.py) or one level down inside a
             # submodule that bundles several (ecoservice/eco_base/__manifest__.py),
@@ -247,6 +261,23 @@ with inputs.nixpkgs.lib; {
               fi
             fi
 
+            # the workspace submodules are fetched over ssh later, from odoo-wrap.
+            # github is in no known_hosts here (nor on the host, which reaches
+            # github over https), so ssh would stop at host key verification
+            # before it ever offers a key. the fingerprint is github's
+            # published one; a mismatch means something is wrong, not that it
+            # should be accepted.
+            if ! grep -q '^github.com ' "$HOME/.ssh/known_hosts" 2>/dev/null; then
+              scanned="$(ssh-keyscan -t ed25519 github.com 2>/dev/null)"
+              if [ "$(printf '%s' "$scanned" | ssh-keygen -lf - | awk '{print $2}')" \
+                = "SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU" ]; then
+                printf '%s\n' "$scanned" >> "$HOME/.ssh/known_hosts"
+              else
+                echo "github host key did not match the published fingerprint" >&2
+                exit 1
+              fi
+            fi
+
             # clone odoo source if not already present
             if [ ! -d "${containerHome}/repos/odoo" ]; then
               mkdir -p "${containerHome}/repos"
@@ -266,13 +297,16 @@ with inputs.nixpkgs.lib; {
                 "${containerHome}/repos/enterprise"
             fi
 
-            # the worksimple addon workspace. its submodules are cloned over ssh,
-            # which works because ~/.ssh is copied into the container home.
+            # the worksimple addon workspace. only the parent is cloned here: its
+            # submodules are declared with git@github.com: urls, and the key
+            # github accepts is passphrase-protected, so nothing but the ssh
+            # agent can use it. init hooks run at container init, as root, with
+            # no user session and therefore no agent -- odoo-wrap picks the
+            # submodules up instead, where `distrobox enter` has forwarded it.
             if [ ! -d "${containerHome}/repos/ws-odoo" ]; then
               mkdir -p "${containerHome}/repos"
               git clone \
                 --branch staging \
-                --recurse-submodules \
                 https://github.com/workSimple-GmbH/odoo \
                 "${containerHome}/repos/ws-odoo"
             fi
@@ -292,10 +326,30 @@ with inputs.nixpkgs.lib; {
             pip3 install --break-system-packages --user \
               -r "${containerHome}/repos/ws-odoo/requirements.txt"
 
+            # init_hooks run as root, so everything cloned and configured above
+            # landed owned by a subuid: sources that are read-only on the nixos
+            # side, which is where the editor runs, and a credential file the
+            # user that actually runs odoo cannot read. hand them over.
+            for path in \
+              "${containerHome}/repos" \
+              "${containerHome}/.git-credentials" \
+              "${containerHome}/.config/git"; do
+              if [ -e "$path" ]; then
+                chown -R ${username}:${username} "$path"
+              fi
+            done
+
             # add ~/bin to PATH
             if ! grep -qF 'PATH="$HOME/bin:$PATH"' ~/.bashrc; then
               echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
             fi
+
+            # that only covers interactive shells. `distrobox enter -- cmd`
+            # runs no profile and comes with the stock PATH, so the wrapper
+            # also goes where that PATH already looks. the link points at the
+            # stable ~/bin path, not at the nix store path behind it, so it
+            # survives a new home-manager generation.
+            sudo ln -sf "$HOME/bin/odoo-wrap" /usr/local/bin/odoo-wrap
           '';
       };
 
