@@ -86,9 +86,14 @@ with inputs.nixpkgs.lib; {
             db_port = 5432
             db_user = odoo
             db_password = odoo
-            xmlrpc_port = 9026
-            netrpc_port = 9026
             http_port = 9026
+
+            # odoo 19 warns that this defaults to 0.0.0.0 today and will
+            # default to 127.0.0.1 in 20.0. it has to stay 0.0.0.0: the
+            # container shares wsl's network namespace and wsl forwards
+            # localhost, which is what makes the port reachable from windows.
+            http_interface = 0.0.0.0
+
             dev_mode = all
           '';
       };
@@ -108,6 +113,25 @@ with inputs.nixpkgs.lib; {
             WS_DIR="$HOME/repos/ws-odoo"
             CONF="$HOME/odoo.conf"
             DB="''${ODOO_DB:-odoo_dev}"
+            PID_FILE="$HOME/odoo-wrap.pid"
+
+            if [ "''${1:-}" = "stop" ]; then
+              if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+                kill "$(cat "$PID_FILE")"
+                rm -f "$PID_FILE"
+                echo "stopped" >&2
+              # a server from before this wrote pid files, or one started by
+              # hand. the bracket keeps the pattern off this command's own
+              # argv, which pkill can see: distrobox shares the host pid
+              # namespace, so the two sides watch the same process table.
+              elif pkill -f -- '[o]doo-bin'; then
+                rm -f "$PID_FILE"
+                echo "stopped (found by name)" >&2
+              else
+                echo "no server running" >&2
+              fi
+              exit 0
+            fi
 
             sudo service postgresql start >/dev/null
 
@@ -165,6 +189,10 @@ with inputs.nixpkgs.lib; {
             # vscode on the windows side attaches over the port. wsl forwards
             # localhost, and the container shares the wsl network namespace, so
             # binding 0.0.0.0 here is reachable as localhost from windows.
+            # exec hands this shell's pid to python, so $$ written here is the
+            # pid `odoo-wrap stop` will signal, on either branch below.
+            echo $$ > "$PID_FILE"
+
             if [ -n "''${ODOO_DEBUG_PORT:-}" ]; then
               echo "debugpy:     waiting for a client on 0.0.0.0:$ODOO_DEBUG_PORT" >&2
               exec python3 -m debugpy \
