@@ -9,6 +9,8 @@ in
     with lib; {
       imports = [
         flake.nixosModules.odoo
+
+        ./wslconfig.nix
       ];
 
       modules = {
