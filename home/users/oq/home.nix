@@ -118,6 +118,7 @@ in
         (mkIf (cfg.uiEnv == "wsl") {
           fonts.enable = true;
           nixvim.wsl.enable = true;
+          clanker.claude.pling.enable = true;
         })
 
         # gui-only modules
