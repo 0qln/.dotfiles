@@ -21,6 +21,15 @@
     # other hosts. see: https://bugzilla.kernel.org/show_bug.cgi?id=221521
     nixpkgs-freyja-kernel.url = "nixpkgs/nixos-unstable";
 
+    # Dedicated, independently-pinned nixpkgs used only for nextcloud's PHP.
+    # `nixpkgs` (nixos-unstable) still ships PHP 8.4.26, which is vulnerable to
+    # the PHP2Shell RCEs (CVE-2026-109618 / CVE-2026-109619, CVSS 9.2, exploited
+    # in the wild since before disclosure). The fixed 8.4.27 reached
+    # nixos-unstable-small first. Kept separate so the rest of the system stays
+    # on the usual pin. Drop this input once `nixpkgs` carries >= 8.4.27.
+    # see: https://github.com/NixOS/nixpkgs/pull/576853
+    nixpkgs-php.url = "nixpkgs/nixos-unstable-small";
+
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";

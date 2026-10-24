@@ -92,7 +92,6 @@ in {
         stateDir = "${cfg.serviceDataDir}";
         settings = {
           server = {
-            DOMAIN = cfg.fqdn.dn;
             ROOT_URL = "https://${cfg.fqdn.dn}/";
             HTTP_PORT = port;
           };

@@ -1,5 +1,7 @@
 {
   config,
+  inputs,
+  pkgs,
   pkgs-server,
   lib,
   ...
@@ -10,8 +12,6 @@ with lib; let
   cfg = config.modules.${serviceName};
 in {
   imports = [
-    ./calendar.nix
-    ./tasks.nix
     ./harp.nix
   ];
 
@@ -88,17 +88,9 @@ in {
       default = [];
       description = "Local fsdns.";
     };
-
-    _apps = mkOption {
-      type = types.attrs;
-      description = "The apps.";
-      internal = true;
-    };
   };
 
   config = mkIf cfg.enable {
-    modules.nextcloud._apps = package.packages.apps;
-
     networking.firewall = {
       allowedTCPPorts = [
         443
@@ -147,12 +139,16 @@ in {
       nextcloud = {
         enable = true;
         inherit package;
+
+        # PHP2Shell (CVE-2026-109618 / CVE-2026-109619) is fixed in 8.4.27;
+        # `nixpkgs` still has 8.4.26. see the nixpkgs-php input in flake.nix.
+        phpPackage = inputs.nixpkgs-php.legacyPackages.${pkgs.stdenv.hostPlatform.system}.php84;
+
         hostName = cfg.primaryFqdn;
         home = cfg.storagePath;
         database.createLocally = false;
         enableImagemagick = true;
         https = true;
-        extraAppsEnable = true;
         appstoreEnable = true;
         autoUpdateApps = {
           enable = true;
@@ -166,8 +162,6 @@ in {
           dbpassFile = "/run/secrets/${serviceName}/dbpass";
 
           dbhost = cfg.dbHost;
-          adminuser = "root";
-          adminpassFile = "/run/secrets/${serviceName}/adminpass";
         };
         settings = rec {
           default_phone_region = "DE";
