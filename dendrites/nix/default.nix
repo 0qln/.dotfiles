@@ -103,6 +103,16 @@ with inputs.nixpkgs.lib; {
       # on a slow uplink is felt on every single build.
       (mkIf cfg.push.enable (let
         queue = "${cfg.push.queueDir}/queue";
+
+        # A path built here before the signing key was in place carries no
+        # signature, and the post build hook cannot go back and sign it. One
+        # such path anywhere in a queued closure fails the whole copy, which
+        # jams the queue for good, so sign the closure at drain time too.
+        signClosure = optionalString (cfg.push.signKeyFile != null) ''
+          nix store sign --recursive \
+            --key-file ${config.sops.secrets."nix/cache-push/signKey".path} \
+            $paths || exit 1
+        '';
       in {
         sops.secrets = mkMerge [
           (mkIf (cfg.push.sshKeyFile != null) {
@@ -181,6 +191,7 @@ with inputs.nixpkgs.lib; {
             done)
 
             if [ -n "$paths" ]; then
+              ${signClosure}
               # leave the queue alone on failure, so the next run retries it
               nix copy --to "ssh-ng://${cfg.push.cacheHost}" $paths || exit 1
             fi
