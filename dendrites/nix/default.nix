@@ -16,6 +16,22 @@ with inputs.nixpkgs.lib; {
         };
       };
 
+      cachePriorities = mkOption {
+        type = types.attrsOf types.int;
+        default = {};
+        example = {"cache.07112025.xyz" = 30;};
+        description = ''
+          Overrides the priority a cache advertises in its nix-cache-info,
+          keyed by fqdn as in `caches`. Lower wins, and cache.nixos.org
+          advertises 40, so a cache that is to be asked first for paths the
+          public one also has must come in under that.
+
+          Belongs on the host rather than on the cache, because it is only
+          worth it where the cache really is the closer of the two. Off that
+          lan every miss pays a round trip to a machine that was never near.
+        '';
+      };
+
       netrcFile = mkOption {
         type = types.nullOr types.path;
         default = null;
@@ -231,9 +247,14 @@ with inputs.nixpkgs.lib; {
 
         nix.settings = mkMerge (
           (let
-            mkSubstituter = fqdn: key: {
-              substituters = ["https://${fqdn}"];
-              trusted-substituters = ["https://${fqdn}"];
+            mkSubstituter = fqdn: key: let
+              url =
+                "https://${fqdn}"
+                + optionalString (cfg.cachePriorities ? ${fqdn})
+                "?priority=${toString cfg.cachePriorities.${fqdn}}";
+            in {
+              substituters = [url];
+              trusted-substituters = [url];
               trusted-public-keys = ["${fqdn}-1:${key}"];
             };
           in
