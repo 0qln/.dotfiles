@@ -263,11 +263,11 @@ with inputs.nixpkgs.lib; {
               settings = {
                 banner = "never";
                 includeCoAuthoredBy = false;
-                trusted_folders = [
-                  config.vars.repos.dir
-                  config.vars.flake.dir
-                ];
               };
+              trustedFolders = [
+                config.vars.repos.dir
+                config.vars.flake.dir
+              ];
               skills = wsSkills;
               lspServers = {
                 rust = {
@@ -283,12 +283,6 @@ with inputs.nixpkgs.lib; {
                 claudeMd = builtins.readFile (pkgs.callPackage ./andrej-kaparthy.nix {});
                 githubCopilotMd = builtins.replaceStrings ["CLAUDE"] ["Github-Copilot"] claudeMd;
               in "${githubCopilotMd}";
-            };
-
-            # make the config file mutable
-            home.file."${config.programs.github-copilot-cli.configDir}/config.json" = {
-              mutable = true;
-              force = true;
             };
           })
       ]);
