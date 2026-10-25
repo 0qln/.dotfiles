@@ -58,12 +58,13 @@ in
         };
 
         services.linux-wallpaperengine = {
+          audio.silent = true;
+
           wallpapers = [
             {
               monitor = monitors.devices.center.name;
-              wallpaperId = "3620156165";
+              wallpaper = "3620156165";
               scaling = "fill";
-              audio.silent = true;
             }
           ];
         };
