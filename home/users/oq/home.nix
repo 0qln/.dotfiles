@@ -97,6 +97,7 @@ in
           tmux.enable = mkDefault true;
           secrets.ssh.enable = mkDefault true;
           btop.enable = mkDefault true;
+          deepseek.enable = mkDefault true;
           dev = {
             direnv.enable = mkDefault true;
             devenv.enable = mkDefault true;
