@@ -92,6 +92,7 @@ with inputs.nixpkgs.lib; {
             # https://home-manager-options.extranix.com/?query=claude-code&release=master
             programs.claude-code = {
               enable = true;
+              configDir = "${config.xdg.configHome}/claude";
               enableMcpIntegration = true;
               mcpServers = {}; # define in programs.mcp.servers instead.
               settings = {

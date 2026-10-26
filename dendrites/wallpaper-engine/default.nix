@@ -74,16 +74,17 @@
 
           args = wallpaper:
             lib.cli.toCommandLineShellGNU {} {
-              inherit (wallpaper) scaling fps;
-              silent = wallpaper.audio.silent;
-              noautomute = !wallpaper.audio.automute;
-              no-audio-processing = !wallpaper.audio.processing;
+              inherit (wallpaper) scaling;
+              inherit (cfg) fps;
+              silent = cfg.audio.silent;
+              noautomute = !cfg.audio.automute;
+              no-audio-processing = !cfg.audio.processing;
               no-fullscreen-pause = !wallpaper.fullscreen.pause;
               screen-root = lib.optionals (wallpaper.monitor != "") wallpaper.monitor;
               screen-span = lib.optionals (wallpaper.screenSpan != []) (screenSpan wallpaper.screenSpan);
             }
             + (lib.concatStringsSep " " wallpaper.extraOptions)
-            + " --bg ${wallpaper.wallpaperId}";
+            + " --bg ${wallpaper.wallpaper}";
 
           cmd = wallpaper:
             lib.getExe

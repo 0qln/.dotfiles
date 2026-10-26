@@ -18,8 +18,8 @@ in {
     programs.rofi = {
       enable = true;
       theme = "${cfg.themeFile}";
-      terminal = config.vars.terminal;
-      extraConfig = {
+      settings = {
+        terminal = config.vars.terminal;
         modes = "window,drun,run";
         # 	font = "mono 12";
         # 	location = 0;

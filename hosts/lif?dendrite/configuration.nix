@@ -72,6 +72,12 @@ in {
           enable = true;
           rootless.enable = true;
         };
+
+        # this one never leaves the lan the cache sits on, so the cache is the
+        # near copy every time and gets asked ahead of cache.nixos.org (40).
+        # the laptops do not get this: off that lan the same setting would put
+        # a miss behind a round trip over the internet and back.
+        nix.cachePriorities = {"cache.07112025.xyz" = 30;};
       };
 
       sops = {

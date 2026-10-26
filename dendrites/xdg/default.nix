@@ -29,6 +29,8 @@ with inputs.nixpkgs.lib; {
         xdg-utils
       ];
 
+      xdg.enable = true;
+
       xdg.portal = {
         enable = mkIf (config.settings.uiEnv == "gui") true;
       };

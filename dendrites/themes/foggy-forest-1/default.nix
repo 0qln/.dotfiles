@@ -61,14 +61,15 @@ in
         };
 
         services.linux-wallpaperengine = {
+          audio.silent = true;
+
           wallpapers = let
             mapping = {
               "-" = [
                 {
                   monitor = monitors.devices.center.name;
-                  wallpaperId = "2142532648";
+                  wallpaper = "2142532648";
                   scaling = "fill";
-                  audio.silent = true;
                   fullscreen.pause = true;
                 }
               ];
@@ -79,9 +80,8 @@ in
                     center.name
                     right.name
                   ];
-                  wallpaperId = "2142532648";
+                  wallpaper = "2142532648";
                   scaling = "fill";
-                  audio.silent = true;
                   # don't pause on fullscreen if we have more than just the center monitor
                   fullscreen.pause = false;
                 }
