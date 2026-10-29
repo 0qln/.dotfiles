@@ -17,6 +17,10 @@ in
       modules = {
         odoo.enable = true;
         kimai.enable = true;
+        docker = {
+          enable = true;
+          rootless.enable = true;
+        };
       };
 
       home-manager = {
