@@ -32,7 +32,6 @@ in {
         dragon-drop
 
         unzip
-        mescc-tools-extra # untar
         gnutar
         unrar-wrapper
         p7zip
