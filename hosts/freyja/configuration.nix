@@ -74,8 +74,8 @@ in {
       replaceLogin = false;
     };
 
-    # enable kde x11 sessions aswell, since the hp stylus pen's configuration via wacom
-    # drivers and libwacom in not supported under wayland.
+    # note: the kde x11 session (previously used for the hp stylus pen's wacom
+    # configuration) was removed from nixpkgs as it is EOL upstream.
     # see:
     # - https://github.com/linuxwacom/xf86-input-wacom/wiki/Wayland
     # also relevant:
@@ -83,10 +83,7 @@ in {
     # - https://github.com/linuxwacom/input-wacom/wiki/Common-Issues
     # - https://bugs.kde.org/show_bug.cgi?id=469232
     # - https://forums.linuxmint.com/viewtopic.php?t=444949
-    kde = {
-      enable = true;
-      compositor = "x11";
-    };
+    kde.enable = true;
     pam.enable = true;
     ydotool.enable = true;
     xdg.enable = true;

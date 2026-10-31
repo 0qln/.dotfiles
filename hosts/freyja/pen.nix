@@ -4,7 +4,6 @@
   environment.systemPackages = with pkgs; [
     usbutils
     xf86_input_wacom
-    kdePackages.wacomtablet
   ];
 
   services.xserver = {
