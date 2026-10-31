@@ -167,7 +167,7 @@ with inputs.nixpkgs.lib; {
         systemd.services.nix-cache-push = {
           description = "Upload queued store paths to the binary cache";
 
-          path = [config.nix.package pkgs.openssh pkgs.coreutils pkgs.findutils];
+          path = [config.nix.package pkgs.openssh pkgs.coreutils pkgs.findutils pkgs.getent];
 
           environment = {
             HOME = "/root";
@@ -200,6 +200,13 @@ with inputs.nixpkgs.lib; {
             shopt -s nullglob
             files=(*)
             [ ''${#files[@]} -eq 0 ] && exit 0
+
+            # Offline (e.g. a laptop away from any network) is not a failure;
+            # keep the queue and try again on the next run.
+            if ! getent ahosts "${last (splitString "@" cfg.push.cacheHost)}" >/dev/null; then
+              echo "cache host unreachable, skipping"
+              exit 0
+            fi
 
             # a queued path may have been collected since it was written down
             paths=$(cat "''${files[@]}" | sort -u | while read -r p; do
