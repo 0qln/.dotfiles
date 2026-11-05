@@ -92,6 +92,16 @@ with inputs.nixpkgs.lib; {
             # https://home-manager-options.extranix.com/?query=claude-code&release=master
             programs.claude-code = {
               enable = true;
+              # Plugin hooks (ponytail) call a bare `node`; put it on claude's
+              # own PATH instead of relying on some other module installing it.
+              package = pkgs.symlinkJoin {
+                inherit (pkgs.claude-code) name meta;
+                paths = [pkgs.claude-code];
+                nativeBuildInputs = [pkgs.makeWrapper];
+                postBuild = ''
+                  wrapProgram $out/bin/claude --suffix PATH : ${makeBinPath [pkgs.nodejs]}
+                '';
+              };
               configDir = "${config.xdg.configHome}/claude";
               enableMcpIntegration = true;
               mcpServers = {}; # define in programs.mcp.servers instead.
@@ -99,6 +109,7 @@ with inputs.nixpkgs.lib; {
                 includeCoAuthoredBy = false;
               };
               skills = wsSkills;
+              plugins.ponytail = inputs.ponytail;
               lspServers = {
                 rust = {
                   command = "${getExe pkgs.rust-analyzer}";
@@ -231,21 +242,20 @@ with inputs.nixpkgs.lib; {
           };
         in
           mkIf (cfg.enable && cfg.pling.enable) {
-            programs.claude-code.settings.hooks =
-              mapAttrs' (event: e:
-                nameValuePair e.hook [
-                  {
-                    hooks = [
-                      {
-                        type = "command";
-                        command = hookCommand event;
-                        statusMessage = "Pling";
-                        async = true;
-                      }
-                    ];
-                  }
-                ])
-              events;
+            programs.claude-code.settings.hooks = mapAttrs' (event: e:
+              nameValuePair e.hook [
+                {
+                  hooks = [
+                    {
+                      type = "command";
+                      command = hookCommand event;
+                      statusMessage = "Pling";
+                      async = true;
+                    }
+                  ];
+                }
+              ])
+            events;
 
             home.file."${config.programs.claude-code.configDir}/pling.json".text =
               builtins.toJSON (mapAttrs (_: e: removeAttrs e ["hook"]) events);

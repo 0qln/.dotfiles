@@ -1249,6 +1249,22 @@
         "type": "github"
       }
     },
+    "ponytail": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793275171,
+        "narHash": "sha256-PhPtZbeX2wBp19GtWRy+fV93+fFYZe5S487eXPDl/us=",
+        "owner": "DietrichGebert",
+        "repo": "ponytail",
+        "rev": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DietrichGebert",
+        "repo": "ponytail",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -1321,6 +1337,7 @@
         "nixvim": "nixvim",
         "nur": "nur",
         "old-london": "old-london",
+        "ponytail": "ponytail",
         "private": "private",
         "ruritania": "ruritania",
         "sops-nix": "sops-nix",

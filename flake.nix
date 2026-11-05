@@ -65,6 +65,11 @@
       url = "git+https://github.com/WorkSimple-GmbH/skills";
     };
 
+    ponytail = {
+      url = "github:DietrichGebert/ponytail";
+      flake = false;
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
