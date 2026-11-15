@@ -5,7 +5,7 @@
   pkgs,
   ...
 }: let
-  theme = "foggy-forest-1";
+  theme = "wlop-1_chinese-festival";
 in {
   imports = [
     ../_common/configuration.nix

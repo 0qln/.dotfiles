@@ -1,4 +1,4 @@
-colors:
+colors: font:
 # https://github.com/adi1090x/rofi/blob/093c1a79f58daab358199c4246de50357e5bf462/files/launchers/type-4/style-2.rasi
 # rasi
 ''
@@ -10,6 +10,8 @@ colors:
       selected:       ${colors.selected};
       active:         ${colors.active};
       urgent:         ${colors.urgent};
+
+      font:           "${font}";
   }
 
   /*****----- Configuration -----*****/
@@ -25,9 +27,6 @@ colors:
   }
 
   /*****----- Global Properties -----*****/
-  @import                          "shared/colors.rasi"
-  @import                          "shared/fonts.rasi"
-
   * {
       border-colour:               var(border);
       handle-colour:               var(selected);
