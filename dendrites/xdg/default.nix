@@ -4,7 +4,11 @@
   ...
 }:
 with inputs.nixpkgs.lib; {
-  flake.nixosModules.xdg = {config, pkgs, ...}: let
+  flake.nixosModules.xdg = {
+    config,
+    pkgs,
+    ...
+  }: let
     cfg = config.modules.xdg;
   in {
     config = mkIf cfg.enable {
@@ -23,6 +27,34 @@ with inputs.nixpkgs.lib; {
     ...
   }: let
     cfg = config.modules.xdg;
+
+    # text and code files that should open in the editor (see editor.desktop below)
+    textMimeTypes = [
+      "text/plain"
+      "text/markdown"
+      "text/x-log"
+      "application/json"
+      "application/xml"
+      "text/xml"
+      "application/yaml"
+      "text/yaml"
+      "application/x-yaml"
+      "text/x-yaml"
+      "application/toml"
+      "text/x-ini"
+      "application/x-shellscript"
+      "text/x-shellscript"
+      "text/x-python"
+      "application/x-python"
+      "text/x-nix"
+      "application/javascript"
+      "text/javascript"
+      "text/css"
+      "text/x-diff"
+      "text/x-patch"
+    ];
+
+    editorDesktop = "editor.desktop";
   in {
     config = mkIf cfg.enable {
       home.packages = with pkgs; [
@@ -35,16 +67,30 @@ with inputs.nixpkgs.lib; {
         enable = mkIf (config.settings.uiEnv == "gui") true;
       };
 
+      # open text/code files in the editor (running inside the terminal)
+      xdg.desktopEntries.editor = {
+        name = "Text Editor";
+        genericName = "Text Editor";
+        exec = "${config.vars.terminal} ${config.vars.editor} %f";
+        terminal = false;
+        mimeType = textMimeTypes;
+        categories = ["Utility" "TextEditor"];
+      };
+
       # https://wiki.nixos.org/wiki/Default_applications
       xdg.mimeApps = {
         enable = true;
-        defaultApplications = {
+        defaultApplications =
           # https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
-          #TODO: text and code files to kitty+nvim
-          #
-          # Note: The default apps are specified in the modules
-          # that set them (e.g. browser.firefox.zen)
-        };
+          # Note: most default apps are specified in the modules that set them
+          # (e.g. browser.firefox.zen); text/code files default to the editor here.
+          builtins.listToAttrs (
+            map (type: {
+              name = type;
+              value = editorDesktop;
+            })
+            textMimeTypes
+          );
       };
     };
   };
