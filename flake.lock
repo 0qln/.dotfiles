@@ -1529,11 +1529,11 @@
     },
     "ws-skills": {
       "locked": {
-        "lastModified": 1794839612,
-        "narHash": "sha256-tfjqd0+7rlSgCrQ55EndoPUzI/XkYlb44OzwggabCME=",
+        "lastModified": 1794932052,
+        "narHash": "sha256-NnpHjlj56B1d+K6oUcKx4qqQVbC/B/1OuAxDKTdluGM=",
         "ref": "refs/heads/main",
-        "rev": "22e7b6f62652fae716a11bc42ea7b1907339be10",
-        "revCount": 136,
+        "rev": "39391e3bbd9fd897228a7d69c623fcc183579ce1",
+        "revCount": 137,
         "type": "git",
         "url": "https://github.com/WorkSimple-GmbH/skills"
       },
