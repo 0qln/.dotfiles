@@ -52,6 +52,7 @@ in {
       useACMEHost = cfg.fqdn.acmeHost;
       locations."/" = {
         proxyPass = "http://localhost:${(toString port)}";
+        proxyWebsockets = true;
       };
     };
 
