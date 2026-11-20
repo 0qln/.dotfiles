@@ -70,6 +70,7 @@ in
           fonts = {
             cartograph-cf.enable = mkDefault true; # general monospace
             ibm-plex.enable = mkDefault true; # obsidian
+            sigokae.enable = mkDefault true; # waybar clock
           };
 
           terminal = {
@@ -217,7 +218,7 @@ in
                 }
                 #clock{
                     font-size:18px;
-                    font-family: "Old London";
+                    font-family: "Sigokae Demo";
                     padding: 0px 5px;
                     color:@foreground;
                     transition: all .3s ease;
@@ -375,7 +376,7 @@ in
                       "tooltip-format" = "{calendar}";
                       "calendar" = {
                         "format" = {
-                          "months" = "<span font_family='Old London' size='large'>{}</span>";
+                          "months" = "<span font_family='Sigokae Demo' size='large'>{}</span>";
                           "weekdays" = "<span font_family='CartographCF Nerd Font'>{}</span>";
                           "days" = "<span font_family='CartographCF Nerd Font'>{}</span>";
                           "today" = "<span color='#fAfBfC'><b>{}</b></span>";
