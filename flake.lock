@@ -1340,6 +1340,7 @@
         "ponytail": "ponytail",
         "private": "private",
         "ruritania": "ruritania",
+        "sigokae": "sigokae",
         "sops-nix": "sops-nix",
         "sparkyfitness": "sparkyfitness",
         "waybar": "waybar",
@@ -1385,6 +1386,26 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sigokae": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795203591,
+        "narHash": "sha256-qad3n6ZqoPWZqxurIRXyWvYkcFCBO7k3Oq7OF15CEJo=",
+        "owner": "0qln",
+        "repo": "sigokae",
+        "rev": "7741a7e6df091b0221f21208dd74701326ad2b98",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "sigokae",
         "type": "github"
       }
     },
