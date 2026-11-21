@@ -114,6 +114,10 @@
       url = "github:0qln/sigokae";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    citadel-of-blackrose = {
+      url = "github:0qln/citadel-of-blackrose";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";

@@ -147,6 +147,26 @@
         "type": "github"
       }
     },
+    "citadel-of-blackrose": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795297396,
+        "narHash": "sha256-lFgZUixsJhbJOb2WLdbt0T+GXlSwwsEK7OTlFBeyQKA=",
+        "owner": "0qln",
+        "repo": "citadel-of-blackrose",
+        "rev": "45485c99854a87cfba0e468e219592bf63133dd5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "citadel-of-blackrose",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -1319,6 +1339,7 @@
         "arion": "arion",
         "bongocat": "bongocat",
         "cartograph-cf": "cartograph-cf",
+        "citadel-of-blackrose": "citadel-of-blackrose",
         "flake-parts": "flake-parts_2",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
