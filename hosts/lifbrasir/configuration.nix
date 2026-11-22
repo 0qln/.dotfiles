@@ -90,7 +90,7 @@ in {
 
     dynIp-updater = {
       duckdns = {
-        enable = true;
+        enable = false;
         domains = ["0qln"];
       };
       afraid = {
