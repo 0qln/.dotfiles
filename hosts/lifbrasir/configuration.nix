@@ -89,10 +89,6 @@ in {
     };
 
     dynIp-updater = {
-      duckdns = {
-        enable = false;
-        domains = ["0qln"];
-      };
       afraid = {
         enable = false;
         domains = ["oq.404.mn"];
@@ -130,10 +126,6 @@ in {
     acme = {
       enable = true;
       certs = {
-        "0qln.duckdns.org" = {
-          registrar = "duckdns";
-          duckdnsInfos.tokenFile = mkDefault (throw "should be configured in .private");
-        };
         "07112025.xyz" = {
           registrar = "cloudflare";
           cloudflareInfos.tokenFile = mkDefault (throw "should be configured in .private");
