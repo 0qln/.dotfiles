@@ -24,7 +24,5 @@ in {
     };
 
     users.extraUsers.root.openssh.authorizedKeys.keys = cfg.keys;
-
-    networking.firewall.allowedTCPPorts = [22];
   };
 }
