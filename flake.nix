@@ -283,7 +283,7 @@
 
         perSystem = {pkgs, ...}: {
           devShells.default = with pkgs; let
-            lifbrasir = (vars pkgs).hosts.lifbrasir.fqdns.primary.dn;
+            lifbrasir = (vars pkgs).hosts.lifbrasir.vpnIp;
 
             var-ensure = key: val:
             # bash

@@ -43,6 +43,7 @@ in {
           ];
           primary = cfg.domains."07112025.xyz";
         };
+        vpnIp = "10.100.0.1";
       };
     };
   };
