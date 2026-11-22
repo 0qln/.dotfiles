@@ -17,6 +17,9 @@ in {
   config = mkIf cfg.enable {
     services.openssh = {
       enable = true;
+      # Don't open 22 globally via the firewall — hosts scope it to the VPN
+      # interface (and optionally a LAN fallback) themselves.
+      openFirewall = false;
       settings = {
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
