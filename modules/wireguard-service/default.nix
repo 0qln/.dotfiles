@@ -11,6 +11,12 @@ with lib; let
   port = 51820;
   interface = "wg_${host-name}";
   privateKey = "wg/${host-name}/privateKey";
+
+  # Tunnel addresses, sourced from the shared host facts (dendrites/vars).
+  # serverIp is the host's own address (derived from vpnNet in vars); vpnNet
+  # is the subnet, used for MASQUERADE.
+  serverIp = config.vars.hosts.${host-name}.vpnIp;
+  vpnNet = config.vars.hosts.${host-name}.vpnNet;
 in {
   options.modules.wireguard-service = {
     enable = mkEnableOption "wireguard service";
@@ -44,7 +50,7 @@ in {
         ${interface} = {
           # Determines the IP address and subnet of the server's end of the tunnel interface.
           ips = [
-            "10.100.0.1/24"
+            "${serverIp}/24"
             "fd00::1/64"
           ];
 
@@ -55,12 +61,12 @@ in {
           # For this to work you have to set the dnsserver IP of your router (or dnsserver of choice)
           # in your clients
           postSetup = ''
-            ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o ${cfg.externalInterface} -j MASQUERADE
+            ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s ${vpnNet}/24 -o ${cfg.externalInterface} -j MASQUERADE
           '';
 
           # This undoes the above command
           postShutdown = ''
-            ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.100.0.0/24 -o ${cfg.externalInterface} -j MASQUERADE
+            ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s ${vpnNet}/24 -o ${cfg.externalInterface} -j MASQUERADE
           '';
 
           # Path to the private key file.
