@@ -70,7 +70,7 @@ in {
             # List of allowed peers.
             {
               # lif
-              publicKey = builtins.readFile ../../hosts/lif/wireguard/0qln/public.key;
+              publicKey = builtins.readFile (../../hosts + "/lif?dendrite/wireguard/0qln/public.key");
               allowedIPs = ["10.100.0.2/32"];
             }
           ];

@@ -174,7 +174,7 @@ in {
     };
 
     wireguard-service = {
-      enable = false;
+      enable = true;
       externalInterface = "wlo1";
     };
 

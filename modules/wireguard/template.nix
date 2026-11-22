@@ -1,6 +1,5 @@
 {
   ip,
-  privateKeyFile,
   serverAddress,
   serverPort ? 51820,
   serverPubKey,
@@ -15,12 +14,6 @@
 in {
   networking.firewall = {
     allowedUDPPorts = [port]; # Clients and peers can use the same port, see listenport
-  };
-
-  sops.secrets.${privateKey} = {
-    sopsFile = privateKeyFile;
-    format = "binary";
-    mode = "0400";
   };
 
   networking.wireguard.interfaces = {
