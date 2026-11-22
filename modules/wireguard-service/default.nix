@@ -73,6 +73,11 @@ in {
               publicKey = builtins.readFile (../../hosts + "/lif?dendrite/wireguard/0qln/public.key");
               allowedIPs = ["10.100.0.2/32"];
             }
+            {
+              # freyja
+              publicKey = builtins.readFile (../../hosts + "/freyja/wireguard/0qln/public.key");
+              allowedIPs = ["10.100.0.3/32"];
+            }
           ];
         };
       };

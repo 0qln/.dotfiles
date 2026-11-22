@@ -8,6 +8,8 @@
   theme = "wlop-1_chinese-festival";
 in {
   imports = [
+    inputs.private.nixosModules."freyja"
+
     ../_common/configuration.nix
 
     flake.nixosModules.sops
@@ -23,6 +25,13 @@ in {
     ./keys.nix
     ./pen.nix
     ./networking.nix
+
+    (import ../../modules/wireguard/template.nix {
+      ip = "10.100.0.3/32";
+      serverAddress = config.vars.hosts.lifbrasir.fqdns.primary.dn;
+      serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
+      vpnName = "0qln";
+    })
   ];
 
   users = {
@@ -42,6 +51,8 @@ in {
   # see: https://bugzilla.kernel.org/show_bug.cgi?id=221521
   boot.kernelPackages =
     inputs.nixpkgs-freyja-kernel.legacyPackages.${pkgs.stdenv.hostPlatform.system}.linuxPackages;
+
+  networking.wireguard.enable = true;
 
   modules = {
     clanker.enable = true;
