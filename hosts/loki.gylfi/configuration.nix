@@ -10,6 +10,7 @@ in
       imports = [
         flake.nixosModules.odoo
         flake.nixosModules.kimai
+        flake.nixosModules.checkmk
 
         ./wslconfig.nix
       ];
@@ -17,6 +18,7 @@ in
       modules = {
         odoo.enable = true;
         kimai.enable = true;
+        checkmk.enable = true;
         docker = {
           enable = true;
           rootless.enable = true;
@@ -28,6 +30,7 @@ in
           imports = [
             flake.homeModules.odoo
             flake.homeModules.kimai
+            flake.homeModules.checkmk
             flake.homeModules."themes/${theme}"
           ];
 
@@ -41,6 +44,7 @@ in
           modules = {
             odoo.enable = true;
             kimai.enable = true;
+            checkmk.enable = true;
           };
 
           private = {
