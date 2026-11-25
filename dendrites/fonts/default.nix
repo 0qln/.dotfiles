@@ -44,6 +44,8 @@ with inputs.nixpkgs.lib; {
       ruritania.enable = mkEnableOption "ruritania";
       kingjola.enable = mkEnableOption "kingjola";
       old-london.enable = mkEnableOption "old-london";
+      sigokae.enable = mkEnableOption "sigokae";
+      citadel-of-blackrose.enable = mkEnableOption "citadel-of-blackrose";
       ibm-plex.enable = mkEnableOption "ibm-plex";
       victor-mono.enable = mkEnableOption "victor-mono (nerd-font)";
       jetbrains-mono.enable = mkEnableOption "jetbrains-mono (nerd-font)";
@@ -56,6 +58,8 @@ with inputs.nixpkgs.lib; {
         inputs.ruritania.overlays.default
         inputs.kingjola.overlays.default
         inputs.old-london.overlays.default
+        inputs.sigokae.overlays.default
+        inputs.citadel-of-blackrose.overlays.default
       ];
 
       fonts.fontconfig.enable = true;
@@ -68,7 +72,9 @@ with inputs.nixpkgs.lib; {
         ++ (optionals cfg.cartograph-cf.enable [cartographcf-nerdfont])
         ++ (optionals cfg.ruritania.enable [ruritania])
         ++ (optionals cfg.kingjola.enable [kingjola])
-        ++ (optionals cfg.old-london.enable [old-london]);
+        ++ (optionals cfg.old-london.enable [old-london])
+        ++ (optionals cfg.sigokae.enable [sigokae])
+        ++ (optionals cfg.citadel-of-blackrose.enable [citadel-of-blackrose]);
     };
   };
 }

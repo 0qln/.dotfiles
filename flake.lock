@@ -147,6 +147,26 @@
         "type": "github"
       }
     },
+    "citadel-of-blackrose": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795297396,
+        "narHash": "sha256-lFgZUixsJhbJOb2WLdbt0T+GXlSwwsEK7OTlFBeyQKA=",
+        "owner": "0qln",
+        "repo": "citadel-of-blackrose",
+        "rev": "45485c99854a87cfba0e468e219592bf63133dd5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "citadel-of-blackrose",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -1300,11 +1320,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793041754,
-        "narHash": "sha256-/eEmTde1SFWoSU9v3W/lz0t6BRoDmBkPXMPiYf4wmoo=",
+        "lastModified": 1795366898,
+        "narHash": "sha256-jpP+jwFgJsY9+QAUpfqO6tE7di1kguJvSIMZXW1qLiY=",
         "ref": "refs/heads/master",
-        "rev": "75bcff1de6726e7825881526f7525a10495edb5a",
-        "revCount": 35,
+        "rev": "020ec3e61b188c1501ca1e66f248f294ea62070f",
+        "revCount": 40,
         "type": "git",
         "url": "ssh://gitea@git.07112025.xyz/0qln/.private.git"
       },
@@ -1319,6 +1339,7 @@
         "arion": "arion",
         "bongocat": "bongocat",
         "cartograph-cf": "cartograph-cf",
+        "citadel-of-blackrose": "citadel-of-blackrose",
         "flake-parts": "flake-parts_2",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
@@ -1340,6 +1361,7 @@
         "ponytail": "ponytail",
         "private": "private",
         "ruritania": "ruritania",
+        "sigokae": "sigokae",
         "sops-nix": "sops-nix",
         "sparkyfitness": "sparkyfitness",
         "waybar": "waybar",
@@ -1385,6 +1407,26 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sigokae": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795203591,
+        "narHash": "sha256-qad3n6ZqoPWZqxurIRXyWvYkcFCBO7k3Oq7OF15CEJo=",
+        "owner": "0qln",
+        "repo": "sigokae",
+        "rev": "7741a7e6df091b0221f21208dd74701326ad2b98",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0qln",
+        "repo": "sigokae",
         "type": "github"
       }
     },

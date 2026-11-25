@@ -1,6 +1,5 @@
 {
   ip,
-  privateKeyFile,
   serverAddress,
   serverPort ? 51820,
   serverPubKey,
@@ -15,12 +14,6 @@
 in {
   networking.firewall = {
     allowedUDPPorts = [port]; # Clients and peers can use the same port, see listenport
-  };
-
-  sops.secrets.${privateKey} = {
-    sopsFile = privateKeyFile;
-    format = "binary";
-    mode = "0400";
   };
 
   networking.wireguard.interfaces = {
@@ -40,13 +33,13 @@ in {
           # Public key of the server (not a file path).
           publicKey = serverPubKey;
 
-          # Forward all the traffic via VPN.
+          # Forward only the VPN subnet through the tunnel (split tunnel), so we
+          # can reach the server over it (e.g. ssh 10.100.0.1) without routing
+          # all traffic through it. A full tunnel (0.0.0.0/0) would need fwmark
+          # + policy routing to avoid looping the tunnel's own packets.
           allowedIPs = [
-            "0.0.0.0/0"
-            # "::/0"
+            "10.100.0.0/24"
           ];
-          # Or forward only particular subnets
-          #allowedIPs = [ "10.100.0.1" "91.108.12.0/22" ];
 
           # Set this to the server IP and port.
           endpoint = "${serverAddress}:${toString serverPort}"; # ToDo: route to endpoint not automatically configured https://wiki.archlinux.org/index.php/WireGuard#Loop_routing https://discourse.nixos.org/t/solved-minimal-firewall-setup-for-wireguard-client/7577

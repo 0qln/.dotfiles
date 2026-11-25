@@ -89,10 +89,6 @@ in {
     };
 
     dynIp-updater = {
-      duckdns = {
-        enable = true;
-        domains = ["0qln"];
-      };
       afraid = {
         enable = false;
         domains = ["oq.404.mn"];
@@ -130,10 +126,6 @@ in {
     acme = {
       enable = true;
       certs = {
-        "0qln.duckdns.org" = {
-          registrar = "duckdns";
-          duckdnsInfos.tokenFile = mkDefault (throw "should be configured in .private");
-        };
         "07112025.xyz" = {
           registrar = "cloudflare";
           cloudflareInfos.tokenFile = mkDefault (throw "should be configured in .private");
@@ -174,7 +166,7 @@ in {
     };
 
     wireguard-service = {
-      enable = false;
+      enable = true;
       externalInterface = "wlo1";
     };
 
@@ -223,6 +215,16 @@ in {
       configFile = ./lichess-bot/config.yml;
       restartTriggers = [inputs.nephrid.packages.x86_64-linux.nephrid-id-nnue];
     };
+  };
+
+  # SSH only over the VPN, with a LAN fallback — not on the public internet.
+  # (The ssh-service module no longer opens 22 globally; it's scoped here.)
+  networking.firewall = {
+    interfaces.wg_lifbrasir.allowedTCPPorts = [22];
+    extraCommands = ''
+      # LAN fallback: allow ssh from the home network even if the VPN is down.
+      iptables -w -A nixos-fw -p tcp --dport 22 -s 192.168.178.0/24 -j nixos-fw-accept
+    '';
   };
 
   home-manager = {

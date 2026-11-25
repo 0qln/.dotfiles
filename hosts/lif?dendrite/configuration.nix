@@ -5,6 +5,7 @@ in {
     pkgs,
     inputs,
     lib,
+    config,
     ...
   }:
     with lib; {
@@ -28,14 +29,12 @@ in {
         ./nvidia.nix
         ./hardware-configuration.nix
 
-        # todo: fix wireguard vpn
-        # (import ../../modules/wireguard/template.nix {
-        #   ip = "10.100.0.2/32";
-        #   privateKeyFile = ./wireguard/0qln/private.key.secrets;
-        #   serverAddress = config.vars.fqdns.primary.dn;
-        #   serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
-        #   vpnName = "0qln";
-        # })
+        (import ../../modules/wireguard/template.nix {
+          ip = "10.100.0.2/32";
+          serverAddress = config.vars.hosts.lifbrasir.fqdns.primary.dn;
+          serverPubKey = builtins.readFile ../lifbrasir/wireguard/0qln/public.key;
+          vpnName = "0qln";
+        })
       ];
 
       users = {
@@ -178,6 +177,7 @@ in {
       private = {
         wireguard = {
           enable = true;
+          "0qln".enable = true;
           unicorns.enable = true;
         };
       };

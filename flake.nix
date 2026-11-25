@@ -110,6 +110,14 @@
       url = "github:0qln/old-london";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sigokae = {
+      url = "github:0qln/sigokae";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    citadel-of-blackrose = {
+      url = "github:0qln/citadel-of-blackrose";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
@@ -275,7 +283,7 @@
 
         perSystem = {pkgs, ...}: {
           devShells.default = with pkgs; let
-            lifbrasir = (vars pkgs).hosts.lifbrasir.fqdns.primary.dn;
+            lifbrasir = (vars pkgs).hosts.lifbrasir.vpnIp;
 
             var-ensure = key: val:
             # bash

@@ -43,6 +43,16 @@ with lib; {
               };
             };
           };
+          vpnIp = mkOption {
+            type = types.str;
+            default = "";
+            description = "The host's wireguard tunnel IP (for ssh over the vpn).";
+          };
+          vpnNet = mkOption {
+            type = types.str;
+            default = "";
+            description = "The host's wireguard subnet (e.g. 10.100.0.0/24).";
+          };
         };
       };
     in
