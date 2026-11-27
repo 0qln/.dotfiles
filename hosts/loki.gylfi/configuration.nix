@@ -15,6 +15,7 @@ in
         flake.nixosModules.odoo
         flake.nixosModules.kimai
         flake.nixosModules.checkmk
+        flake.nixosModules.agent-jail
 
         ./wslconfig.nix
 
@@ -32,6 +33,7 @@ in
         odoo.enable = true;
         kimai.enable = true;
         checkmk.enable = true;
+        agent-jail.enable = true;
         docker = {
           enable = true;
           rootless.enable = true;
@@ -44,6 +46,7 @@ in
             flake.homeModules.odoo
             flake.homeModules.kimai
             flake.homeModules.checkmk
+            flake.homeModules.agent-jail
             flake.homeModules."themes/${theme}"
           ];
 
@@ -58,6 +61,7 @@ in
             odoo.enable = true;
             kimai.enable = true;
             checkmk.enable = true;
+            agent-jail.enable = true;
           };
 
           private = {
