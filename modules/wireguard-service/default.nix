@@ -84,6 +84,11 @@ in {
               publicKey = builtins.readFile (../../hosts + "/freyja/wireguard/0qln/public.key");
               allowedIPs = ["10.100.0.3/32"];
             }
+            {
+              # loki-gylfi (wsl)
+              publicKey = builtins.readFile (../../hosts + "/loki.gylfi/wireguard/0qln/public.key");
+              allowedIPs = ["10.100.0.4/32"];
+            }
           ];
         };
       };
