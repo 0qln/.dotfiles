@@ -42,6 +42,15 @@ in {
           "0qln.duckdns.org" = lifbrasirCfg;
           "07112025.xyz" = lifbrasirCfg;
         })
+        {
+          # gitea SSH is only reachable over the VPN (lifbrasir scopes port 22
+          # to its WireGuard interface), so resolve the public hostname to the
+          # VPN address for SSH only. HTTPS/web still uses the public IP.
+          "git.07112025.xyz" = {
+            hostname = "10.100.0.1";
+            user = "gitea";
+          };
+        }
         (mkIf cfg.enableWorkSimple
           (let
             defaultCfg = {
