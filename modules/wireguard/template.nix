@@ -16,6 +16,24 @@ in {
     allowedUDPPorts = [port]; # Clients and peers can use the same port, see listenport
   };
 
+  # WireGuard is fire-and-forget: NetworkManager drops the split-tunnel route
+  # (and the handshake goes stale) on suspend/resume, leaving the interface
+  # "up" but carrying no traffic. Restart the tunnel after resume so the VPN
+  # keeps working without a manual `systemctl restart`.
+  systemd.services."wireguard-wg_${vpnName}-resume" = {
+    wantedBy = [ "sleep.target" ];
+    after = [
+      "suspend.target"
+      "hibernate.target"
+      "hybrid-sleep.target"
+      "suspend-then-hibernate.target"
+    ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ${config.systemd.package}/bin/systemctl restart wireguard-wg_${vpnName}
+    '';
+  };
+
   networking.wireguard.interfaces = {
     # The network interface name. You can name the interface arbitrarily.
     "wg_${vpnName}" = {
